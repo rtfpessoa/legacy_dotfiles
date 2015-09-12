@@ -1,0 +1,187 @@
+#
+# rtfpessoa git Configuration
+#
+
+# core {{{
+[core]
+  editor = /usr/bin/nano
+  pager=less -x4
+  quotepath = false
+  ignorecase = false
+# excludesfile = /Users/rtfpessoa/.gitignore
+
+#}}}
+# user {{{
+[user]
+  email = rtfrodrigo@gmail.com
+  name = Rodrigo Fernandes
+
+[github]
+  user = rtfrodrigo@gmail.com
+
+#}}}
+# color {{{
+[color]
+  branch = auto
+  diff = auto
+  status = auto
+  ui = true
+
+[color "branch"]
+  current = yellow reverse
+  local = yellow
+  remote = green
+
+[color "diff"]
+  meta = yellow
+  frag = magenta
+  old = red
+  new = green
+
+[color "status"]
+  added = green
+  changed = yellow
+  untracked = red
+
+# }}}
+# push/pull/diff/options {{{
+[push]
+  default = upstream
+[pull]
+  default = current
+[diff]
+  memonicprefix = true
+  algorithm = minimal
+[apply]
+  whitespace = nowarn
+
+#}}}
+# difftools {{{
+[difftool "sourcetree"]
+  cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+  path = 
+[mergetool "sourcetree"]
+  cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+  trustExitCode = true
+
+# }}}
+# alias {{{
+[alias]
+  # Advanced
+    ## List modified files in last commit
+    dl = "!git ll -1"
+
+    ## List all aliases
+    la = "!git config -l | grep alias | cut -c 7-"
+
+    ## Grep from root folder
+    gra = "!f() { A=$(pwd) && TOPLEVEL=$(git rev-parse --show-toplevel) && cd $TOPLEVEL && git grep --full-name -In $1 | xargs -I{} echo $TOPLEVEL/{} && cd $A; }; f"
+
+    ## Grep on filename
+    f = "!git ls-files | grep -i"
+
+    ## Rename branch tree to done-
+    done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f"
+
+    ## Assume aliases
+    assume = update-index --assume-unchanged
+    unassume = update-index --no-assume-unchanged
+
+    ## Show assumed files
+    assumed = "!git ls-files -v | grep ^h | cut -c 3-"
+
+    ## Unassume all the assumed files
+    unassumeall = "!git assumed | xargs git update-index --no-assume-unchanged"
+    assumeall = "!git st -s | awk {'print $2'} | xargs git assume"
+
+    lasttag = describe --tags --abbrev=0
+    lt = describe --tags --abbrev=0
+
+    ## Merges
+    ours = "!f() { git co --ours $@ && git add $@; }; f"
+    theirs = "!f() { git co --theirs $@ && git add $@; }; f"
+
+    ## List remotes
+    rem="!git config -l | grep remote.*url | tail -n +2"
+
+    ## Apply patch from other local repo
+    lap = "!f() { git --git-dir=$1 format-patch -k -1 --stdout $2 | git am -3 -k; }; f"
+
+    ## Subtree add
+    sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
+
+  # Commit
+  ci = commit
+  cma = commit -a -m
+  ca = commit --amend
+  amend = commit --amend
+  caa = commit -a --amend -C HEAD
+
+  # Log
+  filelog = log -u
+  fl = log -u
+  le = log --oneline --decorate
+  ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+  ls1 = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+  lds = log --pretty=format:"%C(yellow)%h\\ %C(green)%ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short --graph
+  ls = log --pretty=format:"%C(green)%h\\ %C(yellow)[%ad]%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
+  lc  = "!f() { git ll "$1"^.."$1"; }; f"
+  lnc = log --pretty=format:"%h\\ %s\\ [%cn]"
+  lg = log --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+  lag = log --graph
+  lagp = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  stup = log --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cD) %C(bold blue)<%an>%Creset' --author=Rodrigo
+  standup = log --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cD) %C(bold blue)<%an>%Creset' --since yesterday --author=Rodrigo
+
+  # Diff
+  diff = diff --word-diff
+  dc = diff --cached
+  dlc = diff --cached HEAD^
+  dr  = "!f() { git diff -w "$1"^.."$1"; }; f"
+  diffr  = "!f() { git diff "$1"^.."$1"; }; f"
+
+  # Reset
+  r = reset
+  r1 = reset HEAD^
+  r2 = reset HEAD^^
+  rh = reset --hard
+  rh1 = reset HEAD^ --hard
+  rh2 = reset HEAD^^ --hard
+
+  # Misc
+  cp = cherry-pick
+  grep = grep -Ii
+  ai = add --interactive
+  bra = branch -ra
+  purr = pull --rebase
+  pr = pull --rebase
+
+  # Stash
+  sl = stash list
+  sa = stash apply
+  ss = stash save
+  sc = stash clear
+  sd = stash drop
+
+  # Top Commands
+  ad = add -A .
+  st = status -sb
+  cl = clone
+  cm = commit -m
+  ps = push
+  pl = pull --rebase
+  uc = reset --soft HEAD^
+  d = diff --word-diff
+  dh = "!f() { git diff "HEAD~${1-0}"; }; f"
+  dh1 = diff HEAD~1
+  dh2 = diff HEAD~2
+  dh3 = diff HEAD~3
+  dh4 = diff HEAD~4
+  dh5 = diff HEAD~5
+  dh6 = diff HEAD~6
+  co = checkout
+  br = branch
+  rh = reset --hard
+  rhh = reset --hard HEAD
+  gr = grep -Ii
+# }}}
