@@ -39,8 +39,8 @@ export JDK_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home
 export JRE_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home/jre
 
 # ls alias
-alias l='ls -lisa'
-alias lh='ls -lisah'
+alias l='ls -lisah'
+alias lise='ls -lisa'
 alias lsa='ls -a'
 
 # Play Framework shortcuts

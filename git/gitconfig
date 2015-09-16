@@ -59,7 +59,7 @@
 # difftools {{{
 [difftool "sourcetree"]
   cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-  path = 
+  path =
 [mergetool "sourcetree"]
   cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
   trustExitCode = true
@@ -171,14 +171,15 @@
   ps = push
   pl = pull --rebase
   uc = reset --soft HEAD^
-  d = diff --word-diff
-  dh = "!f() { git diff "HEAD~${1-0}"; }; f"
-  dh1 = diff HEAD~1
-  dh2 = diff HEAD~2
-  dh3 = diff HEAD~3
-  dh4 = diff HEAD~4
-  dh5 = diff HEAD~5
-  dh6 = diff HEAD~6
+  d = "!f() { git diff -w -M -C "$(git symbolic-ref --short HEAD)" "$1"; }; f"
+  dw = diff --word-diff
+  dh = "!f() { git diff -w -M -C "HEAD~${1-0}"; }; f"
+  dh1 = dh 1
+  dh2 = dh 2
+  dh3 = dh 3
+  dh4 = dh 4
+  dh5 = dh 5
+  dh6 = dh 6
   co = checkout
   br = branch
   rh = reset --hard
