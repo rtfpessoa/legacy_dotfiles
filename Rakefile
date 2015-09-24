@@ -27,7 +27,9 @@ task :install => [:submodule_init, :submodules] do
 
   install_fonts if want_to_install?('powerline fonts')
 
-  install_term_theme if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('solarized theme')
+  install_term_theme if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('Apply custom ITerm2.app settings (ex: solarized theme)')
+
+  install_terminal_app_theme if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('Apply custom Terminal.app settings (ex: solarized theme)')
 
   copy_files('keyboard/layouts', '/Library/Keyboard\ Layouts', 'sudo') if
     RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('external UK keyboard layouts')
@@ -179,7 +181,7 @@ def install_term_theme
   puts "Restoring iTerm2 settings."
   puts "======================================================"
   if File.exists?('iTerm2/com.googlecode.iterm2.plist')
-    run %{cp -f iTerm2/com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist}
+    run %{defaults import ~/Library/Preferences/com.googlecode.iterm2.plist iTerm2/com.googlecode.iterm2.plist}
   end
 
   puts "======================================================"
@@ -232,6 +234,15 @@ def iTerm_profile_list
   end while $?.exitstatus==0
   profiles.pop
   profiles
+end
+
+def install_terminal_app_theme
+  puts "======================================================"
+  puts "Restoring Terminal.app settings."
+  puts "======================================================"
+  if File.exists?('terminal.app/com.apple.Terminal.plist')
+    run %{defaults import ~/Library/Preferences/com.apple.Terminal.plist terminal.app/com.apple.Terminal.plist}
+  end
 end
 
 def ask(message, values)

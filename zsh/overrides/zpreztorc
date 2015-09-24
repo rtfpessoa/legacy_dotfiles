@@ -8,6 +8,7 @@ DOTFILES_DIR=${DOTFILES_DIR-$DOTFILES_DIR_DEFAULT}
 
 fpath=(
   $DOTFILES_DIR/zsh/themes/agnoster
+  $DOTFILES_DIR/zsh/completions
   $fpath
 )
 
