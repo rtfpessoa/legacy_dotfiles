@@ -206,6 +206,9 @@ alias brewu='brew update  && brew upgrade --all && brew cleanup && brew cask cle
 # rbenv
 eval "$(rbenv init -)"
 
+# Visual Studio Code
+vsc () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
+
 # My Binaries
 PATH="$PATH:$HOME/.bins"
 
