@@ -17,6 +17,8 @@ alias -g G='| grep' # now you can do: ls foo G something
 function fn() { ls **/*$1* }
 
 # From https://github.com/paulirish/dotfiles/blob/master/.aliases
+alias ~="cd ~" # `cd` is probably faster to type though
+alias -- -="cd -"
 alias lock="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
 alias where=which # sometimes i forget
 alias brwe=brew  #typos
@@ -57,7 +59,7 @@ done
 # Enable tab completion for `g` by marking it as an alias for `git`
 if type __git_complete &> /dev/null; then
     __git_complete g __git_main
-fi
+fi;
 
 # Automatically list directory contents on `cd`.
 auto-ls () {
