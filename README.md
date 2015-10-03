@@ -63,8 +63,8 @@ options:
   -u [<URL>] set the url for the origin repository to install
   -d [<DEST DIR>] set the destination directory to install
     IMPORTANT: if you change the default directory, you need to set
-               `DOTFILES_DIR` before the shell is loaded
-               ex: export DOTFILES_DIR=/Users/me/.merc
+               `DOTFILES` before the shell is loaded
+               ex: export DOTFILES=/Users/me/.merc
   -f force the installation on update
 ```
 

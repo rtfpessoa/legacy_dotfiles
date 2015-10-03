@@ -3,13 +3,13 @@
 # Author: rtfpessoa
 #
 
-DOTFILES_DIR_DEFAULT="$HOME/.$(whoami)rc"
-DOTFILES_DIR=${DOTFILES_DIR-$DOTFILES_DIR_DEFAULT}
+DOTFILES_DEFAULT="$HOME/.$(whoami)rc"
+DOTFILES=${DOTFILES-$DOTFILES_DEFAULT}
 
 fpath=(
-  $DOTFILES_DIR/zsh/themes/agnoster
-  $DOTFILES_DIR/zsh/themes/others
-  $DOTFILES_DIR/zsh/completions
+  $DOTFILES/zsh/themes/agnoster
+  $DOTFILES/zsh/themes/others
+  $DOTFILES/zsh/completions
   $fpath
 )
 

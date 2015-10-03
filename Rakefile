@@ -59,7 +59,7 @@ task :submodules do
     puts "======================================================"
 
     run %{
-      cd $DOTFILES_DIR
+      cd $DOTFILES
       git submodule update --recursive
       git clean -df
     }
@@ -171,8 +171,8 @@ def install_fonts
   puts "======================================================"
   puts "Installing patched fonts for Powerline/Lightline."
   puts "======================================================"
-  run %{ cp -f $DOTFILES_DIR/fonts/* $HOME/Library/Fonts } if RUBY_PLATFORM.downcase.include?("darwin")
-  run %{ mkdir -p ~/.fonts && cp $DOTFILES_DIR/fonts/* ~/.fonts && fc-cache -vf ~/.fonts } if RUBY_PLATFORM.downcase.include?("linux")
+  run %{ cp -f $DOTFILES/fonts/* $HOME/Library/Fonts } if RUBY_PLATFORM.downcase.include?("darwin")
+  run %{ mkdir -p ~/.fonts && cp $DOTFILES/fonts/* ~/.fonts && fc-cache -vf ~/.fonts } if RUBY_PLATFORM.downcase.include?("linux")
   puts
 end
 
@@ -264,7 +264,7 @@ def install_prezto
   puts
   puts "Installing Prezto (ZSH Enhancements)..."
 
-  run %{ ln -nfs "$DOTFILES_DIR/zsh/prezto" "${ZDOTDIR:-$HOME}/.zprezto" }
+  run %{ ln -nfs "$DOTFILES/zsh/prezto" "${ZDOTDIR:-$HOME}/.zprezto" }
 
   # The prezto runcoms are only going to be installed if zprezto has never been installed
   install_files(Dir.glob('zsh/prezto/runcoms/z*'), :symlink)
@@ -316,9 +316,12 @@ def install_files(files, method = :symlink, withDirectories = true)
     puts "Source: #{source}"
     puts "Target: #{target}"
 
-    if File.exists?(target) && (!File.symlink?(target) || (File.symlink?(target) && File.readlink(target) != source))
-      puts "[Overwriting] #{target}...leaving original at #{target}.backup..."
-      run %{ mv "$HOME/.#{file}" "$HOME/.#{file}.backup" }
+    backup_dir = "#{ENV["HOME"]}/.dotfiles.bak"
+
+    if File.exists?(target) && !File.symlink?(target)
+      puts "[Overwriting] #{target}...leaving original at #{backup_dir}/#{file}..."
+      run %{ mkdir -p "#{backup_dir}" }
+      run %{ mv "$HOME/.#{file}" "#{backup_dir}/#{file}" }
     end
 
     if !File.directory?(source) || withDirectories
@@ -342,7 +345,7 @@ def link_binaries(path)
   # list all the binaries recursivelly
   binaries = Dir.glob(path << '/*/*')
   binaries.each do |bin|
-    orig_path = "#{ENV["DOTFILES_DIR"]}/#{bin}"
+    orig_path = "#{ENV["DOTFILES"]}/#{bin}"
     bin_name = File.basename(bin.split('/').last, '.*')
     dest_path = File.join(home_bins, bin_name)
 
@@ -350,7 +353,7 @@ def link_binaries(path)
     puts "======================#{file}=============================="
     puts "Source: #{orig_path}"
     puts "Target: #{dest_path}"
-    run %{ln -nfs #{orig_path} #{dest_path}}
+    run %{ ln -nfs #{orig_path} #{dest_path} }
     puts "=========================================================="
     puts
   end

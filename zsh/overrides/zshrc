@@ -9,11 +9,11 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
-DOTFILES_DIR_DEFAULT="$HOME/.$(whoami)rc"
-DOTFILES_DIR=${DOTFILES_DIR-$DOTFILES_DIR_DEFAULT}
-if [ -d "$DOTFILES_DIR" ]; then
-  for config_file ($DOTFILES_DIR/zsh/*.zsh) source $config_file
-  for config_file ($DOTFILES_DIR/shells/sources/*) source $config_file
+DOTFILES_DEFAULT="$HOME/.$(whoami)rc"
+DOTFILES=${DOTFILES-$DOTFILES_DEFAULT}
+if [ -d "$DOTFILES" ]; then
+  for config_file ($DOTFILES/zsh/*.zsh) source $config_file
+  for config_file ($DOTFILES/shells/sources/*) source $config_file
 fi
 
 # Add some patterns
