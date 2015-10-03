@@ -62,12 +62,11 @@ if type __git_complete &> /dev/null; then
 fi;
 
 # Automatically list directory contents on `cd`.
-auto-ls () {
-	emulate -L zsh;
-	# explicit sexy ls'ing as aliases arent honored in here.
-	hash gls >/dev/null 2>&1 && CLICOLOR_FORCE=1 gls -aFh --color --group-directories-first || ls
-}
-chpwd_functions=( auto-ls $chpwd_functions )
+# auto-ls () {
+# 	emulate -L zsh;
+# 	ls
+# }
+# chpwd_functions=( auto-ls $chpwd_functions )
 
 # history mgmt
 # http://www.refining-linux.org/archives/49/ZSH-Gem-15-Shared-history/
