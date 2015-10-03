@@ -90,6 +90,7 @@ cask 'flux'
 cask 'google-chrome-beta'
 cask 'iterm2-beta'
 cask 'slack'
+cask 'java'
 
 # Docker
 cask 'virtualbox'

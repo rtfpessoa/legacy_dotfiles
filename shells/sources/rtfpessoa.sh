@@ -7,8 +7,8 @@
 if [ "$ZSH_NAME" = "zsh" ] && [ "$TMUX" = "" ]; then tmux; fi
 
 # Force my HOME (sudo compatibility)
-export DEFAULT_USER=rtfpessoa
-export HOME=/Users/rtfpessoa
+export DEFAULT_USER="rtfpessoa"
+export HOME="/Users/$DEFAULT_USER"
 
 # want your terminal to support 256 color schemes? I do ...
 export TERM="xterm-256color"
@@ -27,16 +27,10 @@ export LC_ALL="en_US.UTF-8"
 # Editor
 export EDITOR="nano"
 
-# Clean my path
-# add usr local bins to the path for bin resulution in this script
-usrLocalBin="/usr/local/bin"
-usrLocalSbin="/usr/local/sbin"
-PATH="/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/MacGPG2/bin:$HOME/.rbenv/shims:$usrLocalBin:$usrLocalSbin"
-
 # Java
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home
-export JDK_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home
-export JRE_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home/jre
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
+export JDK_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
+export JRE_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home/jre
 
 # ls alias
 alias l='ls -lisah'
@@ -60,7 +54,6 @@ alias plcl='activator clean'
 alias plt='grc --config=$GRC_CONFIG_LOCATION activator test'
 alias plco='activator console'
 alias plclean='rm -rf $(find . -type d -iname target)'
-alias ploff='activator "set offline := true"'
 
 # SBT shortcuts
 alias sbtc='sbt compile'
@@ -213,10 +206,6 @@ vsc () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
 PATH="$PATH:$HOME/.bins"
 
 ### HOMEBREW PATH ###
-# move usr local bins to the begining of the path
-empty_string=""
-PATH="${PATH/:$usrLocalBin/$empty_string}"
-PATH="${PATH/:$usrLocalSbin/$empty_string}"
 PATH=/usr/local/bin:/usr/local/sbin:$PATH
 ### HOMEBREW PATH ###
 
