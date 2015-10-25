@@ -112,6 +112,7 @@ alias dkinspect='docker inspect -f "{{.Config}}" $(docker ps -a -q)'
 alias dkrmpsexit='docker rm -f $(docker ps -a -q -f status=exited)'
 alias dkrmps='docker rm -f $(docker ps -a -q)'
 alias dkrminone='docker rmi -f $(docker images | grep "^<none>" | awk "{print $3}")'
+alias dkrmidang='rmi -f $(docker images -q -f "dangling=true")'
 
 # Tmux shortcuts
 # creates a new tmux session without name
