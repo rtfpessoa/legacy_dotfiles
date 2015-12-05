@@ -9,6 +9,7 @@ task :install => [:submodule_init, :submodules] do
   puts "======================================================"
   puts
 
+  the_world_is_mine if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('take control of /usr/local')
   install_homebrew if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('brew')
   install_rbenv if want_to_install?('rbenv')
   install_gems if want_to_install?('gems')
@@ -16,8 +17,7 @@ task :install => [:submodule_init, :submodules] do
   # this has all the runcoms from this directory.
   install_files(Dir.glob('git/*')) if want_to_install?('git configs (color, aliases)')
   install_files(Dir.glob('tmux/*')) if want_to_install?('tmux config')
-  install_files(files = Dir.glob('bash/runcoms/*'), method = :symlink,
-    withDirectories = false) if want_to_install?('bash configs')
+  install_files(files = Dir.glob('bash/runcoms/*'), method = :symlink, withDirectories = false) if want_to_install?('bash configs')
 
   link_binaries('shells/bins') if want_to_install?('custom binaries')
 
@@ -93,6 +93,13 @@ def run_bundle_config
   puts
 end
 
+def the_world_is_mine
+  puts "======================================================"
+  puts "Gaining control of /usr/local on OSX ..."
+  puts "======================================================"
+  run %{sudo chown -R #{ENV["USER"]}:staff /usr/local}
+end
+
 def install_homebrew
   run %{which brew}
   unless $?.success?
@@ -122,7 +129,7 @@ def install_homebrew
 end
 
 def install_rbenv
-  ruby_version = '2.2.2'
+  ruby_version = '2.2.3'
 
   run %{which rbenv}
   unless $?.success?
@@ -159,7 +166,7 @@ def install_gems
   puts "======================================================"
   puts "Installing Gems...There may be some warnings."
   puts "======================================================"
-  run %{gem install bundler git-up}
+  run %{sudo gem install bundler git-up}
   puts
   puts
 end
