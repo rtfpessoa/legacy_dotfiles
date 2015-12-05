@@ -31,9 +31,6 @@ task :install => [:submodule_init, :submodules] do
 
   install_terminal_app_theme if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('Apply custom Terminal.app settings (ex: solarized theme)')
 
-  copy_files('keyboard/layouts', '/Library/Keyboard\ Layouts', 'sudo') if
-    RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('external UK keyboard layouts')
-
   run_bundle_config if want_to_install?('bundle config')
 
   success_msg("installed")

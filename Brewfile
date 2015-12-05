@@ -2,10 +2,16 @@
 # rtfpessoa Homebrew file
 #
 
-# Install Cask
-tap 'caskroom/cask'
-tap 'homebrew/versions'
+# Cask
+brew 'caskroom/cask/brew-cask'
+
+# Versions
 tap 'caskroom/versions'
+tap 'homebrew/versions'
+tap 'homebrew/command-not-found'
+tap 'homebrew/services'
+tap 'homebrew/completions'
+tap 'homebrew/aliases'
 
 # Build
 brew 'autoconf'
@@ -19,7 +25,6 @@ brew 'gradle'
 
 ## PHP
 tap 'homebrew/dupes'
-tap 'homebrew/versions'
 tap 'homebrew/php'
 brew 'homebrew/php/composer'
 brew 'homebrew/php/php56'
@@ -49,7 +54,6 @@ brew 'gnupg2'
 brew 'gpg-agent'
 
 # Network
-brew 'netcat'
 brew 'ngrok'
 
 # Random
@@ -85,20 +89,20 @@ brew 'sbt'
 brew 'scala'
 
 # Install Casks
-cask 'caffeine'
-cask 'flux'
-cask 'google-chrome-beta'
-cask 'iterm2-beta'
-cask 'slack'
-cask 'java'
+# cask 'caffeine'
+# cask 'flux'
+# cask 'google-chrome-beta'
+# cask 'iterm2-beta'
+# cask 'slack'
+# cask 'java'
 
 # Docker
-cask 'virtualbox'
-brew 'docker'
-brew 'docker-machine'
-brew 'docker-compose'
+# cask 'virtualbox'
+# brew 'docker'
+# brew 'docker-machine'
+# brew 'docker-compose'
 
 # LaTeX
-tap 'homebrew/tex'
-brew 'homebrew/tex/latex-mk'
-cask 'mactex'
+# tap 'homebrew/tex'
+# brew 'homebrew/tex/latex-mk'
+# cask 'mactex'

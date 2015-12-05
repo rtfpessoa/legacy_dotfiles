@@ -4,7 +4,7 @@
 
 # core {{{
 [core]
-  editor = /usr/bin/nano
+  editor = /usr/bin/vi
   pager=less -x4
   quotepath = false
   ignorecase = false

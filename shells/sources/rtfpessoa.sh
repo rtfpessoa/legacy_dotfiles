@@ -67,6 +67,7 @@ alias sbtcl='sbt clean'
 alias sbtt='sbt test'
 alias sbtco='sbt console'
 alias sbtclean='rm -rf $(find . -type d -iname target)'
+alias codacyclean='rm -rf $(find . -type d -iname target);rm -rf ~/.sbt/0.13/staging;rm -rf ~/.sbt/0.13/target;rm -rf ~/.ivy2/local;rm -rf ~/.ivy2/cache/codacy;rm -rf ~/.ivy2/cache/com.codacy;'
 
 function sbtdocker {
 	dockerName=$1
@@ -202,6 +203,8 @@ eval "$(rbenv init -)"
 
 # Visual Studio Code
 vsc () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
+
+if brew command command-not-found-init > /dev/null; then eval "$(brew command-not-found-init)"; fi
 
 # My Binaries
 PATH="$PATH:$HOME/.bins"
