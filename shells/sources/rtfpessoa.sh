@@ -28,9 +28,9 @@ export LC_ALL="en_US.UTF-8"
 export EDITOR="nano"
 
 # Java
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
-export JDK_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
-export JRE_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home/jre
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home
+export JDK_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home
+export JRE_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home/jre
 
 # ls alias
 alias l='ls -lisah'
@@ -112,8 +112,11 @@ alias dkinspect='docker inspect -f "{{.Config}}" $(docker ps -a -q)'
 # Special docker alias
 alias dkrmpsexit='docker rm -f $(docker ps -a -q -f status=exited)'
 alias dkrmps='docker rm -f $(docker ps -a -q)'
-alias dkrminone='docker rmi -f $(docker images | grep "^<none>" | awk "{print $3}")'
+alias dkrminone="docker rmi -f $(docker images | grep '^<none>' | awk '{print $3}')"
 alias dkrmidang='rmi -f $(docker images -q -f "dangling=true")'
+
+# Simple alias
+alias docekr='docker'
 
 # Tmux shortcuts
 # creates a new tmux session without name
