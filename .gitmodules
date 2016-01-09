@@ -8,6 +8,6 @@
 [submodule "bash/themes/agnoster"]
 	path = bash/themes/agnoster
 	url = https://gist.github.com/7a745be31e89673b8fc7.git
-[submodule "zsh/themes/agnoster"]
-	path = zsh/themes/agnoster
+[submodule "zsh/themes/rtfpessoa"]
+	path = zsh/themes/rtfpessoa
 	url = https://gist.github.com/9737c2d0d3b5fe5aa2e8.git

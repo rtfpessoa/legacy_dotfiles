@@ -25,7 +25,7 @@ export LC_TIME="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
 # Editor
-export EDITOR="nano"
+export EDITOR="vi"
 
 # Java
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home
@@ -98,8 +98,9 @@ function dockerbuildr {
 }
 
 # boot2docker alias
-alias dktinit="docker-toolbox-init"
-alias dkm="docker-machine"
+alias dktinit='docker-toolbox-init'
+alias dkm='docker-machine'
+alias dkmstop='docker-machine stop default'
 alias dktenv='eval $(docker-machine env default)'
 
 # docker alias
@@ -112,7 +113,7 @@ alias dkinspect='docker inspect -f "{{.Config}}" $(docker ps -a -q)'
 # Special docker alias
 alias dkrmpsexit='docker rm -f $(docker ps -a -q -f status=exited)'
 alias dkrmps='docker rm -f $(docker ps -a -q)'
-alias dkrminone="docker rmi -f $(docker images | grep '^<none>' | awk '{print $3}')"
+alias dkrminone='docker rmi -f $(docker images | grep "'"^<none>"'" | awk "'"{print $3}"'")'
 alias dkrmidang='rmi -f $(docker images -q -f "dangling=true")'
 
 # Simple alias
@@ -197,6 +198,7 @@ alias k9='kill -9'
 # Finder
 alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
 alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
+alias fixfinder='sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist;sudo rm -rf /.Spotlight-V100;sudo rm -rf /Volumes/Data/.Spotlight-V100;sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist;'
 
 # Homebrew
 alias brewu='brew update  && brew upgrade --all && brew cleanup && brew cask cleanup && brew prune && brew doctor'
@@ -221,5 +223,5 @@ export PATH
 
 ### DOCKER TOOLBOX INIT ###
 # dktinit false &>/dev/null
-eval $(docker-machine env default 2>/dev/null)
+eval "$(docker-machine env default &>/dev/null)" &>/dev/null
 ###########################

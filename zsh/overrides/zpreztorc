@@ -7,7 +7,7 @@ DOTFILES_DEFAULT="$HOME/.$(whoami)rc"
 DOTFILES=${DOTFILES-$DOTFILES_DEFAULT}
 
 fpath=(
-  $DOTFILES/zsh/themes/agnoster
+  $DOTFILES/zsh/themes/rtfpessoa
   $DOTFILES/zsh/themes/others
   $DOTFILES/zsh/completions
   $fpath
@@ -104,7 +104,7 @@ zstyle ':prezto:module:history-substring-search' globbing-flags ''
 # Set the prompt theme to load.
 # Setting it to 'random' loads a random theme.
 # Auto set to 'off' on dumb terminals.
-zstyle ':prezto:module:prompt' theme 'myagnoster'
+zstyle ':prezto:module:prompt' theme 'rtfpessoa'
 # 'powerlevel9k'
 # 'agnoster'
 # 'sorin'
