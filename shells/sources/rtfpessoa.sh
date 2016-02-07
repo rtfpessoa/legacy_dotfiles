@@ -167,6 +167,9 @@ PATH=$PATH:/Library/TeX/texbin:/usr/texbin
 PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
 alias subl='subl -a'
 
+# NPM
+PATH="$HOME/.node/bin:$PATH"
+
 # NVM
 export NVM_DIR=$HOME/.nvm
 source $(brew --prefix nvm)/nvm.sh
@@ -223,5 +226,5 @@ export PATH
 
 ### DOCKER TOOLBOX INIT ###
 # dktinit false &>/dev/null
-eval "$(docker-machine env default &>/dev/null)" &>/dev/null
+eval "$(docker-machine env --shell=zsh default &>/dev/null)"
 ###########################

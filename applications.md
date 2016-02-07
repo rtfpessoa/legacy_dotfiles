@@ -2,12 +2,10 @@
 
 AppCleaner
 Atom
-Battle.net
 Caffeine
 Chromecast
 DiffMerge
-Disk Inventory X
-Docker Toolbox 8
+Docker Toolbox
 Dropbox
 FirefoxDeveloperEdition
 Flux
@@ -15,7 +13,7 @@ Gimp
 Goolgle Chrome Beta
 Goolgle Drive
 GPG Keychain
-IntelliJ IDEA 15
+IntelliJ IDEA
 iTerm2
 Karabiner
 Key Codes
@@ -23,6 +21,7 @@ Kodi
 LastPass
 Little Snitch
 Logitech Options
+OmniDiskSweeper
 Parallels Desktop
 Pocket
 Skype
@@ -30,7 +29,7 @@ Slack
 SourceTree
 Spotify
 Steam
-Sublime Text 3
+Sublime Text
 The Unarchiver
 uTorrent
 VLC

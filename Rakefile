@@ -166,7 +166,7 @@ def install_gems
   puts "======================================================"
   puts "Installing Gems...There may be some warnings."
   puts "======================================================"
-  run %{sudo gem install bundler git-up}
+  run %{sudo gem install bundler git-up  sass}
   puts
   puts
 end
