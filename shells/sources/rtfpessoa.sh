@@ -119,6 +119,12 @@ alias dkrmidang='rmi -f $(docker images -q -f "dangling=true")'
 # Simple alias
 alias docekr='docker'
 
+# Copy cmds
+alias dklogs='docker logs --tail 10000 -f $(docker ps -q -a)'
+function cpdklogs() {
+	echo 'docker logs --tail 10000 -f $(docker ps -q -a)' | pbcopy
+}
+
 # Tmux shortcuts
 # creates a new tmux session without name
 alias tmx='tmux new'
@@ -165,7 +171,7 @@ PATH=$PATH:/Library/TeX/texbin:/usr/texbin
 
 # Sublime
 PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
-alias subl='subl -a'
+# alias subl='subl -a'
 
 # NPM
 PATH="$HOME/.node/bin:$PATH"
@@ -213,6 +219,9 @@ eval "$(rbenv init -)"
 vsc () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
 
 if brew command command-not-found-init > /dev/null; then eval "$(brew command-not-found-init)"; fi
+
+# Just the weather
+alias meteo='curl -4 wttr.in/Lisbon'
 
 # My Binaries
 PATH="$PATH:$HOME/.bins"
