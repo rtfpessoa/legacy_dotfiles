@@ -28,9 +28,9 @@ export LC_ALL="en_US.UTF-8"
 export EDITOR="vi"
 
 # Java
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home
-export JDK_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home
-export JRE_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home/jre
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home
+export JDK_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home
+export JRE_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home/jre
 
 # ls alias
 alias l='ls -lisah'
@@ -101,7 +101,7 @@ function dockerbuildr {
 alias dktinit='docker-toolbox-init'
 alias dkm='docker-machine'
 alias dkmstop='docker-machine stop default'
-alias dktenv='eval $(docker-machine env default)'
+alias dktenv='eval $(docker-machine env --shell=zsh default) &>/dev/null'
 
 # docker alias
 alias dki='docker images'
@@ -189,6 +189,9 @@ PATH=$PATH:$HOME/.composer/vendor/bin
 # JPM
 PATH=$PATH:$HOME/Library/PackageManager/bin
 
+# GO
+export GOPATH=$HOME/.go
+
 # The Fuck
 eval "$(thefuck --alias)"
 
@@ -227,7 +230,7 @@ alias meteo='curl -4 wttr.in/Lisbon'
 PATH="$PATH:$HOME/.bins"
 
 ### HOMEBREW PATH ###
-PATH=/usr/local/bin:/usr/local/sbin:$PATH
+PATH=/usr/local/bin:/usr/local/sbin:${GOPATH//://bin:}/bin:$PATH
 ### HOMEBREW PATH ###
 
 # Export the PATH
@@ -235,5 +238,5 @@ export PATH
 
 ### DOCKER TOOLBOX INIT ###
 # dktinit false &>/dev/null
-eval "$(docker-machine env --shell=zsh default &>/dev/null)"
+eval $(docker-machine env --shell=zsh default) &>/dev/null
 ###########################
