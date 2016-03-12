@@ -101,7 +101,8 @@ function dockerbuildr {
 alias dktinit='docker-toolbox-init'
 alias dkm='docker-machine'
 alias dkmstop='docker-machine stop default'
-alias dktenv='eval $(docker-machine env --shell=zsh default) &>/dev/null'
+alias dktenv='eval $(docker-machine env --shell=zsh default)'
+alias dktenvsilent='eval $(docker-machine env --shell=zsh default 2>/dev/null) &>/dev/null'
 
 # docker alias
 alias dki='docker images'
@@ -236,7 +237,6 @@ PATH=/usr/local/bin:/usr/local/sbin:${GOPATH//://bin:}/bin:$PATH
 # Export the PATH
 export PATH
 
-### DOCKER TOOLBOX INIT ###
-# dktinit false &>/dev/null
-eval $(docker-machine env --shell=zsh default) &>/dev/null
+### DOCKER TOOLBOX ENV INIT ###
+dktenvsilent
 ###########################
