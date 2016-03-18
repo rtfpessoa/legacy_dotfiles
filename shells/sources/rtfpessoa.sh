@@ -190,6 +190,10 @@ PATH=$PATH:$HOME/.composer/vendor/bin
 # JPM
 PATH=$PATH:$HOME/Library/PackageManager/bin
 
+# Atom
+alias atom-backup='apm list --installed --bare > Atomfile'
+alias atom-restore='apm install --packages-file Atomfile'
+
 # GO
 export GOPATH=$HOME/.go
 
