@@ -15,6 +15,7 @@
 [user]
   email = rtfrodrigo@gmail.com
   name = Rodrigo Fernandes
+	signingkey = 8969078E
 
 [github]
   user = rtfrodrigo@gmail.com
@@ -167,7 +168,7 @@
   ad = add -A .
   st = status -sb
   cl = clone
-  cm = commit -m
+	cm = commit -S -m
   ps = push
   pl = pull --rebase
   uc = reset --soft HEAD^
@@ -185,4 +186,5 @@
   rh = reset --hard
   rhh = reset --hard HEAD
   gr = grep -Ii
+	c = commit -S
 # }}}

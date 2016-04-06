@@ -80,6 +80,16 @@ function sbtdocker {
 	docker rmi -f $dockerName:$dockerVersion
 }
 
+function sbtfastdocker {
+	dockerName=$1
+	dockerVersion=$2
+	repoPrefix=$3
+	dockerFullName="${repoPrefix}codacy/$dockerName:$dockerVersion"
+	sbt "set version in Docker := \"$dockerVersion\"" "set name := \"$dockerName\"" docker:publishLocal
+	docker tag -f $dockerName:$dockerVersion $dockerFullName
+	docker rmi -f $dockerName:$dockerVersion
+}
+
 function dockerbuild {
 	dockerName=$1
 	dockerVersion=$2
