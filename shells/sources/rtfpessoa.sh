@@ -188,8 +188,8 @@ PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
 PATH="$HOME/.node/bin:$PATH"
 
 # NVM
-export NVM_DIR=$HOME/.nvm
-source $(brew --prefix nvm)/nvm.sh
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
 
 # PHP 5.6
 PATH="$(brew --prefix homebrew/php/php56)/bin:$PATH"
