@@ -112,9 +112,12 @@ alias dktinit='docker-toolbox-init'
 alias dkm='docker-machine'
 alias dkmstop='docker-machine stop default'
 alias dktenv='eval $(docker-machine env --shell=zsh default)'
+alias dktreset='eval $(docker-machine env --unset)'
 alias dktenvsilent='eval $(docker-machine env --shell=zsh default 2>/dev/null) &>/dev/null'
 
 # docker alias
+alias dk='docker'
+alias docekr='docker'
 alias dki='docker images'
 alias dkpsa='docker ps -a'
 alias dkrm='docker rm -f'
@@ -126,9 +129,6 @@ alias dkrmpsexit='docker rm -f $(docker ps -a -q -f status=exited)'
 alias dkrmps='docker rm -f $(docker ps -a -q)'
 alias dkrminone='docker rmi -f $(docker images | grep "'"^<none>"'" | awk "'"{print $3}"'")'
 alias dkrmidang='rmi -f $(docker images -q -f "dangling=true")'
-
-# Simple alias
-alias docekr='docker'
 
 # Copy cmds
 alias dklogs='docker logs --tail 10000 -f $(docker ps -q -a)'
@@ -252,5 +252,5 @@ PATH=/usr/local/bin:/usr/local/sbin:${GOPATH//://bin:}/bin:$PATH
 export PATH
 
 ### DOCKER TOOLBOX ENV INIT ###
-dktenvsilent
+# dktenvsilent
 ###########################
