@@ -1,5 +1,7 @@
 #!/bin/sh
 
+SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
+
 CLONE_URL_DEFAULT=https://github.com/rtfpessoa/dotfiles
 DOTFILES_NAME=".$(whoami)rc"
 DOTFILES_PATH="$HOME"
@@ -76,7 +78,7 @@ case $CMD in
 
   uninstall)
     [[ -d "$DOTFILES" ]] && cd "$DOTFILES"
-    ./uninstall.sh
+    $SCRIPT_DIR/uninstall.sh
     ;;
 
   *)

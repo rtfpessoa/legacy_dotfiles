@@ -4,11 +4,10 @@
 
 # core {{{
 [core]
-  editor = /usr/bin/vi
-  pager=less -x4
+  editor = vi
+  pager = less -x4
   quotepath = false
   ignorecase = false
-# excludesfile = /Users/rtfpessoa/.gitignore
 
 #}}}
 # user {{{
@@ -57,15 +56,6 @@
   whitespace = nowarn
 
 #}}}
-# difftools {{{
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
-
-# }}}
 # alias {{{
 [alias]
   # Advanced
