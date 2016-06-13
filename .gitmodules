@@ -2,9 +2,6 @@
 	path = zsh/prezto
 	url = https://github.com/sorin-ionescu/prezto.git
 	ignore = dirty
-[submodule "shells/bins/docker-toolbox"]
-	path = shells/bins/docker-toolbox
-	url = https://gist.github.com/3838c709579639e776b0.git
 [submodule "bash/themes/agnoster"]
 	path = bash/themes/agnoster
 	url = https://gist.github.com/7a745be31e89673b8fc7.git

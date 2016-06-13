@@ -4,11 +4,10 @@
 # OS X Shell Settings
 #
 
-if [ "$ZSH_NAME" = "zsh" ] && [ "$TMUX" = "" ]; then tmux; fi
+if [ "$ZSH_NAME" = "zsh" ] && [ "$TMUX" = "" ] && [[ "$OSTYPE" == "darwin"* ]]; then tmux; fi
 
 # Force my HOME (sudo compatibility)
 export DEFAULT_USER="rtfpessoa"
-export HOME="/Users/$DEFAULT_USER"
 
 # want your terminal to support 256 color schemes? I do ...
 export TERM="xterm-256color"
@@ -27,33 +26,30 @@ export LC_ALL="en_US.UTF-8"
 # Editor
 export EDITOR="vi"
 
-# Java
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home
-export JDK_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home
-export JRE_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home/jre
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  # Linux
+  export HOME="/home/$DEFAULT_USER"
+
+  # Java
+  export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+  export JDK_HOME=/usr/lib/jvm/java-8-oracle
+  export JRE_HOME=/usr/lib/jvm/java-8-oracle/jre
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  # Mac OSX
+  export HOME="/Users/$DEFAULT_USER"
+
+  # Java
+  export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home
+  export JDK_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home
+  export JRE_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home/jre
+else
+  # Unknown.
+fi
 
 # ls alias
 alias l='ls -lisah'
 alias lise='ls -lisa'
 alias lsa='ls -a'
-
-# Play Framework shortcuts
-PATH=$PATH:$HOME/qamine/apps/activator
-
-GRC_CONFIG_LOCATION=$HOME/.grc-codacy
-
-alias pl='activator'
-alias plc='grc --config=$GRC_CONFIG_LOCATION activator compile'
-alias plcc='grc --config=$GRC_CONFIG_LOCATION activator "~compile"'
-alias plr='grc --config=$GRC_CONFIG_LOCATION activator run'
-alias plrr='grc --config=$GRC_CONFIG_LOCATION activator "~run"'
-alias pls='grc --config=$GRC_CONFIG_LOCATION activator start'
-alias pld='grc --config=$GRC_CONFIG_LOCATION activator -jvm-debug 9999'
-alias pldr='grc --config=$GRC_CONFIG_LOCATION activator -jvm-debug 9999 run'
-alias plcl='activator clean'
-alias plt='grc --config=$GRC_CONFIG_LOCATION activator test'
-alias plco='activator console'
-alias plclean='rm -rf $(find . -type d -iname target)'
 
 # SBT shortcuts
 alias sbtc='sbt compile'
@@ -70,50 +66,34 @@ alias sbtclean='rm -rf $(find . -type d -iname target)'
 alias codacyclean='rm -rf $(find . -type d -iname target);rm -rf ~/.sbt/0.13/staging;rm -rf ~/.sbt/0.13/target;rm -rf ~/.ivy2/local;rm -rf ~/.ivy2/cache/codacy;rm -rf ~/.ivy2/cache/com.codacy;'
 
 function sbtdocker {
-	dockerName=$1
-	dockerVersion=$2
-	repoPrefix=$3
-	dockerFullName="${repoPrefix}codacy/$dockerName:$dockerVersion"
-	docker rmi -f $dockerFullName
-	sbt "set version in Docker := \"$dockerVersion\"" "set name := \"$dockerName\"" docker:publishLocal
-	docker tag -f $dockerName:$dockerVersion $dockerFullName
-	docker rmi -f $dockerName:$dockerVersion
+  dockerName=$1
+  dockerVersion=$2
+  repoPrefix=$3
+  dockerFullName="${repoPrefix}codacy/$dockerName:$dockerVersion"
+  docker rmi -f $dockerFullName
+  sbt "set version in Docker := \"$dockerVersion\"" "set name := \"$dockerName\"" docker:publishLocal
+  docker tag -f $dockerName:$dockerVersion $dockerFullName
+  docker rmi -f $dockerName:$dockerVersion
 }
 
 function sbtfastdocker {
-	dockerName=$1
-	dockerVersion=$2
-	repoPrefix=$3
-	dockerFullName="${repoPrefix}codacy/$dockerName:$dockerVersion"
-	sbt "set version in Docker := \"$dockerVersion\"" "set name := \"$dockerName\"" docker:publishLocal
-	docker tag -f $dockerName:$dockerVersion $dockerFullName
-	docker rmi -f $dockerName:$dockerVersion
+  dockerName=$1
+  dockerVersion=$2
+  repoPrefix=$3
+  dockerFullName="${repoPrefix}codacy/$dockerName:$dockerVersion"
+  sbt "set version in Docker := \"$dockerVersion\"" "set name := \"$dockerName\"" docker:publishLocal
+  docker tag -f $dockerName:$dockerVersion $dockerFullName
+  docker rmi -f $dockerName:$dockerVersion
 }
 
 function dockerbuild {
-	dockerName=$1
-	dockerVersion=$2
-	repoPrefix=$3
-	dockerFullName="${repoPrefix}codacy/$dockerName:$dockerVersion"
-	docker rmi -f $dockerFullName
-	docker build --rm=true -t $dockerFullName .
+  dockerName=$1
+  dockerVersion=$2
+  repoPrefix=$3
+  dockerFullName="${repoPrefix}codacy/$dockerName:$dockerVersion"
+  docker rmi -f $dockerFullName
+  docker build --rm=true -t $dockerFullName .
 }
-
-function sbtdockerr {
-	sbtdocker $1 $2 "registry.docker.codacy.io/"
-}
-
-function dockerbuildr {
-	dockerbuild $1 $2 "registry.docker.codacy.io/"
-}
-
-# boot2docker alias
-alias dktinit='docker-toolbox-init'
-alias dkm='docker-machine'
-alias dkmstop='docker-machine stop default'
-alias dktenv='eval $(docker-machine env --shell=zsh default)'
-alias dktreset='eval $(docker-machine env --unset)'
-alias dktenvsilent='eval $(docker-machine env --shell=zsh default 2>/dev/null) &>/dev/null'
 
 # docker alias
 alias dk='docker'
@@ -133,7 +113,7 @@ alias dkrmidang='rmi -f $(docker images -q -f "dangling=true")'
 # Copy cmds
 alias dklogs='docker logs --tail 10000 -f $(docker ps -q -a)'
 function cpdklogs() {
-	echo 'docker logs --tail 10000 -f $(docker ps -q -a)' | pbcopy
+  echo 'docker logs --tail 10000 -f $(docker ps -q -a)' | pbcopy
 }
 
 # Tmux shortcuts
@@ -170,19 +150,13 @@ alias tmxsp='tmux select-pane'
 # selects the next pane in numerical order
 alias tmxspn='tmux select-pane -t'
 
-# AndroidSDK
-export ANDROID_HOME=$HOME/Library/Android/sdk
-PATH=$PATH:$HOME/Library/Android/sdk/platform-tools
-
-# PMD Copy-Paste Detector
-PATH=$PATH:$HOME/qamine/apps/pmd-cpd
-
-# Latex
-PATH=$PATH:/Library/TeX/texbin:/usr/texbin
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # Sublime
+  PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
+fi
 
 # Sublime
-PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
-# alias subl='subl -a'
+alias subl='subl -a'
 
 # NPM
 PATH="$HOME/.node/bin:$PATH"
@@ -190,9 +164,6 @@ PATH="$HOME/.node/bin:$PATH"
 # NVM
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
-
-# PHP 5.6
-PATH="$(brew --prefix homebrew/php/php56)/bin:$PATH"
 
 # Composer
 PATH=$PATH:$HOME/.composer/vendor/bin
@@ -209,6 +180,13 @@ export GOPATH=$HOME/.go
 
 # The Fuck
 eval "$(thefuck --alias)"
+
+if which brew &> /dev/null; then
+  if brew command command-not-found-init > /dev/null; then eval "$(brew command-not-found-init)"; fi
+
+  # PHP 5.6
+  PATH="$(brew --prefix homebrew/php/php56)/bin:$PATH"
+fi
 
 # why not?
 alias :q='exit'
@@ -231,12 +209,11 @@ alias fixfinder='sudo launchctl unload -w /System/Library/LaunchDaemons/com.appl
 alias brewu='brew update  && brew upgrade --all && brew cleanup && brew cask cleanup && brew prune && brew doctor'
 
 # rbenv
+PATH=$HOME/.rbenv/bin:$PATH
 eval "$(rbenv init -)"
 
 # Visual Studio Code
 vsc () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
-
-if brew command command-not-found-init > /dev/null; then eval "$(brew command-not-found-init)"; fi
 
 # Just the weather
 alias meteo='curl -4 wttr.in/Lisbon'
@@ -250,7 +227,3 @@ PATH=/usr/local/bin:/usr/local/sbin:${GOPATH//://bin:}/bin:$PATH
 
 # Export the PATH
 export PATH
-
-### DOCKER TOOLBOX ENV INIT ###
-# dktenvsilent
-###########################
