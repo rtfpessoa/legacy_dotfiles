@@ -31,15 +31,10 @@ brew 'homebrew/php/php56'
 brew 'homebrew/php/php56-xdebug'
 brew 'homebrew/php/phpunit'
 
-## C/C++
-brew 'cppcheck'
-
 ## Javascript
-brew 'node'
-brew 'nvm'
-
-## Java
-brew 'pmd'
+# USE NVM TO HAVE MULTIPLE NODE VERSIONS
+# brew 'node'
+# brew 'nvm'
 
 ## Python
 brew 'python'
@@ -95,14 +90,3 @@ brew 'scala'
 # cask 'iterm2-beta'
 # cask 'slack'
 # cask 'java'
-
-# Docker
-# cask 'virtualbox'
-# brew 'docker'
-# brew 'docker-machine'
-# brew 'docker-compose'
-
-# LaTeX
-# tap 'homebrew/tex'
-# brew 'homebrew/tex/latex-mk'
-# cask 'mactex'

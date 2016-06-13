@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 CLONE_URL_DEFAULT=https://github.com/rtfpessoa/dotfiles
 DOTFILES_NAME=".$(whoami)rc"
