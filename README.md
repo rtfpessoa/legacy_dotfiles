@@ -24,14 +24,14 @@ Slimmed down version of [dotfiles](https://github.com/skwp/dotfiles) edited by [
 To get started please run:
 
 ```
-sh -c "`curl -fsSL https://raw.githubusercontent.com/rtfpessoa/dotfiles/master/dotfiles.sh`"
+bash -c "`curl -fsSL https://raw.githubusercontent.com/rtfpessoa/dotfiles/master/dotfiles.sh`" -s -c install
 ```
 
 **Note:** It will automatically install all of its subcomponents. If you want to be asked
 about each one, use:
 
 ```
-sh -c "`curl -fsSL https://raw.githubusercontent.com/rtfpessoa/dotfiles/master/dotfiles.sh`" -s '-a'
+bash -c "`curl -fsSL https://raw.githubusercontent.com/rtfpessoa/dotfiles/master/dotfiles.sh`" -s -c install -a
 ```
 
 > The installation directory is `$HOME/.$(whoami)rc`

@@ -5,7 +5,7 @@ Atom
 Caffeine
 Chromecast
 DiffMerge
-Docker Toolbox
+Docker
 Dropbox
 FirefoxDeveloperEdition
 Flux

@@ -11,8 +11,10 @@ task :install => [:submodule_init, :submodules] do
 
   the_world_is_mine if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('take control of /usr/local')
   install_homebrew if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('brew')
+  install_packages if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu packages')
   install_rbenv if want_to_install?('rbenv')
   install_gems if want_to_install?('gems')
+  install_nvm if want_to_install?('nvm')
 
   # this has all the runcoms from this directory.
   install_files(Dir.glob('git/*')) if want_to_install?('git configs (color, aliases)')
@@ -131,16 +133,49 @@ def install_homebrew
   puts
 end
 
+def install_packages
+  puts
+  puts
+  puts "======================================================"
+  puts "Installing Ubuntu Packages."
+  puts "======================================================"
+  run %{sudo apt-get -y update}
+  run %{sudo apt-get -y install software-properties-common}
+  run %{sudo apt-get -y install curl wget unzip nano zsh tmux}
+  run %{sudo apt-get -y install build-essential checkinstall}
+  run %{echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections}
+  run %{sudo add-apt-repository -y ppa:webupd8team/java}
+  run %{sudo add-apt-repository -y ppa:git-core/ppa}
+  run %{sudo apt-get -y update}
+  run %{sudo apt-get -y upgrade}
+  run %{sudo apt-get -y install oracle-java8-installer}
+  run %{sudo apt-get -y install oracle-java8-set-default}
+  run %{sudo apt-get -y install git git-core}
+  run %{sudo apt-get -y install libreadline-dev}
+  run %{sudo apt-get -y install python3 python3-dev python3-pip}
+  run %{sudo -H pip3 install thefuck}
+  puts
+  puts
+end
+
 def install_rbenv
-  ruby_version = '2.2.3'
+  ruby_version = '2.3.1'
 
   run %{which rbenv}
   unless $?.success?
+
     puts "======================================================"
     puts "Installing rbenv"
     puts "already installed, this will do nothing."
     puts "======================================================"
-    run %{brew install rbenv ruby-build}
+
+    if RUBY_PLATFORM.downcase.include?("darwin") then
+      run %{brew install rbenv ruby-build}
+    else
+      run %{git clone https://github.com/rbenv/rbenv.git ~/.rbenv}
+      run %{git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build}
+    end
+
   end
 
   puts
@@ -148,9 +183,16 @@ def install_rbenv
   puts "======================================================"
   puts "Updating rbenv."
   puts "======================================================"
-  run %{brew upgrade rbenv ruby-build}
-  run %{rbenv install -s #{ruby_version}}
-  run %{rbenv global #{ruby_version}}
+  
+  if RUBY_PLATFORM.downcase.include?("darwin") then
+    run %{brew upgrade rbenv ruby-build}
+  else
+    run %{cd ~/.rbenv && git pull}
+    run %{cd ~/.rbenv/plugins/ruby-build && git pull}
+  end
+
+  run %{~/.rbenv/bin/rbenv install -s #{ruby_version}}
+  run %{~/.rbenv/bin/rbenv global #{ruby_version}}
   puts
   puts
 end
@@ -169,7 +211,24 @@ def install_gems
   puts "======================================================"
   puts "Installing Gems...There may be some warnings."
   puts "======================================================"
-  run %{sudo gem install bundler git-up  sass}
+  run %{gem install bundler git-up sass}
+  puts
+  puts
+end
+
+def install_nvm
+  puts "======================================================"
+  puts "Installing NVM, the Node version manager...If it's"
+  puts "already installed, this will do nothing."
+  puts "====================================================="
+  run %{wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash}
+
+  puts "======================================================"
+  puts "Setting up NVM...There may be some warnings."
+  puts "======================================================"
+  run %{. ~/.nvm/nvm.sh && nvm install 6.0}
+  run %{. ~/.nvm/nvm.sh && nvm use 6.0}
+  run %{. ~/.nvm/nvm.sh && nvm alias default 6.0}
   puts
   puts
 end
