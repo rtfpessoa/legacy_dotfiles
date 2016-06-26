@@ -12,6 +12,7 @@ task :install => [:submodule_init, :submodules] do
   the_world_is_mine if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('take control of /usr/local')
   install_homebrew if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('brew')
   install_packages if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu packages')
+  install_jdk8_ubuntu if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu jdk8')
   install_rbenv if want_to_install?('rbenv')
   install_gems if want_to_install?('gems')
   install_nvm if want_to_install?('nvm')
@@ -143,17 +144,29 @@ def install_packages
   run %{sudo apt-get -y install software-properties-common}
   run %{sudo apt-get -y install curl wget unzip nano zsh tmux}
   run %{sudo apt-get -y install build-essential checkinstall}
-  run %{echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections}
-  run %{sudo add-apt-repository -y ppa:webupd8team/java}
   run %{sudo add-apt-repository -y ppa:git-core/ppa}
   run %{sudo apt-get -y update}
   run %{sudo apt-get -y upgrade}
-  run %{sudo apt-get -y install oracle-java8-installer}
-  run %{sudo apt-get -y install oracle-java8-set-default}
   run %{sudo apt-get -y install git git-core}
   run %{sudo apt-get -y install libreadline-dev}
   run %{sudo apt-get -y install python3 python3-dev python3-pip}
   run %{sudo -H pip3 install thefuck}
+  puts
+  puts
+end
+
+def install_jdk8_ubuntu
+  puts
+  puts
+  puts "======================================================"
+  puts "Installing Ubuntu Packages."
+  puts "======================================================"
+  run %{echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections}
+  run %{sudo add-apt-repository -y ppa:webupd8team/java}
+  run %{sudo apt-get -y update}
+  run %{sudo apt-get -y upgrade}
+  run %{sudo apt-get -y install oracle-java8-installer}
+  run %{sudo apt-get -y install oracle-java8-set-default}
   puts
   puts
 end
