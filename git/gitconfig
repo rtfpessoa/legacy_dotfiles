@@ -58,6 +58,10 @@
 #}}}
 # alias {{{
 [alias]
+  # Must have
+    ## UP all the way
+    up = !git fetch && git rebase --autostash FETCH_HEAD
+
   # Advanced
     ## List modified files in last commit
     dl = "!git ll -1"

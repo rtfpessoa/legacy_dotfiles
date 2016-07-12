@@ -50,7 +50,12 @@ end
 
 task :submodule_init do
   unless ENV["SKIP_SUBMODULES"]
-    run %{ git submodule update --init --recursive }
+    puts run %{
+      cd $DOTFILES &&
+      git pull &&
+      git submodule update --init --recursive &&
+      git submodule update --init --remote --force --recursive --
+    }
   end
 end
 
@@ -61,10 +66,13 @@ task :submodules do
     puts "Downloading Unix configs submodules...please wait"
     puts "======================================================"
 
-    run %{
-      cd $DOTFILES
-      git submodule update --recursive
-      git clean -df
+    puts run %{
+      cd $DOTFILES &&
+      git pull &&
+      git submodule update --init --recursive &&
+      git submodule update --init --remote --force --recursive -- &&
+      git submodule update --recursive &&
+      git clean -f -f -d
     }
     puts
   end
@@ -199,13 +207,15 @@ def install_rbenv
   
   if RUBY_PLATFORM.downcase.include?("darwin") then
     run %{brew upgrade rbenv ruby-build}
+    run %{rbenv install -s #{ruby_version}}
+    run %{rbenv global #{ruby_version}}
   else
     run %{cd ~/.rbenv && git pull}
     run %{cd ~/.rbenv/plugins/ruby-build && git pull}
+    run %{~/.rbenv/bin/rbenv install -s #{ruby_version}}
+    run %{~/.rbenv/bin/rbenv global #{ruby_version}}
   end
 
-  run %{~/.rbenv/bin/rbenv install -s #{ruby_version}}
-  run %{~/.rbenv/bin/rbenv global #{ruby_version}}
   puts
   puts
 end
@@ -224,7 +234,7 @@ def install_gems
   puts "======================================================"
   puts "Installing Gems...There may be some warnings."
   puts "======================================================"
-  run %{gem install bundler git-up sass}
+  run %{gem install bundler sass}
   puts
   puts
 end

@@ -10,6 +10,8 @@
 	<integer>0</integer>
 	<key>AppleSmoothFixedFontsSizeThreshold</key>
 	<integer>1</integer>
+	<key>CheckTestRelease</key>
+	<true/>
 	<key>CopySelection</key>
 	<false/>
 	<key>Custom Color Presets</key>
@@ -447,6 +449,8 @@
 	<true/>
 	<key>IRMemory</key>
 	<integer>50</integer>
+	<key>IncludePasteHistoryInAdvancedPaste</key>
+	<true/>
 	<key>LoadPrefsFromCustomFolder</key>
 	<true/>
 	<key>NSFontPanelAttributes</key>
@@ -490,7 +494,7 @@
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>332 306 620 392 0 0 1280 800 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>4 3 570 402 0 0 1280 777 </string>
+	<string>1288 -265 570 402 1280 -280 1920 1057 </string>
 	<key>NeverWarnAboutShortLivedSessions_4B14FF18-D927-4D75-80C8-7CCFD8817C23</key>
 	<true/>
 	<key>NeverWarnAboutShortLivedSessions_4B14FF18-D927-4D75-80C8-7CCFD8817C23_selection</key>
@@ -596,16 +600,12 @@
 			</dict>
 			<key>Ansi 4 Color</key>
 			<dict>
-				<key>Alpha Component</key>
-				<real>1</real>
 				<key>Blue Component</key>
-				<real>1</real>
-				<key>Color Space</key>
-				<string>Calibrated</string>
+				<real>0.78231418132781982</real>
 				<key>Green Component</key>
-				<real>0.50196081399917603</real>
+				<real>0.46265947818756104</real>
 				<key>Red Component</key>
-				<real>0.0</real>
+				<real>0.12754884362220764</real>
 			</dict>
 			<key>Ansi 5 Color</key>
 			<dict>
@@ -1222,6 +1222,12 @@
 			<string>/Users/rtfpessoa</string>
 		</dict>
 	</array>
+	<key>NoSyncConfirmBeta</key>
+	<true/>
+	<key>NoSyncHaveWarnedAboutIncompatibleSoftware</key>
+	<true/>
+	<key>NoSyncInstallationId</key>
+	<string>62CB2B10-DA0A-4C96-ACD3-8858353188AD</string>
 	<key>NoSyncLastTipTime</key>
 	<real>461169642.83699602</real>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile</key>
@@ -1238,6 +1244,10 @@
 	<array>
 		<string>000</string>
 	</array>
+	<key>OpenArrangementAtStartup</key>
+	<false/>
+	<key>OpenNoWindowsAtStartup</key>
+	<true/>
 	<key>OpenTmuxWindowsIn</key>
 	<integer>2</integer>
 	<key>PointerActions</key>
@@ -1277,6 +1287,8 @@
 	<string>/Volumes/Data/Dev/iterm2-settings</string>
 	<key>QuitWhenAllWindowsClosed</key>
 	<true/>
+	<key>RunJobsInServers</key>
+	<false/>
 	<key>SUAutomaticallyUpdate</key>
 	<false/>
 	<key>SUEnableAutomaticChecks</key>
@@ -1299,6 +1311,8 @@
 	<true/>
 	<key>TabStyle</key>
 	<integer>1</integer>
+	<key>TypingClearsSelection</key>
+	<false/>
 	<key>UseBorder</key>
 	<false/>
 	<key>WordCharacters</key>

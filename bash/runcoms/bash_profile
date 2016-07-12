@@ -1,0 +1,5 @@
+#
+# rtfpessoa bash settings
+#
+
+source $HOME/.bashrc

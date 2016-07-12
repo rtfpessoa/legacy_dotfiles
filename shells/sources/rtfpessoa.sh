@@ -42,8 +42,6 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
   export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home
   export JDK_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home
   export JRE_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home/jre
-else
-  # Unknown.
 fi
 
 # ls alias
@@ -69,10 +67,10 @@ function sbtdocker {
   dockerName=$1
   dockerVersion=$2
   repoPrefix=$3
-  dockerFullName="${repoPrefix}codacy/$dockerName:$dockerVersion"
+  dockerFullName="codacy/$dockerName:$dockerVersion"
   docker rmi -f $dockerFullName
   sbt "set version in Docker := \"$dockerVersion\"" "set name := \"$dockerName\"" docker:publishLocal
-  docker tag -f $dockerName:$dockerVersion $dockerFullName
+  docker tag $dockerName:$dockerVersion $dockerFullName
   docker rmi -f $dockerName:$dockerVersion
 }
 
@@ -80,9 +78,9 @@ function sbtfastdocker {
   dockerName=$1
   dockerVersion=$2
   repoPrefix=$3
-  dockerFullName="${repoPrefix}codacy/$dockerName:$dockerVersion"
+  dockerFullName="codacy/$dockerName:$dockerVersion"
   sbt "set version in Docker := \"$dockerVersion\"" "set name := \"$dockerName\"" docker:publishLocal
-  docker tag -f $dockerName:$dockerVersion $dockerFullName
+  docker tag $dockerName:$dockerVersion $dockerFullName
   docker rmi -f $dockerName:$dockerVersion
 }
 
