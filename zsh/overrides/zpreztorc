@@ -39,19 +39,24 @@ zstyle ':prezto:load' pmodule \
   'spectrum' \
   'utility' \
   'completion' \
-  'gpg' \
   'homebrew' \
-  'osx' \
-  'ruby' \
-  'rails' \
-  'node' \
-  'python' \
-  'haskell' \
-  'syntax-highlighting' \
   'tmux' \
+  'osx' \
+  'syntax-highlighting' \
   'utility' \
-  'prompt'
+  'prompt' \
+  'command-not-found'
 
+# Disabled plugins
+# 'ssh'
+# 'gpg'
+# 'autosuggestions'
+# 'rsync'
+# 'ruby'
+# 'rails'
+# 'node'
+# 'python'
+# 'haskell'
 
 #
 # Editor
@@ -173,13 +178,13 @@ zstyle ':prezto:module:terminal:tab-title' format '%m: %s'
 #
 
 # Auto start a session when Zsh is launched in a local terminal.
-# zstyle ':prezto:module:tmux:auto-start' local 'yes'
+zstyle ':prezto:module:tmux:auto-start' local 'yes'
 
 # Auto start a session when Zsh is launched in a SSH connection.
-# zstyle ':prezto:module:tmux:auto-start' remote 'yes'
+zstyle ':prezto:module:tmux:auto-start' remote 'yes'
 
 # Integrate with iTerm2.
-zstyle ':prezto:module:tmux:iterm' integrate 'yes'
+# zstyle ':prezto:module:tmux:iterm' integrate 'yes'
 
 #
 # Custom

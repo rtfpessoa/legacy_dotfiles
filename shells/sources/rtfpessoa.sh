@@ -4,7 +4,7 @@
 # OS X Shell Settings
 #
 
-if [ "$ZSH_NAME" = "zsh" ] && [ "$TMUX" = "" ] && [[ "$OSTYPE" == "darwin"* ]]; then tmux; fi
+# if [ "$ZSH_NAME" = "zsh" ] && [ "$TMUX" = "" ] && [[ "$OSTYPE" == "darwin"* ]]; then tmux; fi
 
 # Force my HOME (sudo compatibility)
 export DEFAULT_USER="rtfpessoa"

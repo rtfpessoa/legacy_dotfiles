@@ -3,12 +3,11 @@
 #
 
 # Cask
-brew 'caskroom/cask/brew-cask'
+tap 'caskroom/cask'
 
 # Versions
 tap 'caskroom/versions'
 tap 'homebrew/versions'
-tap 'homebrew/command-not-found'
 tap 'homebrew/services'
 tap 'homebrew/completions'
 tap 'homebrew/aliases'
@@ -31,11 +30,6 @@ brew 'homebrew/php/php56'
 brew 'homebrew/php/php56-xdebug'
 brew 'homebrew/php/phpunit'
 
-## Javascript
-# USE NVM TO HAVE MULTIPLE NODE VERSIONS
-# brew 'node'
-# brew 'nvm'
-
 ## Python
 brew 'python'
 
@@ -52,10 +46,8 @@ brew 'gpg-agent'
 brew 'ngrok'
 
 # Random
-brew 'ansible'
 brew 'fasd'
 brew 'sqlite'
-brew 'thefuck'
 brew 'tree'
 
 # Editor
@@ -82,11 +74,3 @@ brew 'unrar'
 brew 'grc'
 brew 'sbt'
 brew 'scala'
-
-# Install Casks
-# cask 'caffeine'
-# cask 'flux'
-# cask 'google-chrome-beta'
-# cask 'iterm2-beta'
-# cask 'slack'
-# cask 'java'
