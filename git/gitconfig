@@ -14,7 +14,7 @@
 [user]
   email = rtfrodrigo@gmail.com
   name = Rodrigo Fernandes
-	signingkey = 8969078E
+  signingkey = 8969078E
 
 [github]
   user = rtfrodrigo@gmail.com
@@ -60,7 +60,7 @@
 [alias]
   # Must have
     ## UP all the way
-    up = !git fetch && git rebase --autostash FETCH_HEAD
+    up = !git pull --rebase --autostash --all
 
   # Advanced
     ## List modified files in last commit

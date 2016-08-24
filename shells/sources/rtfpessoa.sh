@@ -89,7 +89,6 @@ function dockerbuild {
   dockerVersion=$2
   repoPrefix=$3
   dockerFullName="${repoPrefix}codacy/$dockerName:$dockerVersion"
-  docker rmi -f $dockerFullName
   docker build --rm=true -t $dockerFullName .
 }
 
