@@ -13,6 +13,7 @@ task :install => [:submodule_init, :submodules] do
   install_homebrew if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('brew')
   install_packages if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu packages')
   install_jdk8_ubuntu if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu jdk8')
+  install_pip if want_to_install?('pip')
   install_rbenv if want_to_install?('rbenv')
   install_gems if want_to_install?('gems')
   install_nvm if want_to_install?('nvm')
@@ -157,8 +158,26 @@ def install_packages
   run %{sudo apt-get -y upgrade}
   run %{sudo apt-get -y install git git-core}
   run %{sudo apt-get -y install libreadline-dev}
-  run %{sudo apt-get -y install python3 python3-dev python3-pip}
-  run %{sudo -H pip3 install thefuck}
+  puts
+  puts
+end
+
+def install_pip
+  puts
+  puts
+  puts "======================================================"
+  puts "Installing PIP"
+  puts "======================================================"
+
+  if RUBY_PLATFORM.downcase.include?("darwin") then
+    run %{sudo easy_install pip}
+  else
+    run %{sudo apt-get -y install python python-dev python-pip}
+  end
+
+  run %{sudo pip install --no-cache-dir -I -U --upgrade pip}
+  run %{sudo pip install --no-cache-dir -I -U --upgrade git-up}
+
   puts
   puts
 end

@@ -152,15 +152,30 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
 fi
 
-# Sublime
-alias subl='subl -a'
+# --- NVM BEGIN --- #
 
-# NPM
-PATH="$HOME/.node/bin:$PATH"
-
-# NVM
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
+
+declare -a NODE_GLOBALS=(`find ~/.nvm/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
+NODE_GLOBALS+=("node")
+NODE_GLOBALS+=("nvm")
+NODE_GLOBALS+=("npm")
+
+load_nvm () {
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+    # (Optional) Set the version of node to use from ~/.nvmrc if available
+    nvm use 2> /dev/null 1>&2 || true
+
+    # Do not reload nvm again
+    export NVM_LOADED=1
+}
+
+for cmd in "${NODE_GLOBALS[@]}"; do
+    eval "${cmd}() { unset -f ${cmd}; [ -z \${NVM_LOADED+x} ] && load_nvm; ${cmd} \$@; }"
+done
+
+# ---  NVM END  --- #
 
 # Composer
 PATH=$PATH:$HOME/.composer/vendor/bin
@@ -175,14 +190,9 @@ alias atom-restore='apm install --packages-file Atomfile'
 # GO
 export GOPATH=$HOME/.go
 
-# The Fuck
-eval "$(thefuck --alias)"
-
 if which brew &> /dev/null; then
-  if brew command command-not-found-init > /dev/null; then eval "$(brew command-not-found-init)"; fi
-
   # PHP 5.6
-  PATH="$(brew --prefix homebrew/php/php56)/bin:$PATH"
+  PATH="$(brew --prefix)/opt/php56/bin:$PATH"
 fi
 
 # why not?
@@ -206,11 +216,16 @@ alias fixfinder='sudo launchctl unload -w /System/Library/LaunchDaemons/com.appl
 alias fixsshagent='launchctl load /System/Library/LaunchAgents/org.openbsd.ssh-agent.plist; launchctl stop org.openbsd.ssh-agent; launchctl start org.openbsd.ssh-agent'
 
 # Homebrew
-alias brewu='brew update  && brew upgrade --all && brew cleanup && brew cask cleanup && brew prune && brew doctor'
+alias brewu='brew update && brew upgrade --all && brew cleanup && brew cask cleanup && brew prune && brew doctor'
 
 # rbenv
 PATH=$HOME/.rbenv/bin:$PATH
-eval "$(rbenv init -)"
+if which rbenv >/dev/null 2>&1; then
+  rbenv() {
+    eval "$(command rbenv init -)"
+    rbenv "$@"
+  }
+fi
 
 # Visual Studio Code
 vsc () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}

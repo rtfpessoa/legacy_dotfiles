@@ -58,9 +58,27 @@
 #}}}
 # alias {{{
 [alias]
-  # Must have
-    ## UP all the way
-    up = !git pull --rebase --autostash --all
+  # Top Commands
+  ad = add -A .
+  st = status -sb
+  cl = clone
+  ps = push -u origin HEAD
+  pl = pull --rebase
+  uc = reset --soft HEAD^
+  d = "!f() { git diff -w -M -C "$(git symbolic-ref --short HEAD)" "$1"; }; f"
+  dw = diff --word-diff
+  dh = "!f() { git diff -w -M -C "HEAD~${1-0}"; }; f"
+  dh1 = dh 1
+  dh2 = dh 2
+  dh3 = dh 3
+  dh4 = dh 4
+  dh5 = dh 5
+  dh6 = dh 6
+  co = checkout
+  br = branch
+  rh = reset --hard
+  rhh = reset --hard HEAD
+  gr = grep -Ii
 
   # Advanced
     ## List modified files in last commit
@@ -99,18 +117,12 @@
     ## List remotes
     rem="!git config -l | grep remote.*url | tail -n +2"
 
-    ## Apply patch from other local repo
-    lap = "!f() { git --git-dir=$1 format-patch -k -1 --stdout $2 | git am -3 -k; }; f"
-
-    ## Subtree add
-    sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
-
   # Commit
+  c = commit -S
+  cm = commit -S -m
+  ca = commit -S --amend
   ci = commit
-  cma = commit -a -m
-  ca = commit --amend
-  amend = commit --amend
-  caa = commit -a --amend -C HEAD
+  amend = commit -S --amend
 
   # Log
   filelog = log -u
@@ -136,12 +148,20 @@
   diffr  = "!f() { git diff "$1"^.."$1"; }; f"
 
   # Reset
-  r = reset
-  r1 = reset HEAD^
-  r2 = reset HEAD^^
-  rh = reset --hard
-  rh1 = reset HEAD^ --hard
-  rh2 = reset HEAD^^ --hard
+    ## Soft
+    r = reset
+    r1 = reset HEAD~1
+    r2 = reset HEAD~2
+    r3 = reset HEAD~3
+    r4 = reset HEAD~4
+    r5 = reset HEAD~5
+    ## Hard
+    rh = reset --hard
+    rh1 = reset --hard HEAD~1
+    rh2 = reset --hard HEAD~2
+    rh3 = reset --hard HEAD~3
+    rh4 = reset --hard HEAD~4
+    rh5 = reset --hard HEAD~5
 
   # Misc
   cp = cherry-pick
@@ -157,28 +177,4 @@
   ss = stash save
   sc = stash clear
   sd = stash drop
-
-  # Top Commands
-  ad = add -A .
-  st = status -sb
-  cl = clone
-	cm = commit -S -m
-  ps = push
-  pl = pull --rebase
-  uc = reset --soft HEAD^
-  d = "!f() { git diff -w -M -C "$(git symbolic-ref --short HEAD)" "$1"; }; f"
-  dw = diff --word-diff
-  dh = "!f() { git diff -w -M -C "HEAD~${1-0}"; }; f"
-  dh1 = dh 1
-  dh2 = dh 2
-  dh3 = dh 3
-  dh4 = dh 4
-  dh5 = dh 5
-  dh6 = dh 6
-  co = checkout
-  br = branch
-  rh = reset --hard
-  rhh = reset --hard HEAD
-  gr = grep -Ii
-	c = commit -S
 # }}}
