@@ -68,7 +68,7 @@ case $CMD in
   update)
     echo "Updating Unix configs"
     [[ -d "$DOTFILES" ]] && cd "$DOTFILES"
-    git pull && \
+    git pull --rebase --autostash && \
       git submodule update --init --recursive && \
       git submodule update --init --remote --force --recursive --
     [[ "$FORCE_INSTALL" == "force" ]] && rake install
