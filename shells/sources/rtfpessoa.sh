@@ -32,16 +32,16 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 
   # Java
   export JAVA_HOME=/usr/lib/jvm/java-8-oracle
-  export JDK_HOME=/usr/lib/jvm/java-8-oracle
-  export JRE_HOME=/usr/lib/jvm/java-8-oracle/jre
+  export JDK_HOME="${JAVA_HOME}"
+  export JRE_HOME="${JAVA_HOME}/jre"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
   # Mac OSX
   export HOME="/Users/$DEFAULT_USER"
 
   # Java
-  export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home
-  export JDK_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home
-  export JRE_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home/jre
+  export JAVA_HOME="$(/usr/libexec/java_home --failfast)"
+  export JDK_HOME="${JAVA_HOME}"
+  export JRE_HOME="${JAVA_HOME}/jre"
 fi
 
 # ls alias
@@ -152,30 +152,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
 fi
 
-# --- NVM BEGIN --- #
-
-export NVM_DIR="$HOME/.nvm"
-
-NODE_GLOBALS=(`find ~/.nvm/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
-NODE_GLOBALS+=("node")
-NODE_GLOBALS+=("nvm")
-
-load_nvm () {
-    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-
-    # (Optional) Set the version of node to use from ~/.nvmrc if available
-    nvm use 2> /dev/null 1>&2 || true
-
-    # Do not reload nvm again
-    export NVM_LOADED=1
-}
-
-for cmd in "${NODE_GLOBALS[@]}"; do
-    eval "${cmd}() { unset -f ${cmd}; [ -z \${NVM_LOADED+x} ] && load_nvm; ${cmd} \$@; }"
-done
-
-# ---  NVM END  --- #
-
 # Composer
 PATH=$PATH:$HOME/.composer/vendor/bin
 
@@ -217,14 +193,10 @@ alias fixsshagent='launchctl load /System/Library/LaunchAgents/org.openbsd.ssh-a
 # Homebrew
 alias brewu='brew update && brew upgrade --all && brew cleanup && brew cask cleanup && brew prune && brew doctor'
 
-# rbenv
-PATH=$HOME/.rbenv/bin:$PATH
-if which rbenv >/dev/null 2>&1; then
-  rbenv() {
-    eval "$(command rbenv init -)"
-    rbenv "$@"
-  }
-fi
+# Timer
+timed() {
+  { time ( $@ ) } 2>&1
+}
 
 # Visual Studio Code
 vsc () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}

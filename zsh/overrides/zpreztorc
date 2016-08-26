@@ -39,22 +39,22 @@ zstyle ':prezto:load' pmodule \
   'spectrum' \
   'utility' \
   'completion' \
-  'homebrew' \
   'tmux' \
   'osx' \
   'syntax-highlighting' \
   'utility' \
   'prompt' \
-  'command-not-found'
+  'command-not-found' \
+  'node' \
+  'ruby' \
+  'rails' \
+  'ssh' \
+  'gpg'
 
 # Disabled plugins
-# 'ssh'
-# 'gpg'
+# 'homebrew' # I have my own aliases
 # 'autosuggestions'
 # 'rsync'
-# 'ruby'
-# 'rails'
-# 'node'
 # 'python'
 # 'haskell'
 
@@ -138,7 +138,7 @@ zstyle ':prezto:module:prompt' theme 'rtfpessoa'
 #
 
 # Set the SSH identities to load into the agent.
-# zstyle ':prezto:module:ssh:load' identities 'id_rsa' 'id_rsa2' 'id_github'
+zstyle ':prezto:module:ssh:load' identities 'id_rsa'
 
 #
 # Syntax Highlighting
