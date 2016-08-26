@@ -2,7 +2,7 @@ require 'rake'
 require 'fileutils'
 
 desc "Hook Unix configs into system-standard positions."
-task :install => [:submodule_init, :submodules] do
+task :install => [:update] do
   puts
   puts "======================================================"
   puts "Welcome to Unix configs Installation."
@@ -16,7 +16,8 @@ task :install => [:submodule_init, :submodules] do
   install_pip if want_to_install?('pip')
   install_rbenv if want_to_install?('rbenv')
   install_gems if want_to_install?('gems')
-  install_nvm if want_to_install?('nvm')
+  install_nvm if want_to_install?('nvm', default = false)
+  install_nodenv if want_to_install?('nodenv')
 
   # this has all the runcoms from this directory.
   install_files(Dir.glob('git/*')) if want_to_install?('git configs (color, aliases)')
@@ -49,19 +50,8 @@ task :install_prezto do
   end
 end
 
-task :submodule_init do
-  unless ENV["SKIP_SUBMODULES"]
-    puts run %{
-      cd $DOTFILES &&
-      git pull &&
-      git submodule update --init --recursive &&
-      git submodule update --init --remote --force --recursive --
-    }
-  end
-end
-
 desc "Init and update submodules."
-task :submodules do
+task :update do
   unless ENV["SKIP_SUBMODULES"]
     puts "======================================================"
     puts "Downloading Unix configs submodules...please wait"
@@ -69,7 +59,7 @@ task :submodules do
 
     puts run %{
       cd $DOTFILES &&
-      git pull &&
+      git pull --rebase --autostash &&
       git submodule update --init --recursive &&
       git submodule update --init --remote --force --recursive -- &&
       git submodule update --recursive &&
@@ -239,6 +229,35 @@ def install_rbenv
   puts
 end
 
+def install_nodenv
+  node_version = '6.4.0'
+
+  run %{which nodenv}
+  unless $?.success?
+    puts "======================================================"
+    puts "Installing nodenv"
+    puts "already installed, this will do nothing."
+    puts "======================================================"
+    run %{git clone https://github.com/nodenv/nodenv.git ~/.nodenv}
+    run %{cd ~/.nodenv && src/configure && make -C src}
+    run %{git clone https://github.com/nodenv/node-build.git ~/.nodenv/plugins/node-build}
+  end
+
+  puts
+  puts
+  puts "======================================================"
+  puts "Updating nodenv."
+  puts "======================================================"
+
+  run %{cd ~/.nodenv && git pull}
+  run %{cd ~/.nodenv/plugins/node-build && git pull}
+  run %{~/.nodenv/bin/nodenv install -s #{node_version}}
+  run %{~/.nodenv/bin/nodenv global #{node_version}}
+
+  puts
+  puts
+end
+
 def install_gems
   run %{which gem}
   unless $?.success?
@@ -393,12 +412,12 @@ def install_prezto
   end
 end
 
-def want_to_install? (section)
+def want_to_install? (section, default = true)
   if ENV["ASK"]=="true"
     puts "Would you like to install configuration files for: #{section}? [y]es, [n]o"
     STDIN.gets.chomp == 'y'
   else
-    true
+    true && default
   end
 end
 
