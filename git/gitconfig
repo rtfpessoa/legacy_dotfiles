@@ -63,22 +63,83 @@
   st = status -sb
   cl = clone
   ps = push -u origin HEAD
-  pl = pull --rebase
+  psf = push --force-with-lease -u origin HEAD
+  pl = pull --rebase --autostash
   uc = reset --soft HEAD^
-  d = "!f() { git diff -w -M -C "$(git symbolic-ref --short HEAD)" "$1"; }; f"
-  dw = diff --word-diff
-  dh = "!f() { git diff -w -M -C "HEAD~${1-0}"; }; f"
+  co = checkout
+  br = branch
+  rh = reset --hard
+  rhh = reset --hard HEAD
+  gr = grep -Ii
+
+  # Commit
+  c = commit -S
+  cm = commit -S -m
+  ca = commit -S --amend
+  amend = commit -S --amend
+
+  # Log
+  filelog = log -u
+  fl = log -u
+  le = log --oneline --decorate
+  ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+  ls1 = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+  lds = log --pretty=format:"%C(yellow)%h\\ %C(green)%ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short --graph
+  ls = log --pretty=format:"%C(green)%h\\ %C(yellow)[%ad]%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
+  lc  = "!f() { git ll "$1"^.."$1"; }; f"
+  lnc = log --pretty=format:"%h\\ %s\\ [%cn]"
+  lg = log --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+  lag = log --graph
+  lagp = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  stup = log --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cD) %C(bold blue)<%an>%Creset' --author=Rodrigo
+  standup = log --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cD) %C(bold blue)<%an>%Creset' --since yesterday --author=Rodrigo
+
+  # Diff
+  d = "!f() { git diff -M -C -U10 --patience --word-diff=color "$(git symbolic-ref --short HEAD)" "$1"; }; f"
+  dnw = "!f() { git diff -w -M -C -U10 --patience --word-diff=color "$(git symbolic-ref --short HEAD)" "$1"; }; f"
+  dw = diff -M -C -U10 --patience --word-diff=color
+  dh = "!f() { git diff -w -M -C -U10 --patience --word-diff=color "HEAD~${1-0}"; }; f"
   dh1 = dh 1
   dh2 = dh 2
   dh3 = dh 3
   dh4 = dh 4
   dh5 = dh 5
   dh6 = dh 6
-  co = checkout
-  br = branch
-  rh = reset --hard
-  rhh = reset --hard HEAD
-  gr = grep -Ii
+  dc = diff --cached
+  dlc = diff --cached HEAD^
+  dr  = "!f() { git diff -w -M -C -U10 --patience --word-diff=color "$1"^.."$1"; }; f"
+  diffr  = "!f() { git diff -M -C -U10 --patience --word-diff=color "$1"^.."$1"; }; f"
+
+  # Misc
+  cp = cherry-pick
+  grep = grep -Ii
+  ai = add --interactive
+  bra = branch -ra
+  purr = pull --rebase
+  pr = pull --rebase
+
+  # Stash
+  sl = stash list
+  sa = stash apply
+  ss = stash save
+  sc = stash clear
+  sd = stash drop
+
+  # Reset
+    ## Soft
+    r = reset
+    r1 = reset HEAD~1
+    r2 = reset HEAD~2
+    r3 = reset HEAD~3
+    r4 = reset HEAD~4
+    r5 = reset HEAD~5
+    ## Hard
+    rh = reset --hard
+    rh1 = reset --hard HEAD~1
+    rh2 = reset --hard HEAD~2
+    rh3 = reset --hard HEAD~3
+    rh4 = reset --hard HEAD~4
+    rh5 = reset --hard HEAD~5
 
   # Advanced
     ## List modified files in last commit
@@ -116,65 +177,4 @@
 
     ## List remotes
     rem="!git config -l | grep remote.*url | tail -n +2"
-
-  # Commit
-  c = commit -S
-  cm = commit -S -m
-  ca = commit -S --amend
-  ci = commit
-  amend = commit -S --amend
-
-  # Log
-  filelog = log -u
-  fl = log -u
-  le = log --oneline --decorate
-  ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
-  ls1 = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
-  lds = log --pretty=format:"%C(yellow)%h\\ %C(green)%ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short --graph
-  ls = log --pretty=format:"%C(green)%h\\ %C(yellow)[%ad]%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
-  lc  = "!f() { git ll "$1"^.."$1"; }; f"
-  lnc = log --pretty=format:"%h\\ %s\\ [%cn]"
-  lg = log --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
-  lag = log --graph
-  lagp = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-  stup = log --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cD) %C(bold blue)<%an>%Creset' --author=Rodrigo
-  standup = log --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cD) %C(bold blue)<%an>%Creset' --since yesterday --author=Rodrigo
-
-  # Diff
-  diff = diff --word-diff
-  dc = diff --cached
-  dlc = diff --cached HEAD^
-  dr  = "!f() { git diff -w "$1"^.."$1"; }; f"
-  diffr  = "!f() { git diff "$1"^.."$1"; }; f"
-
-  # Reset
-    ## Soft
-    r = reset
-    r1 = reset HEAD~1
-    r2 = reset HEAD~2
-    r3 = reset HEAD~3
-    r4 = reset HEAD~4
-    r5 = reset HEAD~5
-    ## Hard
-    rh = reset --hard
-    rh1 = reset --hard HEAD~1
-    rh2 = reset --hard HEAD~2
-    rh3 = reset --hard HEAD~3
-    rh4 = reset --hard HEAD~4
-    rh5 = reset --hard HEAD~5
-
-  # Misc
-  cp = cherry-pick
-  grep = grep -Ii
-  ai = add --interactive
-  bra = branch -ra
-  purr = pull --rebase
-  pr = pull --rebase
-
-  # Stash
-  sl = stash list
-  sa = stash apply
-  ss = stash save
-  sc = stash clear
-  sd = stash drop
 # }}}
