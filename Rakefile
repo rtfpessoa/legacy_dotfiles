@@ -59,11 +59,9 @@ task :update do
 
     puts run %{
       cd $DOTFILES &&
-      git pull --rebase --autostash &&
-      git submodule update --init --recursive &&
-      git submodule update --init --remote --force --recursive -- &&
-      git submodule update --recursive &&
-      git clean -f -f -d
+      git pull --rebase --autostash --recurse-submodules &&
+      git submodule update --init --recursive --remote --force --jobs 8 &&
+      git submodule status --recursive
     }
     puts
   end

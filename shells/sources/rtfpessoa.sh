@@ -4,7 +4,19 @@
 # OS X Shell Settings
 #
 
-# if [ "$ZSH_NAME" = "zsh" ] && [ "$TMUX" = "" ] && [[ "$OSTYPE" == "darwin"* ]]; then tmux; fi
+if [[ "$ZSH_NAME" = "zsh" && -z "$TMUX" && -z "$EMACS" && -z "$VIM" && "$OSTYPE" == "darwin"* ]]; then
+  tmux_session='rtfpessoa'
+  tmux start-server
+
+  # Create a '$tmux_session' session if no session has been defined in tmux.conf
+  if ! tmux has-session 2> /dev/null; then
+    tmux_session='rtfpessoa'
+    tmux new-session -d -s "$tmux_session"
+  fi
+
+  # Attach to last session
+  exec tmux attach -t "$tmux_session"
+fi
 
 # Force my HOME (sudo compatibility)
 export DEFAULT_USER="rtfpessoa"
@@ -107,6 +119,8 @@ alias dkrmps='docker rm -f $(docker ps -a -q)'
 alias dkrminone='docker rmi -f $(docker images | grep "'"^<none>"'" | awk "'"{print $3}"'")'
 alias dkrmidang='rmi -f $(docker images -q -f "dangling=true")'
 
+alias docker-ssh='screen ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty'
+
 # Copy cmds
 alias dklogs='docker logs --tail 10000 -f $(docker ps -q -a)'
 function cpdklogs() {
@@ -117,7 +131,7 @@ function cpdklogs() {
 # creates a new tmux session without name
 alias tmx='tmux new'
 # creates a new tmux session named session_name
-alias tmxn='tmux new -s'
+alias tmxn='tmux new -d -s'
 # attaches to the first existing tmux session
 alias tmxa1='tmux attach'
 # attaches to an existing tmux session named session_name

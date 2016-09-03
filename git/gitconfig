@@ -71,6 +71,8 @@
   rh = reset --hard
   rhh = reset --hard HEAD
   gr = grep -Ii
+  upsm = "!f() { git pull --rebase --autostash --recurse-submodules && git submodule update --init --recursive --remote --force --jobs 8 && git submodule status --recursive; }; f"
+  clean-pack = "!f() { git fetch -p --all --progress && git gc --aggressive --prune=all --force; }; f"
 
   # Commit
   c = commit -S
@@ -95,10 +97,10 @@
   standup = log --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cD) %C(bold blue)<%an>%Creset' --since yesterday --author=Rodrigo
 
   # Diff
-  d = "!f() { git diff -M -C -U10 --patience --word-diff=color "$(git symbolic-ref --short HEAD)" "$1"; }; f"
-  dnw = "!f() { git diff -w -M -C -U10 --patience --word-diff=color "$(git symbolic-ref --short HEAD)" "$1"; }; f"
-  dw = diff -M -C -U10 --patience --word-diff=color
-  dh = "!f() { git diff -w -M -C -U10 --patience --word-diff=color "HEAD~${1-0}"; }; f"
+  d = "!f() { git diff -M -C -U10 --patience "$(git symbolic-ref --short HEAD)" "$1"; }; f"
+  dnw = "!f() { git diff -M -C -U10 --patience --word-diff=color "$(git symbolic-ref --short HEAD)" "$1"; }; f"
+  dw = diff -M -C -U10 --patience
+  dh = "!f() { git diff -M -C -U10 --patience "HEAD~${1-0}"; }; f"
   dh1 = dh 1
   dh2 = dh 2
   dh3 = dh 3
@@ -107,8 +109,8 @@
   dh6 = dh 6
   dc = diff --cached
   dlc = diff --cached HEAD^
-  dr  = "!f() { git diff -w -M -C -U10 --patience --word-diff=color "$1"^.."$1"; }; f"
-  diffr  = "!f() { git diff -M -C -U10 --patience --word-diff=color "$1"^.."$1"; }; f"
+  dr  = "!f() { git diff -M -C -U10 --patience "$1"^.."$1"; }; f"
+  diffr  = "!f() { git diff -M -C -U10 --patience "$1"^.."$1"; }; f"
 
   # Misc
   cp = cherry-pick

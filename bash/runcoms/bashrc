@@ -12,3 +12,11 @@ if [ -d "$DOTFILES" ]; then
 	# Customize to your needs...
 	for config_file in "$(ls $DOTFILES/shells/sources/*)"; do source $config_file; done
 fi
+
+if [[ -s "$HOME/.nodenv/bin/nodenv" ]]; then
+  eval "$($HOME/.nodenv/bin/nodenv init - --no-rehash zsh)"
+fi
+
+if [[ -s "$HOME/.rbenv/bin/rbenv" ]]; then
+	eval "$($HOME/.rbenv/bin/rbenv init - --no-rehash zsh)"
+fi

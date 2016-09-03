@@ -27,11 +27,8 @@ bindkey -M vicmd 'j' history-substring-search-down
 bindkey '^a' beginning-of-line
 bindkey '^e' end-of-line
 
-bindkey '^k' kill-line
+bindkey '^p' kill-line
 bindkey '^u' backward-kill-line
-
-bindkey '^k' backward-word
-bindkey '^u' forward-word
 
 bindkey "\e[1;3D" backward-word ### Alt left
 bindkey "\e[1;3C" forward-word ### Alt right
