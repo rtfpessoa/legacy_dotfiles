@@ -25,10 +25,7 @@ brew 'gradle'
 ## PHP
 tap 'homebrew/dupes'
 tap 'homebrew/php'
-brew 'homebrew/php/composer'
-brew 'homebrew/php/php56'
-brew 'homebrew/php/php56-xdebug'
-brew 'homebrew/php/phpunit'
+# brew 'homebrew/php/composer'
 
 ## Python
 brew 'python'
@@ -41,9 +38,6 @@ brew 'mercurial'
 brew 'openssl'
 brew 'gnupg2'
 brew 'gpg-agent'
-
-# Network
-brew 'ngrok'
 
 # Random
 brew 'fasd'
@@ -74,3 +68,7 @@ brew 'unrar'
 brew 'grc'
 brew 'sbt'
 brew 'scala'
+
+# Casks
+cask 'ngrok'
+cask 'java'
