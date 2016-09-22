@@ -4,7 +4,7 @@
 # OS X Shell Settings
 #
 
-if [[ "$ZSH_NAME" = "zsh" && -z "$TMUX" && -z "$EMACS" && -z "$VIM" && "$OSTYPE" == "darwin"* ]]; then
+if [[ "$ZSH_NAME" = "zsh" && -z "$TMUX" && -z "$EMACS" && -z "$VIM" ]]; then
   tmux_session='rtfpessoa'
   tmux start-server
 
@@ -221,9 +221,11 @@ alias meteo='curl -4 wttr.in/Lisbon'
 # My Binaries
 PATH="$PATH:$HOME/.bins"
 
-### HOMEBREW PATH ###
-PATH=/usr/local/bin:/usr/local/sbin:${GOPATH//://bin:}/bin:$PATH
-### HOMEBREW PATH ###
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  PATH=${HOME}/.linuxbrew/bin:${GOPATH//://bin:}/bin:$PATH
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  PATH=/usr/local/bin:/usr/local/sbin:${GOPATH//://bin:}/bin:$PATH
+fi
 
 # Export the PATH
 export PATH

@@ -10,9 +10,9 @@ task :install => [:update] do
   puts
 
   the_world_is_mine if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('take control of /usr/local')
-  install_homebrew if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('brew')
   install_packages if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu packages')
   install_jdk8_ubuntu if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu jdk8')
+  install_homebrew if want_to_install?('brew')
   install_pip if want_to_install?('pip')
   install_rbenv if want_to_install?('rbenv')
   install_gems if want_to_install?('gems')
@@ -110,7 +110,11 @@ def install_homebrew
     puts "Installing Homebrew, the OSX package manager...If it's"
     puts "already installed, this will do nothing."
     puts "======================================================"
-    run %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
+    if RUBY_PLATFORM.downcase.include?("darwin") then
+      run %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
+    else
+      run %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"}
+    end
   end
 
   puts
@@ -127,6 +131,7 @@ def install_homebrew
   run %{brew install ctags hub}
   run %{brew tap homebrew/bundle}
   run %{brew bundle}
+  run %{brew install --HEAD tmux}
   puts
   puts
 end
@@ -139,13 +144,14 @@ def install_packages
   puts "======================================================"
   run %{sudo apt-get -y update}
   run %{sudo apt-get -y install software-properties-common}
-  run %{sudo apt-get -y install curl wget unzip nano zsh tmux}
+  run %{sudo apt-get -y install curl wget unzip nano zsh}
   run %{sudo apt-get -y install build-essential checkinstall}
   run %{sudo add-apt-repository -y ppa:git-core/ppa}
   run %{sudo apt-get -y update}
   run %{sudo apt-get -y upgrade}
   run %{sudo apt-get -y install git git-core}
   run %{sudo apt-get -y install libreadline-dev}
+  run %{sudo apt-get -y install python-setuptools ruby xclip}
   puts
   puts
 end
