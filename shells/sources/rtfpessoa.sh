@@ -184,6 +184,10 @@ if which brew &> /dev/null; then
   PATH="$(brew --prefix)/opt/php56/bin:$PATH"
 fi
 
+alias youtube-dl-playlist='youtube-dl -i --yes-playlist -c --no-check-certificate --prefer-insecure -x --no-post-overwrites --audio-format mp3 --audio-quality 256K -o '"'"'%(upload_date)s - %(title)s - %(id)s.%(ext)s'"'"''
+
+alias pip-install='pip install --ignore-installed --no-cache-dir --upgrade'
+
 # why not?
 alias :q='exit'
 
@@ -205,7 +209,7 @@ alias fixfinder='sudo launchctl unload -w /System/Library/LaunchDaemons/com.appl
 alias fixsshagent='launchctl load /System/Library/LaunchAgents/org.openbsd.ssh-agent.plist; launchctl stop org.openbsd.ssh-agent; launchctl start org.openbsd.ssh-agent'
 
 # Homebrew
-alias brewu='brew update && brew upgrade --all && brew cleanup && brew cask cleanup && brew prune && brew doctor'
+alias brewu='brew update && brew upgrade && brew cleanup && brew cask cleanup && brew prune && brew doctor'
 
 # Timer
 timed() {
