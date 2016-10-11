@@ -4,20 +4,6 @@
 # OS X Shell Settings
 #
 
-if [[ "$ZSH_NAME" = "zsh" && -z "$TMUX" && -z "$EMACS" && -z "$VIM" ]]; then
-  tmux_session='rtfpessoa'
-  tmux start-server
-
-  # Create a '$tmux_session' session if no session has been defined in tmux.conf
-  if ! tmux has-session 2> /dev/null; then
-    tmux_session='rtfpessoa'
-    tmux new-session -d -s "$tmux_session"
-  fi
-
-  # Attach to last session
-  exec tmux attach -t "$tmux_session"
-fi
-
 # Force my HOME (sudo compatibility)
 export DEFAULT_USER="rtfpessoa"
 
@@ -226,6 +212,7 @@ alias meteo='curl -4 wttr.in/Lisbon'
 PATH="$PATH:$HOME/.bins"
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  export XDG_DATA_DIRS="${HOME}/.linuxbrew/share:$XDG_DATA_DIRS"
   PATH=${HOME}/.linuxbrew/bin:${GOPATH//://bin:}/bin:$PATH
 elif [[ "$OSTYPE" == "darwin"* ]]; then
   PATH=/usr/local/bin:/usr/local/sbin:${GOPATH//://bin:}/bin:$PATH
@@ -233,3 +220,17 @@ fi
 
 # Export the PATH
 export PATH
+
+if [[ "$ZSH_NAME" = "zsh" && -z "$TMUX" && -z "$EMACS" && -z "$VIM" ]]; then
+  tmux_session='rtfpessoa'
+  tmux start-server
+
+  # Create a '$tmux_session' session if no session has been defined in tmux.conf
+  if ! tmux has-session 2> /dev/null; then
+    tmux_session='rtfpessoa'
+    tmux new-session -d -s "$tmux_session"
+  fi
+
+  # Attach to last session
+  exec tmux attach -t "$tmux_session"
+fi
