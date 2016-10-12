@@ -105,7 +105,24 @@ alias dkrmps='docker rm -f $(docker ps -a -q)'
 alias dkrminone='docker rmi -f $(docker images | grep "'"^<none>"'" | awk "'"{print $3}"'")'
 alias dkrmidang='rmi -f $(docker images -q -f "dangling=true")'
 
-alias docker-ssh='screen ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty'
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # Docker for Mac
+  alias docker-ssh='screen ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty'
+
+  # Sublime
+  PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
+
+  # Finder
+  alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
+  alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
+  alias fixfinder='sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist;sudo rm -rf /.Spotlight-V100;sudo rm -rf /Volumes/Data/.Spotlight-V100;sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist;'
+
+  # SSH Agent
+  alias fixsshagent='launchctl load /System/Library/LaunchAgents/org.openbsd.ssh-agent.plist; launchctl stop org.openbsd.ssh-agent; launchctl start org.openbsd.ssh-agent'
+
+  # Mac OS DNS Cache Reset
+  alias dns-reset-cache='sudo killall -HUP mDNSResponder'
+fi
 
 # Copy cmds
 alias dklogs='docker logs --tail 10000 -f $(docker ps -q -a)'
@@ -147,11 +164,6 @@ alias tmxsp='tmux select-pane'
 # selects the next pane in numerical order
 alias tmxspn='tmux select-pane -t'
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  # Sublime
-  PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
-fi
-
 # Composer
 PATH=$PATH:$HOME/.composer/vendor/bin
 
@@ -185,14 +197,6 @@ alias tuz='tar -xvf'
 # Let the games begin
 alias ka9='killall -9'
 alias k9='kill -9'
-
-# Finder
-alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
-alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
-alias fixfinder='sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist;sudo rm -rf /.Spotlight-V100;sudo rm -rf /Volumes/Data/.Spotlight-V100;sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist;'
-
-# SSH Agent
-alias fixsshagent='launchctl load /System/Library/LaunchAgents/org.openbsd.ssh-agent.plist; launchctl stop org.openbsd.ssh-agent; launchctl start org.openbsd.ssh-agent'
 
 # Homebrew
 alias brewu='brew update && brew upgrade && brew cleanup && brew cask cleanup && brew prune && brew doctor'
