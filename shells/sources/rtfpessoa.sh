@@ -186,6 +186,9 @@ alias youtube-dl-playlist='youtube-dl -i --yes-playlist -c --no-check-certificat
 
 alias pip-install='pip install --ignore-installed --no-cache-dir --upgrade'
 
+alias yarn-upgrade='cat package.json | jq -r '"'"'.dependencies | keys | .[]'"'"' | xargs yarn add'
+alias yarn-upgrade-dev='cat package.json | jq -r '"'"'.devDependencies | keys | .[]'"'"' | xargs yarn add --dev'
+
 # why not?
 alias :q='exit'
 
