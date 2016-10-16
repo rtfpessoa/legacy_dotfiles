@@ -228,7 +228,7 @@ fi
 # Export the PATH
 export PATH
 
-if [[ "$ZSH_NAME" = "zsh" && -z "$TMUX" && -z "$EMACS" && -z "$VIM" ]]; then
+if [[ "$ZSH_NAME" = "zsh" && -z "$TMUX" && -z "$EMACS" && -z "$VIM" && -z "$SSH_TTY" ]]; then
   tmux_session='rtfpessoa'
   tmux start-server
 
