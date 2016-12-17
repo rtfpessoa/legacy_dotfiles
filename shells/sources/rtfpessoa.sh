@@ -225,6 +225,10 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
   PATH=/usr/local/bin:/usr/local/sbin:${GOPATH//://bin:}/bin:$PATH
 fi
 
+if which yarn &> /dev/null; then
+  PATH="$(yarn global bin):$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+fi
+
 # Export the PATH
 export PATH
 

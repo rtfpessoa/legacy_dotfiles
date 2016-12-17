@@ -117,21 +117,32 @@ def install_homebrew
     end
   end
 
+  brew_bin = "brew"
+  if RUBY_PLATFORM.downcase.include?("linux") then
+    brew_bin = "~/.linuxbrew/bin/brew"
+  end
+
   puts
   puts
   puts "======================================================"
   puts "Updating Homebrew."
   puts "======================================================"
-  run %{brew update}
+  run %{#{brew_bin} update}
   puts
   puts
   puts "======================================================"
   puts "Installing Homebrew packages...There may be some warnings."
   puts "======================================================"
-  run %{brew install ctags hub}
-  run %{brew tap homebrew/bundle}
-  run %{brew bundle}
-  run %{brew install --HEAD tmux}
+  run %{#{brew_bin} install ctags hub}
+  run %{#{brew_bin} tap homebrew/bundle}
+  run %{#{brew_bin} bundle}
+  run %{#{brew_bin} uninstall --force reattach-to-user-namespace}
+  run %{#{brew_bin} uninstall --force tmux}
+  run %{#{brew_bin} install reattach-to-user-namespace --with-wrap-pbcopy-and-pbpaste}
+  run %{#{brew_bin} install tmux}
+  run %{#{brew_bin} uninstall --force yarn}
+  run %{#{brew_bin} uninstall --force node}
+  run %{#{brew_bin} install yarn --ignore-dependencies}
   puts
   puts
 end
@@ -146,12 +157,16 @@ def install_packages
   run %{sudo apt-get -y install software-properties-common}
   run %{sudo apt-get -y install curl wget unzip nano zsh}
   run %{sudo apt-get -y install build-essential checkinstall}
+  run %{curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -}
+  run %{echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list}
   run %{sudo add-apt-repository -y ppa:git-core/ppa}
   run %{sudo apt-get -y update}
   run %{sudo apt-get -y upgrade}
   run %{sudo apt-get -y install git git-core}
   run %{sudo apt-get -y install libreadline-dev}
   run %{sudo apt-get -y install python-setuptools ruby xclip}
+  run %{sudo apt-get -y install yarn}
+  run %{sudo apt-get -y install fontconfig}
   puts
   puts
 end
@@ -164,13 +179,19 @@ def install_pip
   puts "======================================================"
 
   if RUBY_PLATFORM.downcase.include?("darwin") then
-    run %{sudo easy_install pip}
+    run %{brew install python3}
   else
-    run %{sudo apt-get -y install python python-dev python-pip}
+    run %{sudo apt-get -y install python3 python3-dev python3-pip}
   end
 
-  run %{sudo pip install --no-cache-dir -I -U --upgrade pip}
-  run %{sudo pip install --no-cache-dir -I -U --upgrade git-up}
+  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade pip}
+  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade git-up}
+  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade docker-compose}
+  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade boto}
+  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade ansible}
+  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade awscli}
+  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade metrics}
+  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade radon}
 
   puts
   puts
@@ -227,6 +248,7 @@ def install_rbenv
     run %{cd ~/.rbenv/plugins/ruby-build && git pull}
     run %{~/.rbenv/bin/rbenv install -s #{ruby_version}}
     run %{~/.rbenv/bin/rbenv global #{ruby_version}}
+    run %{~/.rbenv/bin/rbenv rehash}
   end
 
   puts
@@ -234,7 +256,7 @@ def install_rbenv
 end
 
 def install_nodenv
-  node_version = '6.4.0'
+  node_version = '7.2.1'
 
   run %{which nodenv}
   unless $?.success?
@@ -260,6 +282,20 @@ def install_nodenv
 
   puts
   puts
+  puts "======================================================"
+  puts "Installing node packages with yarn."
+  puts "======================================================"
+
+  run %{yarn global add diff2html-cli}
+  run %{yarn global add cloc}
+  run %{yarn global add bower}
+  # run %{yarn global add peerflix peerflix-server}
+  run %{yarn global add s3-server}
+
+  run %{~/.nodenv/bin/nodenv rehash}
+
+  puts
+  puts
 end
 
 def install_gems
@@ -277,6 +313,7 @@ def install_gems
   puts "Installing Gems...There may be some warnings."
   puts "======================================================"
   run %{gem install bundler sass}
+  run %{~/.rbenv/bin/rbenv rehash}
   puts
   puts
 end

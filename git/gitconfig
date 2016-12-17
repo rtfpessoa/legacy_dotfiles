@@ -77,7 +77,7 @@
   # Commit
   c = commit -S
   cm = commit -S -m
-  ca = commit -S --amend
+  ca = commit -S --amend --no-edit
   amend = commit -S --amend
 
   # Log

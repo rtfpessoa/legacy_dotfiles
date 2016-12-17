@@ -19,16 +19,18 @@ brew 'gcc'
 brew 'cmake'
 brew 'maven'
 brew 'gradle'
+brew 'libffi'
+brew 'ncurses'
 
 # Languages
 
 ## PHP
 tap 'homebrew/dupes'
 tap 'homebrew/php'
-# brew 'homebrew/php/composer'
+brew 'homebrew/php/composer'
 
-## Python
-brew 'python'
+## Perl
+brew 'perl'
 
 # VCS
 brew 'git'
@@ -51,11 +53,6 @@ brew 'nano'
 # Shell
 brew 'zsh'
 
-# Tmux
-brew 'tmux'
-brew 'reattach-to-user-namespace'
-brew 'the_silver_searcher'
-
 # Downloads
 brew 'axel'
 brew 'wget'
@@ -64,11 +61,32 @@ brew 'curl'
 # Archives
 brew 'unrar'
 
+# Ruby
+brew 'ruby'
+brew 'rbenv'
+brew 'ruby-build'
+
 # Scala / Play Framework / Highlight
 brew 'grc'
 brew 'sbt'
 brew 'scala'
 
+# GNU
+brew 'gnu-sed'
+
 # Casks
 cask 'ngrok'
 cask 'java'
+
+# Others
+brew 'sqlite'
+brew 'postgresql'
+brew 'redis'
+
+# Others
+brew 'openssl'
+brew 'ripgrep'
+brew 'jq'
+brew 'ffmpeg'
+brew 'youtube-dl'
+brew 'watch'
