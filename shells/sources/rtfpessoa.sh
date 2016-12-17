@@ -229,6 +229,9 @@ if which yarn &> /dev/null; then
   PATH="$(yarn global bin):$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 fi
 
+# Rust
+PATH="$HOME/.cargo/bin:$PATH"
+
 # Export the PATH
 export PATH
 
