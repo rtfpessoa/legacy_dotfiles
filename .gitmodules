@@ -8,3 +8,6 @@
 [submodule "zsh/themes/rtfpessoa"]
 	path = zsh/themes/rtfpessoa
 	url = https://gist.github.com/9737c2d0d3b5fe5aa2e8.git
+[submodule "vim/bundle/gundo"]
+	path = vim/bundle/gundo
+	url = http://github.com/sjl/gundo.vim.git

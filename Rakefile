@@ -23,6 +23,7 @@ task :install => [:update] do
   install_files(Dir.glob('git/*')) if want_to_install?('git configs (color, aliases)')
   install_files(Dir.glob('tmux/*')) if want_to_install?('tmux config')
   install_files(files = Dir.glob('bash/runcoms/*'), method = :symlink, withDirectories = false) if want_to_install?('bash configs')
+  install_files(Dir.glob('{vim}')) if want_to_install?('vim configuration')
 
   link_binaries('shells/bins') if want_to_install?('custom binaries')
 
