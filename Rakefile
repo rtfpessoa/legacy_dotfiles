@@ -111,16 +111,15 @@ def install_homebrew
     puts "Installing Homebrew, the OSX package manager...If it's"
     puts "already installed, this will do nothing."
     puts "======================================================"
+    brew_bin = "brew"
     if RUBY_PLATFORM.downcase.include?("darwin") then
       run %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
     else
-      run %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"}
+      puts "Skipping brew installation on Linux for now."
+      # run %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"}
+      # brew_bin = "~/.linuxbrew/bin/brew"
+      return
     end
-  end
-
-  brew_bin = "brew"
-  if RUBY_PLATFORM.downcase.include?("linux") then
-    brew_bin = "~/.linuxbrew/bin/brew"
   end
 
   puts
