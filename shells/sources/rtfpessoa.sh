@@ -226,7 +226,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 if which yarn &> /dev/null; then
-  PATH="$(yarn global bin):$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+  PATH="$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 fi
 
 # Rust
@@ -246,5 +246,6 @@ if [[ "$ZSH_NAME" = "zsh" && -z "$TMUX" && -z "$EMACS" && -z "$VIM" && -z "$SSH_
   fi
 
   # Attach to last session
-  exec tmux attach -t "$tmux_session"
+  # exec tmux attach -t "$tmux_session"
+  tmux attach -t "$tmux_session"
 fi
