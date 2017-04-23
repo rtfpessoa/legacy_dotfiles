@@ -8,13 +8,14 @@
   pager = less -x4
   quotepath = false
   ignorecase = false
+	excludesfile = /Users/rtfpessoa/.gitignore_global
 
 #}}}
 # user {{{
 [user]
   email = rtfrodrigo@gmail.com
   name = Rodrigo Fernandes
-  signingkey = 8969078E
+  signingkey = 17C96426
 
 [github]
   user = rtfrodrigo@gmail.com

@@ -226,7 +226,11 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 if which yarn &> /dev/null; then
-  PATH="$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+  PATH="$HOME/.config/yarn/global/node_modules/.bin:$HOME/.nodenv/shims:$PATH"
+fi
+
+if which rbenv &> /dev/null; then
+  PATH="$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH"
 fi
 
 # Rust
