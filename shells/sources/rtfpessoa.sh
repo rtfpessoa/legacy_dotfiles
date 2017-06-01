@@ -233,6 +233,10 @@ if which rbenv &> /dev/null; then
   PATH="$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH"
 fi
 
+
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
 # Rust
 PATH="$HOME/.cargo/bin:$PATH"
 
