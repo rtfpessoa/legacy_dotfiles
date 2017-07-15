@@ -48,6 +48,7 @@ alias lise='ls -lisa'
 alias lsa='ls -a'
 
 # SBT shortcuts
+alias sbt='nice sbt'
 alias sbtc='sbt compile'
 alias sbtcc='sbt "~compile"'
 alias sbtr='sbt run'
