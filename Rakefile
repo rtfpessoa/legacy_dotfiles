@@ -105,19 +105,22 @@ def the_world_is_mine
 end
 
 def install_homebrew
-  run %{which brew}
+  brew_bin = "brew"
+  unless RUBY_PLATFORM.downcase.include?("darwin") then
+    # brew_bin = "~/.linuxbrew/bin/brew"
+  end
+
+  run %{which #{brew_bin}}
   unless $?.success?
     puts "======================================================"
     puts "Installing Homebrew, the OSX package manager...If it's"
     puts "already installed, this will do nothing."
     puts "======================================================"
-    brew_bin = "brew"
     if RUBY_PLATFORM.downcase.include?("darwin") then
       run %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
     else
       puts "Skipping brew installation on Linux for now."
       # run %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"}
-      # brew_bin = "~/.linuxbrew/bin/brew"
       return
     end
   end
@@ -289,7 +292,6 @@ def install_nodenv
   run %{yarn global add diff2html-cli}
   run %{yarn global add cloc}
   run %{yarn global add bower}
-  # run %{yarn global add peerflix peerflix-server}
   run %{yarn global add s3-server}
 
   run %{~/.nodenv/bin/nodenv rehash}
