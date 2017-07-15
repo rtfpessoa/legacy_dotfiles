@@ -44,9 +44,6 @@ zstyle ':prezto:load' pmodule \
   'utility' \
   'prompt' \
   'command-not-found' \
-  'nodenv' \
-  'ruby' \
-  'rails' \
   'ssh' \
   'gpg'
 

@@ -226,17 +226,19 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
   PATH=/usr/local/bin:/usr/local/sbin:${GOPATH//://bin:}/bin:$PATH
 fi
 
+if [[ -s "$HOME/.nodenv/bin/nodenv" ]]; then
+  path=("$HOME/.nodenv/bin" $path)
+  eval "$($HOME/.nodenv/bin/nodenv init - --no-rehash zsh)"
+fi
+
 if which yarn &> /dev/null; then
   PATH="$HOME/.config/yarn/global/node_modules/.bin:$HOME/.nodenv/shims:$PATH"
 fi
 
-if which rbenv &> /dev/null; then
-  PATH="$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH"
+if [[ -s "$HOME/.rbenv/bin/rbenv" ]]; then
+  path=("$HOME/.rbenv/bin" $path)
+  eval "$($HOME/.rbenv/bin/rbenv init - --no-rehash zsh)"
 fi
-
-
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
 
 # Rust
 PATH="$HOME/.cargo/bin:$PATH"
@@ -244,7 +246,7 @@ PATH="$HOME/.cargo/bin:$PATH"
 # Export the PATH
 export PATH
 
-if [[ "$OSTYPE" == "darwin" && "$ZSH_NAME" = "zsh" && -z "$TMUX" && -z "$EMACS" && -z "$VIM" && -z "$SSH_TTY" ]]; then
+if [[ "$OSTYPE" =~ "darwin" && "$ZSH_NAME" = "zsh" && -z "$TMUX" && -z "$EMACS" && -z "$VIM" && -z "$SSH_TTY" ]]; then
   tmux_session='rtfpessoa'
   tmux start-server
 
