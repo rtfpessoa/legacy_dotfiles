@@ -6,23 +6,19 @@ Caffeine
 Chromecast
 DiffMerge
 Docker
-Dropbox
 FirefoxDeveloperEdition
-Flux
 Gimp
 Goolgle Chrome Beta
+Goolgle Chrome Canary
 Goolgle Drive
 GPG Keychain
 IntelliJ IDEA
 iTerm2
 Karabiner
 Key Codes
-Kodi
 LastPass
-Little Snitch
 Logitech Options
 OmniDiskSweeper
-Parallels Desktop
 Pocket
 Skype
 Slack
@@ -31,5 +27,5 @@ Spotify
 Steam
 Sublime Text
 The Unarchiver
-uTorrent
+WebTorrent
 VLC

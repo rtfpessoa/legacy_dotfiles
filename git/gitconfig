@@ -8,7 +8,7 @@
   pager = less -x4
   quotepath = false
   ignorecase = false
-	excludesfile = /Users/rtfpessoa/.gitignore_global
+	excludesfile = ~/.gitignore
 
 #}}}
 # user {{{

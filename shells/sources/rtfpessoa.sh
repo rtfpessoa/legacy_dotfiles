@@ -7,7 +7,7 @@
 # Force my HOME (sudo compatibility)
 export DEFAULT_USER="rtfpessoa"
 
-# want your terminal to support 256 color schemes? I do ...
+# Want your terminal to support 256 color schemes? I do ...
 export TERM="xterm-256color"
 export CLICOLOR=1
 
@@ -22,7 +22,7 @@ export LC_TIME="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
 # Editor
-export EDITOR="vi"
+export EDITOR="vim"
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
   # Linux
@@ -65,19 +65,9 @@ alias codacyclean='rm -rf $(find . -type d -iname target);rm -rf ~/.sbt/0.13/sta
 function sbtdocker {
   dockerName=$1
   dockerVersion=$2
-  repoPrefix=$3
+  force_clean=$3
   dockerFullName="codacy/$dockerName:$dockerVersion"
-  docker rmi -f $dockerFullName
-  sbt "set version in Docker := \"$dockerVersion\"" "set name := \"$dockerName\"" docker:publishLocal
-  docker tag $dockerName:$dockerVersion $dockerFullName
-  docker rmi -f $dockerName:$dockerVersion
-}
-
-function sbtfastdocker {
-  dockerName=$1
-  dockerVersion=$2
-  repoPrefix=$3
-  dockerFullName="codacy/$dockerName:$dockerVersion"
+  if [ -n "${force_clean}" ]; then docker rmi -f $dockerFullName; fi
   sbt "set version in Docker := \"$dockerVersion\"" "set name := \"$dockerName\"" docker:publishLocal
   docker tag $dockerName:$dockerVersion $dockerFullName
   docker rmi -f $dockerName:$dockerVersion
@@ -86,8 +76,9 @@ function sbtfastdocker {
 function dockerbuild {
   dockerName=$1
   dockerVersion=$2
-  repoPrefix=$3
-  dockerFullName="${repoPrefix}codacy/$dockerName:$dockerVersion"
+  force_clean=$3
+  dockerFullName="codacy/$dockerName:$dockerVersion"
+  if [ -n "${force_clean}" ]; then docker rmi -f $dockerFullName; fi
   docker build --rm=true -t $dockerFullName .
 }
 
@@ -105,6 +96,7 @@ alias dkrmpsexit='docker rm -f $(docker ps -a -q -f status=exited)'
 alias dkrmps='docker rm -f $(docker ps -a -q)'
 alias dkrminone='docker rmi -f $(docker images | grep "'"^<none>"'" | awk "'"{print $3}"'")'
 alias dkrmidang='rmi -f $(docker images -q -f "dangling=true")'
+alias dkrclean='docker system prune --all -f'
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   # Docker for Mac
@@ -116,10 +108,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   # Finder
   alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
   alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
-  alias fixfinder='sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist;sudo rm -rf /.Spotlight-V100;sudo rm -rf /Volumes/Data/.Spotlight-V100;sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist;'
-
-  # SSH Agent
-  alias fixsshagent='launchctl load /System/Library/LaunchAgents/org.openbsd.ssh-agent.plist; launchctl stop org.openbsd.ssh-agent; launchctl start org.openbsd.ssh-agent'
 
   # Mac OS DNS Cache Reset
   alias dns-reset-cache='sudo killall -HUP mDNSResponder'
@@ -168,9 +156,6 @@ alias tmxspn='tmux select-pane -t'
 # Composer
 PATH=$PATH:$HOME/.composer/vendor/bin
 
-# JPM
-PATH=$PATH:$HOME/Library/PackageManager/bin
-
 # Atom
 alias atom-backup='apm list --installed --bare > Atomfile'
 alias atom-restore='apm install --packages-file Atomfile'
@@ -178,19 +163,14 @@ alias atom-restore='apm install --packages-file Atomfile'
 # GO
 export GOPATH=$HOME/.go
 
-if which brew &> /dev/null; then
-  # PHP 5.6
-  PATH="$(brew --prefix)/opt/php56/bin:$PATH"
-fi
-
 alias youtube-dl-playlist='youtube-dl -i --yes-playlist -c --no-check-certificate --prefer-insecure -x --no-post-overwrites --audio-format mp3 --audio-quality 256K -o '"'"'%(upload_date)s - %(title)s - %(id)s.%(ext)s'"'"''
 
-alias pip-install='pip install --ignore-installed --no-cache-dir --upgrade'
+alias pip-install='sudo python3 -m pip install --ignore-installed --no-cache-dir --upgrade'
 
 alias yarn-upgrade='cat package.json | jq -r '"'"'.dependencies | keys | .[]'"'"' | xargs yarn add'
 alias yarn-upgrade-dev='cat package.json | jq -r '"'"'.devDependencies | keys | .[]'"'"' | xargs yarn add --dev'
 
-# why not?
+# Why not?
 alias :q='exit'
 
 # Zippin
@@ -199,8 +179,10 @@ alias tgz='tar -zcvf'
 alias tuz='tar -xvf'
 
 # Let the games begin
-alias ka9='killall -9'
 alias k9='kill -9'
+alias sk9='sudo k9'
+alias ka9='killall -9'
+alias ska9='sudo ka9'
 
 # Homebrew
 alias brewu='brew update && brew upgrade && brew cleanup && brew cask cleanup && brew prune && brew doctor'
@@ -246,17 +228,21 @@ PATH="$HOME/.cargo/bin:$PATH"
 # Export the PATH
 export PATH
 
-if [[ "$OSTYPE" =~ "darwin" && "$ZSH_NAME" = "zsh" && -z "$TMUX" && -z "$EMACS" && -z "$VIM" && -z "$SSH_TTY" ]]; then
-  tmux_session='rtfpessoa'
-  tmux start-server
-
-  # Create a '$tmux_session' session if no session has been defined in tmux.conf
-  if ! tmux has-session 2> /dev/null; then
+tmuxed() {
+  if [[ "$OSTYPE" =~ "darwin" && "$ZSH_NAME" = "zsh" && -z "$TMUX" && -z "$EMACS" && -z "$VIM" && -z "$SSH_TTY" ]]; then
     tmux_session='rtfpessoa'
-    tmux new-session -d -s "$tmux_session"
-  fi
+    tmux start-server
 
-  # Attach to last session
-  # exec tmux attach -t "$tmux_session"
-  tmux attach -t "$tmux_session"
-fi
+    # Create a '$tmux_session' session if no session has been defined in tmux.conf
+    if ! tmux has-session 2> /dev/null; then
+      tmux_session='rtfpessoa'
+      tmux new-session -d -s "$tmux_session"
+    fi
+
+    # Attach to last session
+    # exec tmux attach -t "$tmux_session"
+    tmux attach -t "$tmux_session"
+  fi
+}
+
+# tmuxed

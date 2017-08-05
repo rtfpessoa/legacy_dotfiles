@@ -187,14 +187,8 @@ def install_pip
     run %{sudo apt-get -y install python3 python3-dev python3-pip}
   end
 
-  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade pip}
-  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade git-up}
-  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade docker-compose}
-  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade boto}
-  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade ansible}
-  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade awscli}
-  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade metrics}
-  run %{sudo python3 -m pip install --no-cache-dir -I -U --upgrade radon}
+  run %{sudo python3 -m pip install --ignore-installed --no-cache-dir --upgrade pip setuptools wheel}
+  run %{sudo python3 -m pip install --ignore-installed --no-cache-dir --upgrade --requirement Pipfile}
 
   puts
   puts
@@ -347,6 +341,7 @@ end
 def install_fonts
   puts "======================================================"
   puts "Installing patched fonts for Powerline/Lightline."
+  puts "Source: https://github.com/powerline/fonts"
   puts "======================================================"
   run %{ cp -f $DOTFILES/fonts/* $HOME/Library/Fonts } if RUBY_PLATFORM.downcase.include?("darwin")
   run %{ mkdir -p ~/.fonts && cp $DOTFILES/fonts/* ~/.fonts && fc-cache -vf ~/.fonts } if RUBY_PLATFORM.downcase.include?("linux")
