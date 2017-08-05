@@ -227,12 +227,14 @@ def install_rbenv
     puts "already installed, this will do nothing."
     puts "======================================================"
 
-    if RUBY_PLATFORM.downcase.include?("darwin") then
-      run %{brew install rbenv ruby-build}
-    else
-      run %{git clone https://github.com/rbenv/rbenv.git ~/.rbenv}
-      run %{git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build}
-    end
+    # if RUBY_PLATFORM.downcase.include?("darwin") then
+    #   run %{brew install rbenv ruby-build}
+    # else
+    #   run %{git clone https://github.com/rbenv/rbenv.git ~/.rbenv}
+    #   run %{git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build}
+    # end
+    run %{git clone https://github.com/rbenv/rbenv.git ~/.rbenv}
+    run %{git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build}
 
   end
 
@@ -242,17 +244,22 @@ def install_rbenv
   puts "Updating rbenv."
   puts "======================================================"
 
-  if RUBY_PLATFORM.downcase.include?("darwin") then
-    run %{brew upgrade rbenv ruby-build}
-    run %{rbenv install -s #{ruby_version}}
-    run %{rbenv global #{ruby_version}}
-  else
-    run %{cd ~/.rbenv && git pull}
-    run %{cd ~/.rbenv/plugins/ruby-build && git pull}
-    run %{~/.rbenv/bin/rbenv install -s #{ruby_version}}
-    run %{~/.rbenv/bin/rbenv global #{ruby_version}}
-    run %{~/.rbenv/bin/rbenv rehash}
-  end
+  # if RUBY_PLATFORM.downcase.include?("darwin") then
+  #   run %{brew upgrade rbenv ruby-build}
+  #   run %{rbenv install -s #{ruby_version}}
+  #   run %{rbenv global #{ruby_version}}
+  # else
+  #   run %{cd ~/.rbenv && git pull}
+  #   run %{cd ~/.rbenv/plugins/ruby-build && git pull}
+  #   run %{~/.rbenv/bin/rbenv install -s #{ruby_version}}
+  #   run %{~/.rbenv/bin/rbenv global #{ruby_version}}
+  #   run %{~/.rbenv/bin/rbenv rehash}
+  # end
+  run %{cd ~/.rbenv && git pull}
+  run %{cd ~/.rbenv/plugins/ruby-build && git pull}
+  run %{~/.rbenv/bin/rbenv install -s #{ruby_version}}
+  run %{~/.rbenv/bin/rbenv global #{ruby_version}}
+  run %{~/.rbenv/bin/rbenv rehash}
 
   puts
   puts

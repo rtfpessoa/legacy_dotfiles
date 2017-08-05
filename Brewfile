@@ -63,8 +63,6 @@ brew 'unrar'
 
 # Ruby
 brew 'ruby'
-brew 'rbenv'
-brew 'ruby-build'
 
 # Scala / Play Framework / Highlight
 brew 'grc'
