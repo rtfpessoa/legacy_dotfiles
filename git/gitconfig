@@ -181,3 +181,9 @@
     ## List remotes
     rem="!git config -l | grep remote.*url | tail -n +2"
 # }}}
+[gpg]
+	program = /usr/local/bin/krgpg
+[commit]
+	gpgSign = true
+[tag]
+	forceSignAnnotated = true

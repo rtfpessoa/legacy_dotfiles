@@ -20,3 +20,5 @@ fi
 ZSH_HIGHLIGHT_PATTERNS+=('rm -*f*' 'fg=white,bold,bg=red')
 ZSH_HIGHLIGHT_PATTERNS+=('git rhh*' 'fg=white,bold,bg=red')
 ZSH_HIGHLIGHT_PATTERNS+=('git reset --hard*' 'fg=white,bold,bg=red')
+
+export GPG_TTY=$(tty)
