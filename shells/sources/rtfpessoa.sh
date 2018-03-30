@@ -160,6 +160,7 @@ alias atom-backup='apm list --installed --bare > Atomfile'
 alias atom-restore='apm install --packages-file Atomfile'
 
 # GO
+export GOROOT="/usr/local/opt/go/libexec"
 export GOPATH=$HOME/.go
 
 alias youtube-dl-playlist='youtube-dl -i --yes-playlist -c --no-check-certificate --prefer-insecure -x --no-post-overwrites --audio-format mp3 --audio-quality 256K -o '"'"'%(upload_date)s - %(title)s - %(id)s.%(ext)s'"'"''
@@ -219,6 +220,14 @@ fi
 if [[ -s "$HOME/.rbenv/bin/rbenv" ]]; then
   path=("$HOME/.rbenv/bin" $path)
   eval "$($HOME/.rbenv/bin/rbenv init - --no-rehash zsh)"
+fi
+
+# Python
+PATH="/usr/local/opt/python@2/bin:$PATH"
+if [[ -s "$HOME/.pyenv/bin/pyenv" ]]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  path=("$PYENV_ROOT/bin" $path)
+  eval "$($HOME/.pyenv/bin/pyenv init - --no-rehash zsh)"
 fi
 
 # Rust
