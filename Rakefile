@@ -9,27 +9,23 @@ task :install => [:update] do
   puts "======================================================"
   puts
 
-  the_world_is_mine if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('take control of /usr/local')
+  the_world_is_mine if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('take control of /usr/local contents')
   install_packages if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu packages')
   install_jdk8_ubuntu if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu jdk8')
   install_homebrew if want_to_install?('brew')
   install_pip if want_to_install?('pip')
   install_rbenv if want_to_install?('rbenv')
   install_gems if want_to_install?('gems')
-  install_nvm if want_to_install?('nvm', default = false)
   install_nodenv if want_to_install?('nodenv')
 
-  # this has all the runcoms from this directory.
-  install_files(Dir.glob('git/*')) if want_to_install?('git configs (color, aliases)')
-  install_files(Dir.glob('tmux/*')) if want_to_install?('tmux config')
-  install_files(files = Dir.glob('bash/runcoms/*'), method = :symlink, withDirectories = false) if want_to_install?('bash configs')
-  install_files(Dir.glob('{vim}')) if want_to_install?('vim configuration')
+  install_files Dir.glob('git/*') if want_to_install?('git configs (color, aliases)')
+  install_files Dir.glob('tmux/*') if want_to_install?('tmux config')
+  install_files Dir.glob('bash/runcoms/*'), withDirectories: false if want_to_install?('bash configs')
+  install_files Dir.glob('vim/{*,.[a-zA-Z]*}'), destination: "#{ENV['HOME']}/.vim", prefix: '' if want_to_install?('vim configuration')
 
   link_binaries('shells/bins') if want_to_install?('custom binaries')
 
-  Rake::Task["install_prezto"].execute if want_to_install?('prezto')
-
-  install_files(Dir.glob('zsh/overrides/*')) if want_to_install?('override default configs')
+  install_fish if want_to_install?('fish')
 
   install_fonts if want_to_install?('powerline fonts')
 
@@ -43,12 +39,6 @@ task :install => [:update] do
   run_bundle_config if want_to_install?('bundle config')
 
   success_msg("installed")
-end
-
-task :install_prezto do
-  if want_to_install?('zsh enhancements & prezto')
-    install_prezto
-  end
 end
 
 desc "Init and update submodules."
@@ -101,14 +91,11 @@ def the_world_is_mine
   puts "======================================================"
   puts "Gaining control of /usr/local on OSX ..."
   puts "======================================================"
-  run %{sudo chown -R #{ENV["USER"]}:staff /usr/local}
+  run %{sudo chown -R #{ENV["USER"]}:staff /usr/local/*}
 end
 
 def install_homebrew
   brew_bin = "brew"
-  unless RUBY_PLATFORM.downcase.include?("darwin") then
-    # brew_bin = "~/.linuxbrew/bin/brew"
-  end
 
   run %{which #{brew_bin}}
   unless $?.success?
@@ -120,7 +107,6 @@ def install_homebrew
       run %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
     else
       puts "Skipping brew installation on Linux for now."
-      # run %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"}
       return
     end
   end
@@ -136,16 +122,12 @@ def install_homebrew
   puts "======================================================"
   puts "Installing Homebrew packages...There may be some warnings."
   puts "======================================================"
-  run %{#{brew_bin} install ctags hub}
   run %{#{brew_bin} tap homebrew/bundle}
   run %{#{brew_bin} bundle}
   run %{#{brew_bin} uninstall --force reattach-to-user-namespace}
   run %{#{brew_bin} uninstall --force tmux}
-  run %{#{brew_bin} install reattach-to-user-namespace --with-wrap-pbcopy-and-pbpaste}
+  run %{#{brew_bin} install reattach-to-user-namespace}
   run %{#{brew_bin} install tmux}
-  run %{#{brew_bin} uninstall --force yarn}
-  run %{#{brew_bin} uninstall --force node}
-  run %{#{brew_bin} install yarn --ignore-dependencies}
   puts
   puts
 end
@@ -156,20 +138,19 @@ def install_packages
   puts "======================================================"
   puts "Installing Ubuntu Packages."
   puts "======================================================"
-  run %{sudo apt-get -y update}
-  run %{sudo apt-get -y install software-properties-common}
-  run %{sudo apt-get -y install curl wget unzip nano zsh}
-  run %{sudo apt-get -y install build-essential checkinstall}
-  run %{curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -}
-  run %{echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list}
+  run %{sudo apt -y update}
+  run %{sudo apt -y install software-properties-common}
+  run %{sudo apt -y install curl wget unzip nano}
+  run %{sudo apt -y install build-essential checkinstall}
   run %{sudo add-apt-repository -y ppa:git-core/ppa}
-  run %{sudo apt-get -y update}
-  run %{sudo apt-get -y upgrade}
-  run %{sudo apt-get -y install git git-core}
-  run %{sudo apt-get -y install libreadline-dev}
-  run %{sudo apt-get -y install python-setuptools ruby xclip}
-  run %{sudo apt-get -y install yarn}
-  run %{sudo apt-get -y install fontconfig}
+  run %{sudo apt-add-repository ppa:fish-shell/release-2}
+  run %{sudo apt -y update}
+  run %{sudo apt -y upgrade}
+  run %{sudo apt -y install git git-core}
+  run %{sudo apt -y install fish}
+  run %{sudo apt -y install libreadline-dev}
+  run %{sudo apt -y install python-setuptools xclip}
+  run %{sudo apt -y install fontconfig}
   puts
   puts
 end
@@ -184,7 +165,7 @@ def install_pip
   if RUBY_PLATFORM.downcase.include?("darwin") then
     run %{brew install python3}
   else
-    run %{sudo apt-get -y install python3 python3-dev python3-pip}
+    run %{sudo apt -y install python3 python3-dev python3-pip}
   end
 
   run %{sudo python3 -m pip install --ignore-installed --no-cache-dir --upgrade pip setuptools wheel}
@@ -202,16 +183,16 @@ def install_jdk8_ubuntu
   puts "======================================================"
   run %{echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections}
   run %{sudo add-apt-repository -y ppa:webupd8team/java}
-  run %{sudo apt-get -y update}
-  run %{sudo apt-get -y upgrade}
-  run %{sudo apt-get -y install oracle-java8-installer}
-  run %{sudo apt-get -y install oracle-java8-set-default}
+  run %{sudo apt -y update}
+  run %{sudo apt -y upgrade}
+  run %{sudo apt -y install oracle-java8-installer}
+  run %{sudo apt -y install oracle-java8-set-default}
   puts
   puts
 end
 
 def install_rbenv
-  ruby_version = '2.3.1'
+  ruby_version = '2.5.1'
 
   run %{which rbenv}
   unless $?.success?
@@ -221,15 +202,8 @@ def install_rbenv
     puts "already installed, this will do nothing."
     puts "======================================================"
 
-    # if RUBY_PLATFORM.downcase.include?("darwin") then
-    #   run %{brew install rbenv ruby-build}
-    # else
-    #   run %{git clone https://github.com/rbenv/rbenv.git ~/.rbenv}
-    #   run %{git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build}
-    # end
-    run %{git clone https://github.com/rbenv/rbenv.git ~/.rbenv}
-    run %{git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build}
-
+    run %{git clone https://github.com/rbenv/rbenv.git #{ENV['HOME']}/.rbenv}
+    run %{git clone https://github.com/rbenv/ruby-build.git #{ENV['HOME']}/.rbenv/plugins/ruby-build}
   end
 
   puts
@@ -238,29 +212,18 @@ def install_rbenv
   puts "Updating rbenv."
   puts "======================================================"
 
-  # if RUBY_PLATFORM.downcase.include?("darwin") then
-  #   run %{brew upgrade rbenv ruby-build}
-  #   run %{rbenv install -s #{ruby_version}}
-  #   run %{rbenv global #{ruby_version}}
-  # else
-  #   run %{cd ~/.rbenv && git pull}
-  #   run %{cd ~/.rbenv/plugins/ruby-build && git pull}
-  #   run %{~/.rbenv/bin/rbenv install -s #{ruby_version}}
-  #   run %{~/.rbenv/bin/rbenv global #{ruby_version}}
-  #   run %{~/.rbenv/bin/rbenv rehash}
-  # end
-  run %{cd ~/.rbenv && git pull}
-  run %{cd ~/.rbenv/plugins/ruby-build && git pull}
-  run %{~/.rbenv/bin/rbenv install -s #{ruby_version}}
-  run %{~/.rbenv/bin/rbenv global #{ruby_version}}
-  run %{~/.rbenv/bin/rbenv rehash}
+  run %{cd #{ENV['HOME']}/.rbenv && git pull}
+  run %{cd #{ENV['HOME']}/.rbenv/plugins/ruby-build && git pull}
+  run %{#{ENV['HOME']}/.rbenv/bin/rbenv install -s #{ruby_version}}
+  run %{#{ENV['HOME']}/.rbenv/bin/rbenv global #{ruby_version}}
+  run %{#{ENV['HOME']}/.rbenv/bin/rbenv rehash}
 
   puts
   puts
 end
 
 def install_nodenv
-  node_version = '7.2.1'
+  node_version = '8.11.1'
 
   run %{which nodenv}
   unless $?.success?
@@ -268,9 +231,9 @@ def install_nodenv
     puts "Installing nodenv"
     puts "already installed, this will do nothing."
     puts "======================================================"
-    run %{git clone https://github.com/nodenv/nodenv.git ~/.nodenv}
-    run %{cd ~/.nodenv && src/configure && make -C src}
-    run %{git clone https://github.com/nodenv/node-build.git ~/.nodenv/plugins/node-build}
+    run %{git clone https://github.com/nodenv/nodenv.git #{ENV['HOME']}/.nodenv}
+    run %{cd #{ENV['HOME']}/.nodenv && src/configure && make -C src}
+    run %{git clone https://github.com/nodenv/node-build.git #{ENV['HOME']}/.nodenv/plugins/node-build}
   end
 
   puts
@@ -279,10 +242,10 @@ def install_nodenv
   puts "Updating nodenv."
   puts "======================================================"
 
-  run %{cd ~/.nodenv && git pull}
-  run %{cd ~/.nodenv/plugins/node-build && git pull}
-  run %{~/.nodenv/bin/nodenv install -s #{node_version}}
-  run %{~/.nodenv/bin/nodenv global #{node_version}}
+  run %{cd #{ENV['HOME']}/.nodenv && git pull}
+  run %{cd #{ENV['HOME']}/.nodenv/plugins/node-build && git pull}
+  run %{#{ENV['HOME']}/.nodenv/bin/nodenv install -s #{node_version}}
+  run %{#{ENV['HOME']}/.nodenv/bin/nodenv global #{node_version}}
 
   puts
   puts
@@ -290,12 +253,12 @@ def install_nodenv
   puts "Installing node packages with yarn."
   puts "======================================================"
 
+  run %{#{ENV['HOME']}/.nodenv/shims/npm install -g yarn}
+  run %{#{ENV['HOME']}/.nodenv/bin/nodenv rehash}
+
   run %{yarn global add diff2html-cli}
   run %{yarn global add cloc}
-  run %{yarn global add bower}
-  run %{yarn global add s3-server}
-
-  run %{~/.nodenv/bin/nodenv rehash}
+  run %{#{ENV['HOME']}/.nodenv/bin/nodenv rehash}
 
   puts
   puts
@@ -316,24 +279,7 @@ def install_gems
   puts "Installing Gems...There may be some warnings."
   puts "======================================================"
   run %{gem install bundler sass}
-  run %{~/.rbenv/bin/rbenv rehash}
-  puts
-  puts
-end
-
-def install_nvm
-  puts "======================================================"
-  puts "Installing NVM, the Node version manager...If it's"
-  puts "already installed, this will do nothing."
-  puts "====================================================="
-  run %{wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash}
-
-  puts "======================================================"
-  puts "Setting up NVM...There may be some warnings."
-  puts "======================================================"
-  run %{. ~/.nvm/nvm.sh && nvm install 6.0}
-  run %{. ~/.nvm/nvm.sh && nvm use 6.0}
-  run %{. ~/.nvm/nvm.sh && nvm alias default 6.0}
+  run %{#{ENV['HOME']}/.rbenv/bin/rbenv rehash}
   puts
   puts
 end
@@ -344,7 +290,7 @@ def install_fonts
   puts "Source: https://github.com/powerline/fonts"
   puts "======================================================"
   run %{ cp -f $DOTFILES/fonts/* $HOME/Library/Fonts } if RUBY_PLATFORM.downcase.include?("darwin")
-  run %{ mkdir -p ~/.fonts && cp $DOTFILES/fonts/* ~/.fonts && fc-cache -vf ~/.fonts } if RUBY_PLATFORM.downcase.include?("linux")
+  run %{ mkdir -p #{ENV['HOME']}/.fonts && cp $DOTFILES/fonts/* #{ENV['HOME']}/.fonts && fc-cache -vf #{ENV['HOME']}/.fonts } if RUBY_PLATFORM.downcase.include?("linux")
   puts
 end
 
@@ -353,16 +299,16 @@ def install_term_theme
   puts "Restoring iTerm2 settings."
   puts "======================================================"
   if File.exists?('iTerm2/com.googlecode.iterm2.plist')
-    run %{defaults import ~/Library/Preferences/com.googlecode.iterm2.plist iTerm2/com.googlecode.iterm2.plist}
+    run %{defaults import #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist iTerm2/com.googlecode.iterm2.plist}
   end
 
   puts "======================================================"
   puts "Installing iTerm2 solarized theme."
   puts "======================================================"
-  run %{ /usr/libexec/PlistBuddy -c "Add :'Custom Color Presets':'Solarized Light' dict" ~/Library/Preferences/com.googlecode.iterm2.plist }
-  run %{ /usr/libexec/PlistBuddy -c "Merge 'iTerm2/themes/Solarized-Light.itermcolors' :'Custom Color Presets':'Solarized Light'" ~/Library/Preferences/com.googlecode.iterm2.plist }
-  run %{ /usr/libexec/PlistBuddy -c "Add :'Custom Color Presets':'Solarized Dark' dict" ~/Library/Preferences/com.googlecode.iterm2.plist }
-  run %{ /usr/libexec/PlistBuddy -c "Merge 'iTerm2/themes/Solarized-Dark.itermcolors' :'Custom Color Presets':'Solarized Dark'" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add :'Custom Color Presets':'Solarized Light' dict" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Merge 'iTerm2/themes/Solarized-Light.itermcolors' :'Custom Color Presets':'Solarized Light'" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add :'Custom Color Presets':'Solarized Dark' dict" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Merge 'iTerm2/themes/Solarized-Dark.itermcolors' :'Custom Color Presets':'Solarized Dark'" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist }
 
   # If iTerm2 is not installed or has never run, we can't autoinstall the profile since the plist is not there
   if !File.exists?(File.join(ENV['HOME'], '/Library/Preferences/com.googlecode.iterm2.plist'))
@@ -402,7 +348,7 @@ end
 def iTerm_profile_list
   profiles=Array.new
   begin
-    profiles <<  %x{ /usr/libexec/PlistBuddy -c "Print :'New Bookmarks':#{profiles.size}:Name" ~/Library/Preferences/com.googlecode.iterm2.plist 2>/dev/null}
+    profiles <<  %x{ /usr/libexec/PlistBuddy -c "Print :'New Bookmarks':#{profiles.size}:Name" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist 2>/dev/null}
   end while $?.exitstatus==0
   profiles.pop
   profiles
@@ -413,7 +359,7 @@ def install_terminal_app_theme
   puts "Restoring Terminal.app settings."
   puts "======================================================"
   if File.exists?('terminal.app/com.apple.Terminal.plist')
-    run %{defaults import ~/Library/Preferences/com.apple.Terminal.plist terminal.app/com.apple.Terminal.plist}
+    run %{defaults import #{ENV['HOME']}/Library/Preferences/com.apple.Terminal.plist terminal.app/com.apple.Terminal.plist}
   end
 end
 
@@ -432,27 +378,35 @@ def ask(message, values)
   values[selection]
 end
 
-def install_prezto
+def install_fish
   puts
-  puts "Installing Prezto (ZSH Enhancements)..."
+  puts "Installing Shell Enhancements..."
 
-  run %{ ln -nfs "$DOTFILES/zsh/prezto" "${ZDOTDIR:-$HOME}/.zprezto" }
+  run %{ curl -L https://get.oh-my.fish | fish }
+  run %{ omf install bobthefish }
+  run %{ omf theme bobthefish }
 
-  # The prezto runcoms are only going to be installed if zprezto has never been installed
-  install_files(Dir.glob('zsh/prezto/runcoms/z*'), :symlink)
+  # Other Themes
+  # run %{ omf theme agnoster }
+  # run %{ omf theme bobthefish }
+  # run %{ omf theme ocean }
+  # run %{ omf theme budspencer }
 
-  if ENV["SHELL"].include? 'zsh' then
-    puts "Zsh is already configured as your shell of choice. Restart your session to load the new settings"
+  install_files Dir.glob('fish/*'), destination: "#{ENV['HOME']}/.config/fish", withDirectories: false, prefix: '' if want_to_install?('Fish configs')
+  install_files Dir.glob('fish/conf.d/*'), destination: "#{ENV['HOME']}/.config/fish/conf.d", withDirectories: false, prefix: '' if want_to_install?('Fish extras')
+
+  if ENV["SHELL"].include? 'fish' then
+    puts "Fish is already configured as your shell of choice. Restart your session to load the new settings"
   else
-    puts "Setting zsh as your default shell"
-    if File.exists?("/usr/local/bin/zsh")
-      if File.readlines("/private/etc/shells").grep("/usr/local/bin/zsh").empty?
-        puts "Adding zsh to standard shell list"
-        run %{ echo "/usr/local/bin/zsh" | sudo tee -a /private/etc/shells }
+    puts "Setting fish as your default shell"
+    if File.exists?("/usr/local/bin/fish")
+      if File.readlines("/private/etc/shells").grep("/usr/local/bin/fish").empty?
+        puts "Adding fish to standard shell list"
+        run %{ echo "/usr/local/bin/fish" | sudo tee -a /private/etc/shells }
       end
-      run %{ chsh -s /usr/local/bin/zsh }
+      run %{ chsh -s /usr/local/bin/fish }
     else
-      run %{ chsh -s /bin/zsh }
+      run %{ chsh -s /bin/fish }
     end
   end
 end
@@ -466,7 +420,7 @@ def want_to_install? (section, default = true)
   end
 end
 
-def copy_files (src, dest, prefix)
+def copy_files (src, dest, prefix = '')
   puts "======================================================"
   puts "Copying files from #{src} to #{dest} ..."
   puts "======================================================"
@@ -478,11 +432,11 @@ def copy_files (src, dest, prefix)
   end
 end
 
-def install_files(files, method = :symlink, withDirectories = true)
+def install_files(files, origin: ENV["PWD"], destination: ENV["HOME"], method: :symlink, withDirectories: true, prefix: '.')
   files.each do |f|
     file = f.split('/').last
-    source = "#{ENV["PWD"]}/#{f}"
-    target = "#{ENV["HOME"]}/.#{file}"
+    source = "#{origin}/#{f}"
+    target = "#{destination}/#{prefix}#{file}"
 
     puts "======================#{file}=============================="
     puts "Source: #{source}"
@@ -493,26 +447,15 @@ def install_files(files, method = :symlink, withDirectories = true)
     if File.exists?(target) && !File.symlink?(target)
       puts "[Overwriting] #{target}...leaving original at #{backup_dir}/#{file}..."
       run %{ mkdir -p "#{backup_dir}" }
-      run %{ mv "$HOME/.#{file}" "#{backup_dir}/#{file}" }
+      run %{ mv "#{target}" "#{backup_dir}/#{file}" }
     end
 
     if !File.directory?(source) || withDirectories
+      run %{ mkdir -p "#{destination}" }
       if method == :symlink
         run %{ ln -nfs "#{source}" "#{target}" }
       elsif
         run %{ cp -f "#{source}" "#{target}" }
-      end
-    end
-
-    # Temporary solution until we find a way to allow customization
-    # This modifies zshrc to load all of yadr's zsh extensions.
-    # Eventually yadr's zsh extensions should be ported to prezto modules.
-    source_config_code = "for config_file ($DOTFILES/zsh/*.zsh) source $config_file"
-    if file == 'zshrc'
-      File.open(target, 'a+') do |zshrc|
-        if zshrc.readlines.grep(/#{Regexp.escape(source_config_code)}/).empty?
-          zshrc.puts(source_config_code)
-        end
       end
     end
 
@@ -547,9 +490,9 @@ def apply_theme_to_iterm_profile_idx(index, color_scheme_path)
   values = Array.new
   16.times { |i| values << "Ansi #{i} Color" }
   values << ['Background Color', 'Bold Color', 'Cursor Color', 'Cursor Text Color', 'Foreground Color', 'Selected Text Color', 'Selection Color']
-  values.flatten.each { |entry| run %{ /usr/libexec/PlistBuddy -c "Delete :'New Bookmarks':#{index}:'#{entry}'" ~/Library/Preferences/com.googlecode.iterm2.plist } }
+  values.flatten.each { |entry| run %{ /usr/libexec/PlistBuddy -c "Delete :'New Bookmarks':#{index}:'#{entry}'" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist } }
 
-  run %{ /usr/libexec/PlistBuddy -c "Merge '#{color_scheme_path}' :'New Bookmarks':#{index}" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Merge '#{color_scheme_path}' :'New Bookmarks':#{index}" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist }
   run %{ defaults read com.googlecode.iterm2 }
 end
 

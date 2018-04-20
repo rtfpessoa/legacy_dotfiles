@@ -1,31 +1,27 @@
 # OS X Applications
 
 AppCleaner
-Atom
+Backup and Sync from Google
+Bragi Update
 Caffeine
-Chromecast
-DiffMerge
+DisplayMode
 Docker
-FirefoxDeveloperEdition
+Firefox
 Gimp
-Goolgle Chrome Beta
 Goolgle Chrome Canary
-Goolgle Drive
-GPG Keychain
-IntelliJ IDEA
-iTerm2
-Karabiner
-Key Codes
-LastPass
+Goolgle Chrome
+Intellij IDEA
+iTerm
 Logitech Options
 OmniDiskSweeper
-Pocket
 Skype
 Slack
-SourceTree
+Soda Player
+Spectacle
 Spotify
 Steam
 Sublime Text
-The Unarchiver
-WebTorrent
+Visual Studio Code
 VLC
+WebTorrent
+zoom.us

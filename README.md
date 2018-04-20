@@ -6,10 +6,6 @@ Slimmed down version of [dotfiles](https://github.com/skwp/dotfiles) edited by [
 
 **Opinionated dotfile repo that will make your heart sing**
 
-  * The best bits of all the top dotfile repos and zsh plugins curated in one place, into a simple and cohesive way of working
-  * Many zsh plugins, starting with the wonderful [Prezto](https://github.com/sorin-ionescu/prezto) base, and adding a few niceties on top
-  * All things are vimized: irb, postres command line, etc
-
 ### Requirements
 
 * OS X
@@ -24,14 +20,14 @@ Slimmed down version of [dotfiles](https://github.com/skwp/dotfiles) edited by [
 To get started please run:
 
 ```
-bash -c "`curl -fsSL https://raw.githubusercontent.com/rtfpessoa/dotfiles/master/dotfiles.sh`" -s -c install
+bash -c "`curl -fsSL https://raw.githubusercontent.com/rtfpessoa/dotfiles/fish/dotfiles.sh`" -s -b fish -c install
 ```
 
 **Note:** It will automatically install all of its subcomponents. If you want to be asked
 about each one, use:
 
 ```
-bash -c "`curl -fsSL https://raw.githubusercontent.com/rtfpessoa/dotfiles/master/dotfiles.sh`" -s -c install -a
+bash -c "`curl -fsSL https://raw.githubusercontent.com/rtfpessoa/dotfiles/fish/dotfiles.sh`" -s -b fish -c install -a
 ```
 
 > The installation directory is `$HOME/.$(whoami)rc`
@@ -78,9 +74,7 @@ options:
 
 * [Powerline](https://github.com/powerline/powerline) font for OS X
 
-* iTerm2 [Solarized](https://github.com/altercation/solarized) Colors
-
-* [ZSH](https://github.com/zsh-users/zsh), awesome bash without having to learn anything new
+* iTerm [Solarized](https://github.com/altercation/solarized) Colors
 
 * [Vim](https://github.com/vim) mode and bash style `Ctrl-R` for reverse history finder
 
@@ -88,19 +82,13 @@ options:
 
 * `Ctrl-x,Ctrl-l` to insert output of last command
 
-* Fuzzy matching - if you mistype a directory name, tab completion will fix it
-
-* [fasd](https://github.com/clvv/fasd) integration - hit `z` and partial match for recently used directory
-
-* [Prezto](http://github.com/sorin-ionescu/prezto) - the power behind YADR's zsh
-
 * [Tmux](https://github.com/tmux/tmux) with optimized configuration and powerline status
 
 * [Git](https://github.com/git/git) with proper `.gitconfig` and `.gitignore`
 
 * Fixed OS X keyboard UK layout for external keyboard (tested with [Code Keyboard](https://codekeyboards.com/))
 
-* Zsh and Bash simple powerline themes with git status and rebase state
+* Fish and Bash simple powerline themes with git status and rebase state
 
 * Other personal tweaks and aliases
 
@@ -114,13 +102,9 @@ Add your binaries to `.gitmodules` or manually on `shells/bins` and they will be
 
 Change `shells/sources/rtfpessoa.sh` to your own settings, like default programs, personal alias, etc
 
-#### Prezto
+#### Fish/Bash
 
-To override prezto configs edit the files on `zsh/overrides` and they will replace the one in the prezto official repo
-
-#### Zsh/Bash
-
-Both shells have some default configs in the dirs `zsh/*` and `bash/*` that you can edit
+Both shells have some default configs in the dirs `fish/*` and `bash/*` that you can edit
 
 #### Others programs
 
