@@ -26,7 +26,6 @@ set -gx LC_ALL en_US.UTF-8
 set -gx EDITOR vim
 set -gx VISUAL vim
 set -gx GREP_COLOR '1;33'
-# fish_vi_key_bindings
 
 switch "$OPERATING_SYSTEM"
     case Linux
@@ -235,18 +234,19 @@ add_to_path "/usr/local/opt/coreutils/libexec/gnubin"
 
 set -gx MANPATH "/usr/local/opt/coreutils/libexec/gnuman" $MANPATH
 
-if test -s "$HOME/.nodenv/bin/nodenv"
+if test -s "$HOME/.nodenv"
     add_to_path "$HOME/.nodenv/bin"
+    add_to_path "$HOME/.nodenv/shims"
     source (eval $HOME/.nodenv/bin/nodenv init - --no-rehash fish | psub)
 end
 
 if which yarn 2>&1 >/dev/null
-    add_to_path "$HOME/.nodenv/shims"
     add_to_path "$HOME/.config/yarn/global/node_modules/.bin"
 end
 
-if test -s "$HOME/.rbenv/bin/rbenv"
+if test -s "$HOME/.rbenv"
     add_to_path "$HOME/.rbenv/bin"
+    add_to_path "$HOME/.rbenv/shims"
     source (eval $HOME/.rbenv/bin/rbenv init - --no-rehash fish | psub)
 end
 

@@ -23,7 +23,7 @@ help() {
   exit 1
 }
 
-while getopts ":c:u:d:af" opt; do
+while getopts ":b:c:u:d:af" opt; do
   case $opt in
     b)
       BRANCH="$OPTARG"

@@ -5,10 +5,33 @@
 DOTFILES_DEFAULT="$HOME/.$(whoami)rc"
 DOTFILES=${DOTFILES-$DOTFILES_DEFAULT}
 
+# Force my HOME (sudo compatibility)
+export DEFAULT_USER=rtfpessoa
+
+# Want your terminal to support 256 color schemes? I do ...
+export TERM=xterm-256color
+export CLICOLOR=1
+export OPERATING_SYSTEM=$(uname)
+
+# Languages
+export LANG=en_US.UTF-8
+export LC_COLLATE=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+export LC_MESSAGES=en_US.UTF-8
+export LC_MONETARY=en_US.UTF-8
+export LC_NUMERIC=en_US.UTF-8
+export LC_TIME=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# Editor
+export EDITOR=vim
+export VISUAL=vim
+export GREP_COLOR='1;33'
+
 if [ -d "$DOTFILES" ]; then
 	# Theme
 	source $DOTFILES/bash/themes/agnoster/agnoster.bash
 
 	# Customize to your needs...
-	for config_file in "$(ls $DOTFILES/shells/sources/*)"; do source $config_file; done
+	# for config_file in "$(ls $DOTFILES/shells/sources/*)"; do source $config_file; done
 fi

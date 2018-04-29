@@ -10,8 +10,8 @@ task :install => [:update] do
   puts
 
   the_world_is_mine if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('take control of /usr/local contents')
-  install_packages if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu packages')
-  install_jdk8_ubuntu if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu jdk8')
+  install_ubuntu_packages if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu packages')
+  install_oracle_jdk8_ubuntu if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu jdk8', false)
   install_homebrew if want_to_install?('brew')
   install_pip if want_to_install?('pip')
   install_rbenv if want_to_install?('rbenv')
@@ -128,29 +128,30 @@ def install_homebrew
   run %{#{brew_bin} uninstall --force tmux}
   run %{#{brew_bin} install reattach-to-user-namespace}
   run %{#{brew_bin} install tmux}
+  run %{#{brew_bin} install kryptco/tap/kr}
   puts
   puts
 end
 
-def install_packages
+def install_ubuntu_packages
   puts
   puts
   puts "======================================================"
   puts "Installing Ubuntu Packages."
   puts "======================================================"
   run %{sudo apt -y update}
-  run %{sudo apt -y install software-properties-common}
   run %{sudo apt -y install curl wget unzip nano}
-  run %{sudo apt -y install build-essential checkinstall}
-  run %{sudo add-apt-repository -y ppa:git-core/ppa}
-  run %{sudo apt-add-repository ppa:fish-shell/release-2}
+  run %{sudo apt -y install ruby-dev build-essential libssl-dev zlib1g-dev}
+  run %{sudo apt-add-repository -y ppa:git-core/ppa}
+  run %{sudo apt-add-repository -y ppa:fish-shell/release-2}
   run %{sudo apt -y update}
   run %{sudo apt -y upgrade}
   run %{sudo apt -y install git git-core}
   run %{sudo apt -y install fish}
   run %{sudo apt -y install libreadline-dev}
-  run %{sudo apt -y install python-setuptools xclip}
-  run %{sudo apt -y install fontconfig}
+  run %{sudo apt -y install xclip fontconfig}
+  run %{sudo apt -y install openjdk-8-jdk}
+  run %{curl https://krypt.co/kr | sh}
   puts
   puts
 end
@@ -175,11 +176,11 @@ def install_pip
   puts
 end
 
-def install_jdk8_ubuntu
+def install_oracle_jdk8_ubuntu
   puts
   puts
   puts "======================================================"
-  puts "Installing Ubuntu Packages."
+  puts "Installing Oracle JDK 8 Packages."
   puts "======================================================"
   run %{echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections}
   run %{sudo add-apt-repository -y ppa:webupd8team/java}
@@ -256,8 +257,8 @@ def install_nodenv
   run %{#{ENV['HOME']}/.nodenv/shims/npm install -g yarn}
   run %{#{ENV['HOME']}/.nodenv/bin/nodenv rehash}
 
-  run %{yarn global add diff2html-cli}
-  run %{yarn global add cloc}
+  run %{#{ENV['HOME']}/.nodenv/shims/yarn global add diff2html-cli}
+  run %{#{ENV['HOME']}/.nodenv/shims/yarn global add cloc}
   run %{#{ENV['HOME']}/.nodenv/bin/nodenv rehash}
 
   puts
@@ -382,9 +383,12 @@ def install_fish
   puts
   puts "Installing Shell Enhancements..."
 
-  run %{ curl -L https://get.oh-my.fish | fish }
-  run %{ omf install bobthefish }
-  run %{ omf theme bobthefish }
+  run %{ rm -f /tmp/oh-my-fish.fish }
+  run %{ curl -L https://get.oh-my.fish -o /tmp/oh-my-fish.fish }
+  run %{ fish /tmp/oh-my-fish.fish -y --noninteractive }
+  run %{ rm -f /tmp/oh-my-fish.fish }
+  run %{ fish -c 'omf install bobthefish' }
+  run %{ fish -c 'omf theme bobthefish' }
 
   # Other Themes
   # run %{ omf theme agnoster }
@@ -395,16 +399,29 @@ def install_fish
   install_files Dir.glob('fish/*'), destination: "#{ENV['HOME']}/.config/fish", withDirectories: false, prefix: '' if want_to_install?('Fish configs')
   install_files Dir.glob('fish/conf.d/*'), destination: "#{ENV['HOME']}/.config/fish/conf.d", withDirectories: false, prefix: '' if want_to_install?('Fish extras')
 
+  shell_list_path =
+    if RUBY_PLATFORM.downcase.include?("darwin")
+      '/private/etc/shells'
+    else
+      '/etc/shells'
+    end
+
   if ENV["SHELL"].include? 'fish' then
     puts "Fish is already configured as your shell of choice. Restart your session to load the new settings"
   else
     puts "Setting fish as your default shell"
     if File.exists?("/usr/local/bin/fish")
-      if File.readlines("/private/etc/shells").grep("/usr/local/bin/fish").empty?
+      if File.readlines(shell_list_path).grep(/\/usr\/bin\/fish/).empty?
         puts "Adding fish to standard shell list"
-        run %{ echo "/usr/local/bin/fish" | sudo tee -a /private/etc/shells }
+        run %{ echo "/usr/local/bin/fish" | sudo tee -a #{shell_list_path} }
       end
       run %{ chsh -s /usr/local/bin/fish }
+    elsif File.exists?("/usr/bin/fish")
+      if File.readlines(shell_list_path).grep(/\/usr\/bin\/fish/).empty?
+        puts "Adding fish to standard shell list"
+        run %{ echo "/usr/bin/fish" | sudo tee -a #{shell_list_path} }
+      end
+      run %{ chsh -s /usr/bin/fish }
     else
       run %{ chsh -s /bin/fish }
     end
