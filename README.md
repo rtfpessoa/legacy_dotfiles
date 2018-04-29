@@ -8,11 +8,15 @@ with some changes for personal setup on Mac OS and Ubuntu.
 
 **Opinionated dotfile repo that will make your heart sing**
 
+### Supports
+
+* Ubuntu
+* MacOS
+
 ### Requirements
 
 * Curl
-* Ruby
-* Rake
+* Ruby (with Rake)
 * Git
 
 ### Setup
@@ -48,6 +52,7 @@ Uninstalling is easy.
 ##### After uninstall
 
   * Uninstall homebrew and all its dependencies
+    * `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"`
   * MacOS
     * Revert Terminal settings
     * Revert iTerm settings
@@ -79,25 +84,27 @@ options:
 
 * [Rbenv](https://github.com/sstephenson/rbenv) with Ruby global version setup
 
-* Gems: [Bundler](https://github.com/bundler/bundler) and [git-up](https://github.com/aanand/git-up)
+* [Nodenv](https://github.com/nodenv/nodenv) with NodeJS global version setup
 
-* [Powerline](https://github.com/powerline/powerline) font for OS X
+* [Pyenv](https://github.com/pyenv/pyenv) with Python global version setup
+
+* [Powerline](https://github.com/powerline/powerline) font for MacOS
 
 * iTerm [Solarized](https://github.com/altercation/solarized) Colors
 
 * [Vim](https://github.com/vim) mode and bash style `Ctrl-R` for reverse history finder
 
-* UP/DOWN history search with prefix matching
+* Fish and Zsh with UP/DOWN history search with prefix matching
 
-* `Ctrl-x,Ctrl-l` to insert output of last command
+* Zsh with `Ctrl-x,Ctrl-l` to insert output of last command
 
 * [Tmux](https://github.com/tmux/tmux) with optimized configuration and powerline status
 
-* [Git](https://github.com/git/git) with proper `.gitconfig` and `.gitignore`
+* [Git](https://github.com/git/git) with a nice `.gitconfig` and `.gitignore`
 
-* Fixed OS X keyboard UK layout for external keyboard (tested with [Code Keyboard](https://codekeyboards.com/))
+* Fixed MacOS keyboard UK layout for external keyboard (tested with [Code Keyboard](https://codekeyboards.com/))
 
-* Fish and Bash simple powerline themes with git status and rebase state
+* Fish, Zsh (with Prezto) and Bash powerline themes with git status and rebase state
 
 * Other personal tweaks and aliases
 
@@ -107,14 +114,9 @@ options:
 
 Add your binaries to `.gitmodules` or manually on `shells/bins` and they will be linked to `$HOME/.bins`
 
-#### Default shell settings
+#### Fish / Zsh / Bash
 
-Change `shells/posix/rtfpessoa.sh` and `shells/fish/conf.d/rtfpessoa.fish` to your own settings,
-like default programs, personal alias, etc
-
-#### Fish/Bash
-
-Both shells have some default configs in the dirs `fish/*` and `bash/*` that you can edit
+Shells have some default configs inside `shells/**` that you need to edit before using
 
 #### Others programs
 

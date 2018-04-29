@@ -373,10 +373,11 @@ def setup_fish
   puts
   puts "Installing Fish Enhancements..."
 
-  run %{ rm -f /tmp/oh-my-fish.fish }
-  run %{ curl -L https://get.oh-my.fish -o /tmp/oh-my-fish.fish }
-  run %{ fish /tmp/oh-my-fish.fish -y --noninteractive }
-  run %{ rm -f /tmp/oh-my-fish.fish }
+  tmp_dir = run %{ mktemp -d -t fish.XXXXX }
+  tmp_dir = tmp_dir.strip
+  run %{ git clone https://github.com/oh-my-fish/oh-my-fish #{tmp_dir} }
+  run %{ cd #{tmp_dir}; bin/install --offline --noninteractive -y }
+  run %{ rm -rf #{tmp_dir} }
   run %{ fish -c 'omf install bobthefish' }
   run %{ fish -c 'omf theme bobthefish' }
 
@@ -387,7 +388,7 @@ def setup_fish
   # run %{ omf theme budspencer }
 
   install_files Dir.glob('shells/fish/*'), destination: "#{ENV['HOME']}/.config/fish", withDirectories: false, prefix: '' if want_to_install?('Fish configs')
-  install_files Dir.glob('shells/fish/conf.d/*'), destination: "#{ENV['HOME']}/.config/fish/conf.d", withDirectories: false, prefix: '' if want_to_install?('Fish extras')
+  install_files Dir.glob('shells/fish/functions/*'), destination: "#{ENV['HOME']}/.config/fish/functions", withDirectories: false, prefix: '' if want_to_install?('Fish extras')
 
   set_default_shell("fish")
 end
@@ -446,6 +447,7 @@ end
 def install_files(files, origin: ENV["PWD"], destination: ENV["HOME"], method: :symlink, withDirectories: true, prefix: '.')
   run %{ mkdir -p #{ENV["HOME"]}/.dotfiles.bak }
   backup_dir = run %{ mktemp -d -p #{ENV["HOME"]}/.dotfiles.bak }
+  backup_dir = backup_dir.strip
 
   files.each do |f|
     file = f.split('/').last
