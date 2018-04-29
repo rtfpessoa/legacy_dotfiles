@@ -10,9 +10,14 @@ task :install => [:update] do
   puts
 
   the_world_is_mine if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('take control of /usr/local contents')
+
+  link_binaries('shells/bins') if want_to_install?('custom binaries')
+
   install_ubuntu_packages if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu packages')
-  install_oracle_jdk8_ubuntu if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu jdk8', false)
+  install_oracle_jdk8_ubuntu if RUBY_PLATFORM.downcase.include?("linux") && want_to_install?('ubuntu oracle jdk 8', false)
+
   install_homebrew if want_to_install?('brew')
+
   install_pip if want_to_install?('pip')
   install_rbenv if want_to_install?('rbenv')
   install_gems if want_to_install?('gems')
@@ -20,23 +25,19 @@ task :install => [:update] do
 
   install_files Dir.glob('git/*') if want_to_install?('git configs (color, aliases)')
   install_files Dir.glob('tmux/*') if want_to_install?('tmux config')
-  install_files Dir.glob('shells/bash/runcoms/*'), withDirectories: false if want_to_install?('bash configs')
   install_files Dir.glob('vim/{*,.[a-zA-Z]*}'), destination: "#{ENV['HOME']}/.vim", prefix: '' if want_to_install?('vim configuration')
 
-  link_binaries('shells/bins') if want_to_install?('custom binaries')
-
-  install_fish if want_to_install?('fish')
+  install_files Dir.glob('shells/bash/runcoms/*'), withDirectories: false if want_to_install?('bash configs')
+  setup_zsh if want_to_install?('setup zsh', false)
+  setup_fish if want_to_install?('setup fish')
 
   install_fonts if want_to_install?('powerline fonts')
 
   install_term_theme if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('Apply custom ITerm2.app settings (ex: solarized theme)')
-
   install_terminal_app_theme if RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('Apply custom Terminal.app settings (ex: solarized theme)')
 
   copy_files('keyboard/layouts', '/Library/Keyboard\ Layouts', 'sudo') if
     RUBY_PLATFORM.downcase.include?("darwin") && want_to_install?('Fixed UK keyboard layout')
-
-  run_bundle_config if want_to_install?('bundle config')
 
   success_msg("installed")
 end
@@ -47,13 +48,7 @@ task :update do
     puts "======================================================"
     puts "Downloading Unix configs submodules...please wait"
     puts "======================================================"
-
-    puts run %{
-      cd $DOTFILES &&
-      git pull --rebase --autostash --recurse-submodules &&
-      git submodule update --init --recursive --remote --force --jobs 8 &&
-      git submodule status --recursive
-    }
+    puts run %{ cd $DOTFILES; git submodule update --init --recursive --remote --force --jobs 8 }
     puts
   end
 end
@@ -64,27 +59,6 @@ private
 def run(cmd)
   puts "[Running] #{cmd}"
   `#{cmd}` unless ENV['DEBUG']
-end
-
-def number_of_cores
-  if RUBY_PLATFORM.downcase.include?("darwin")
-    cores = run %{ sysctl -n hw.ncpu }
-  else
-    cores = run %{ nproc }
-  end
-  puts
-  cores.to_i
-end
-
-def run_bundle_config
-  return unless system("which bundle")
-
-  bundler_jobs = number_of_cores - 1
-  puts "======================================================"
-  puts "Configuring Bundlers for parallel gem installation"
-  puts "======================================================"
-  run %{ bundle config --global jobs #{bundler_jobs} }
-  puts
 end
 
 def the_world_is_mine
@@ -129,6 +103,7 @@ def install_homebrew
   run %{#{brew_bin} install reattach-to-user-namespace}
   run %{#{brew_bin} install tmux}
   run %{#{brew_bin} install kryptco/tap/kr}
+  run %{#{brew_bin} install zsh fish}
   puts
   puts
 end
@@ -147,7 +122,7 @@ def install_ubuntu_packages
   run %{sudo apt -y update}
   run %{sudo apt -y upgrade}
   run %{sudo apt -y install git git-core}
-  run %{sudo apt -y install fish}
+  run %{sudo apt -y install fish zsh}
   run %{sudo apt -y install libreadline-dev}
   run %{sudo apt -y install xclip fontconfig}
   run %{sudo apt -y install openjdk-8-jdk}
@@ -379,9 +354,24 @@ def ask(message, values)
   values[selection]
 end
 
-def install_fish
+def setup_zsh
   puts
-  puts "Installing Shell Enhancements..."
+  puts "Installing Zsh Enhancements..."
+
+  run %{ ln -nfs $DOTFILES/shells/zsh/prezto ${ZDOTDIR:-$HOME}/.zprezto }
+
+  # The prezto runcoms are only going to be installed if zprezto has never been installed
+  install_files Dir.glob('shells/zsh/prezto/runcoms/z*'), method: :symlink
+
+  # Override prezto default settings
+  install_files Dir.glob('shells/zsh/overrides/*') if want_to_install?('override prezto default configs')
+
+  set_default_shell("zsh")
+end
+
+def setup_fish
+  puts
+  puts "Installing Fish Enhancements..."
 
   run %{ rm -f /tmp/oh-my-fish.fish }
   run %{ curl -L https://get.oh-my.fish -o /tmp/oh-my-fish.fish }
@@ -399,6 +389,10 @@ def install_fish
   install_files Dir.glob('shells/fish/*'), destination: "#{ENV['HOME']}/.config/fish", withDirectories: false, prefix: '' if want_to_install?('Fish configs')
   install_files Dir.glob('shells/fish/conf.d/*'), destination: "#{ENV['HOME']}/.config/fish/conf.d", withDirectories: false, prefix: '' if want_to_install?('Fish extras')
 
+  set_default_shell("fish")
+end
+
+def set_default_shell(shell_name)
   shell_list_path =
     if RUBY_PLATFORM.downcase.include?("darwin")
       '/private/etc/shells'
@@ -406,24 +400,24 @@ def install_fish
       '/etc/shells'
     end
 
-  if ENV["SHELL"].include? 'fish' then
-    puts "Fish is already configured as your shell of choice. Restart your session to load the new settings"
+  if ENV["SHELL"].include?(shell_name) then
+    puts "#{shell_name} is already configured as your shell of choice. Restart your session to load the new settings"
   else
-    puts "Setting fish as your default shell"
-    if File.exists?("/usr/local/bin/fish")
-      if File.readlines(shell_list_path).grep(/\/usr\/bin\/fish/).empty?
-        puts "Adding fish to standard shell list"
-        run %{ echo "/usr/local/bin/fish" | sudo tee -a #{shell_list_path} }
+    puts "Setting #{shell_name} as your default shell"
+    if File.exists?("/usr/local/bin/#{shell_name}")
+      if File.readlines(shell_list_path).grep(/\/usr\/bin\/#{shell_name}/).empty?
+        puts "Adding #{shell_name} to standard shell list"
+        run %{ echo "/usr/local/bin/#{shell_name}" | sudo tee -a #{shell_list_path} }
       end
-      run %{ chsh -s /usr/local/bin/fish }
-    elsif File.exists?("/usr/bin/fish")
-      if File.readlines(shell_list_path).grep(/\/usr\/bin\/fish/).empty?
-        puts "Adding fish to standard shell list"
-        run %{ echo "/usr/bin/fish" | sudo tee -a #{shell_list_path} }
+      run %{ chsh -s /usr/local/bin/#{shell_name} }
+    elsif File.exists?("/usr/bin/#{shell_name}")
+      if File.readlines(shell_list_path).grep(/\/usr\/bin\/#{shell_name}/).empty?
+        puts "Adding #{shell_name} to standard shell list"
+        run %{ echo "/usr/bin/#{shell_name}" | sudo tee -a #{shell_list_path} }
       end
-      run %{ chsh -s /usr/bin/fish }
+      run %{ chsh -s /usr/bin/#{shell_name} }
     else
-      run %{ chsh -s /bin/fish }
+      run %{ chsh -s /bin/#{shell_name} }
     end
   end
 end
@@ -450,6 +444,9 @@ def copy_files (src, dest, prefix = '')
 end
 
 def install_files(files, origin: ENV["PWD"], destination: ENV["HOME"], method: :symlink, withDirectories: true, prefix: '.')
+  run %{ mkdir -p #{ENV["HOME"]}/.dotfiles.bak }
+  backup_dir = run %{ mktemp -d -p #{ENV["HOME"]}/.dotfiles.bak }
+
   files.each do |f|
     file = f.split('/').last
     source = "#{origin}/#{f}"
@@ -458,8 +455,6 @@ def install_files(files, origin: ENV["PWD"], destination: ENV["HOME"], method: :
     puts "======================#{file}=============================="
     puts "Source: #{source}"
     puts "Target: #{target}"
-
-    backup_dir = "#{ENV["HOME"]}/.dotfiles.bak"
 
     if File.exists?(target) && !File.symlink?(target)
       puts "[Overwriting] #{target}...leaving original at #{backup_dir}/#{file}..."

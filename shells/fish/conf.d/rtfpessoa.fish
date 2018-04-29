@@ -212,7 +212,7 @@ alias brewu='brew update; and brew upgrade; and brew cleanup; and brew cask clea
 # Visual Studio Code
 switch "$OPERATING_SYSTEM"
     case Darwin
-        function vsc
+        function code
             begin
                 set CONTENTS "/Applications/Visual\ Studio\ Code.app/Contents"
                 set ELECTRON "$CONTENTS/MacOS/Electron"
@@ -257,6 +257,9 @@ if test -s "$HOME/.pyenv/bin/pyenv"
     add_to_path "$PYENV_ROOT/bin"
     source (eval $HOME/.pyenv/bin/pyenv init - --no-rehash fish | psub)
 end
+
+# krypt.co
+set -gx GPG_TTY (tty)
 
 # Rust
 add_to_path "$HOME/.cargo/bin"

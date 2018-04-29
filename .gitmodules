@@ -1,6 +1,13 @@
-[submodule "bash/themes/agnoster"]
-	path = bash/themes/agnoster
-	url = https://gist.github.com/7a745be31e89673b8fc7.git
+[submodule "shells/zsh/prezto"]
+	path = shells/zsh/prezto
+	url = git://github.com/sorin-ionescu/prezto
+	ignore = dirty
+[submodule "shells/zsh/themes/rtfpessoa"]
+	path = shells/zsh/themes/rtfpessoa
+	url = https://gist.github.com/9737c2d0d3b5fe5aa2e8.git
+[submodule "shells/bash/themes/agnoster"]
+	path = shells/bash/themes/agnoster
+	url = git://gist.github.com/7a745be31e89673b8fc7.git
 [submodule "vim/bundle/gundo"]
 	path = vim/bundle/gundo
-	url = https://github.com/sjl/gundo.vim.git
+	url = git://github.com/sjl/gundo.vim.git

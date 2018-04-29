@@ -3,7 +3,7 @@
 CLONE_URL_DEFAULT=https://github.com/rtfpessoa/dotfiles
 DOTFILES_NAME=".$(whoami)rc"
 DOTFILES_PATH="$HOME"
-BRANCH="fish"
+BRANCH="master"
 
 help() {
   echo "Invalid option -$OPTARG" >&2
@@ -11,7 +11,6 @@ help() {
   echo "usage: -c (install | update | uninstall) [options]"
   echo ""
   echo "options: "
-  echo "  -b [branch] to install from"
   echo "  -a ask before execute each step"
   echo "  -u [<URL>] set the url for the origin repository to install"
   echo "  -d [<DEST_PATH>] set the destination directory to install"
@@ -23,7 +22,7 @@ help() {
   exit 1
 }
 
-while getopts ":b:c:u:d:af" opt; do
+while getopts ":c:u:d:af" opt; do
   case $opt in
     b)
       BRANCH="$OPTARG"

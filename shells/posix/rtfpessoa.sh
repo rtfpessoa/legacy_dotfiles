@@ -54,13 +54,13 @@ alias sbtc='sbt compile'
 alias sbtcc='sbt "~compile"'
 alias sbtclean='rm -rf $(find . -type d -iname target)'
 
-function add_to_path {
+add_to_path() {
     if test -d "$1"; then
         export PATH="$1:$PATH"
     fi
 }
 
-function sbtdocker {
+sbtdocker() {
   dockerName=$1
   dockerVersion=$2
   force_clean=$3
@@ -71,7 +71,7 @@ function sbtdocker {
   docker rmi -f $dockerName:$dockerVersion
 }
 
-function dockerbuild {
+dockerbuild() {
   dockerName=$1
   dockerVersion=$2
   force_clean=$3
@@ -97,7 +97,7 @@ fi
 
 # Copy cmds
 alias dklogs='docker logs --tail 10000 -f $(docker ps -q -a)'
-function cpdklogs() {
+cpdklogs() {
   echo 'docker logs --tail 10000 -f $(docker ps -q -a)' | pbcopy
 }
 
@@ -167,7 +167,7 @@ alias ska9='sudo ka9'
 alias brewu='brew update && brew upgrade && brew cleanup && brew cask cleanup && brew prune && brew doctor'
 
 # Timer
-function timed {
+timed() {
   { time ( $@ ) } 2>&1
 }
 
@@ -176,7 +176,7 @@ vsc () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
 
 # Visual Studio Code
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  function vsc {
+  code() {
     local CONTENTS "/Applications/Visual\ Studio\ Code.app/Contents"
     local ELECTRON "$CONTENTS/MacOS/Electron"
     local CLI "$CONTENTS/Resources/app/out/cli.js"
@@ -218,6 +218,9 @@ if test -s "$HOME/.pyenv/bin/pyenv"; then
     add_to_path "$PYENV_ROOT/bin"
     eval "$($HOME/.pyenv/bin/pyenv init - --no-rehash $SHELL)"
 fi
+
+# krypt.co
+export GPG_TTY=$(tty)
 
 # Rust
 add_to_path "$HOME/.cargo/bin"

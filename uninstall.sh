@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
@@ -9,7 +9,7 @@ function toLowerCase {
 }
 
 function tryRemove {
-	TO_REMOVE=$1
+	TO_REMOVE=$@
 
 	read -p "Going to remove '$TO_REMOVE', are you sure? [Y/n]" response
 	if [[ $(toLowerCase $response) =~ ^(yes|y) ]]; then
@@ -36,6 +36,25 @@ if [ -n "$simlinks" ]; then
 	tryRemove "$(find -L $HOME -maxdepth 1 -type l)"
 else
 	echo "No dead symlinks found!"
+fi
+
+echo "Cleaning fish shell..."
+tryRemove $HOME/.local/share/fish $HOME/.config/fish$HOME/.local/share/omf $HOME/.cache/omf $HOME/.config/omf
+
+echo "Cleaning rbenv..."
+tryRemove $HOME/.rbenv
+
+echo "Cleaning nodenv..."
+tryRemove $HOME/.nodenv
+
+echo "Cleaning pyenv..."
+tryRemove $HOME/.pyenv
+
+echo "Cleaning extra fonts..."
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  tryRemove $HOME/.fonts
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  tryRemove '$HOME/Library/Fonts/*'
 fi
 
 echo "Completed!"

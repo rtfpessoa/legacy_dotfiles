@@ -1,6 +1,8 @@
 # dotfiles repo
 
-Slimmed down version of [dotfiles](https://github.com/skwp/dotfiles) edited by [rtfpessoa](https://github.com/rtfpessoa) with some changes for personal setup on for OS X.
+Slimmed down version of [dotfiles](https://github.com/skwp/dotfiles)
+edited by [rtfpessoa](https://github.com/rtfpessoa)
+with some changes for personal setup on Mac OS and Ubuntu.
 
 ### Summary
 
@@ -8,7 +10,7 @@ Slimmed down version of [dotfiles](https://github.com/skwp/dotfiles) edited by [
 
 ### Requirements
 
-* OS X
+* Curl
 * Ruby
 * Rake
 * Git
@@ -20,14 +22,7 @@ Slimmed down version of [dotfiles](https://github.com/skwp/dotfiles) edited by [
 To get started please run:
 
 ```
-bash -c "`curl -fsSL https://raw.githubusercontent.com/rtfpessoa/dotfiles/fish/dotfiles.sh`" -s -b fish -c install
-```
-
-**Note:** It will automatically install all of its subcomponents. If you want to be asked
-about each one, use:
-
-```
-bash -c "`curl -fsSL https://raw.githubusercontent.com/rtfpessoa/dotfiles/fish/dotfiles.sh`" -s -b fish -c install -a
+bash -c "`curl -fsSL https://raw.githubusercontent.com/rtfpessoa/dotfiles/master/dotfiles.sh`" -s -c install
 ```
 
 > The installation directory is `$HOME/.$(whoami)rc`
@@ -47,6 +42,20 @@ Uninstalling is easy.
 ```
 ./dotfiles.sh -c uninstall
 ```
+
+> NOTE: This only removes the main shell files symlinked by the installer.
+
+##### After uninstall
+
+  * Uninstall homebrew and all its dependencies
+  * MacOS
+    * Revert Terminal settings
+    * Revert iTerm settings
+    * Remove extra keyboard layouts from '/Library/Keyboard Layouts'
+  * Ubuntu
+    * Remove the installed packages
+      * Check 'install_ubuntu_packages' in Rakefile
+      * Check 'install_oracle_jdk8_ubuntu' in Rakefile
 
 #### Usage
 
@@ -100,7 +109,8 @@ Add your binaries to `.gitmodules` or manually on `shells/bins` and they will be
 
 #### Default shell settings
 
-Change `shells/sources/rtfpessoa.sh` to your own settings, like default programs, personal alias, etc
+Change `shells/posix/rtfpessoa.sh` and `shells/fish/conf.d/rtfpessoa.fish` to your own settings,
+like default programs, personal alias, etc
 
 #### Fish/Bash
 
