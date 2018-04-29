@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 #
-# OS X Shell Settings
+# Shell Settings
 #
 
 # Force my HOME (sudo compatibility)
@@ -260,8 +260,6 @@ end
 
 # Rust
 add_to_path "$HOME/.cargo/bin"
-
-varclear fish_user_paths 2>&1 >/dev/null
 
 function tmuxed
     if string match -i 'Darwin' "$OPERATING_SYSTEM"

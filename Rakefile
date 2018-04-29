@@ -20,7 +20,7 @@ task :install => [:update] do
 
   install_files Dir.glob('git/*') if want_to_install?('git configs (color, aliases)')
   install_files Dir.glob('tmux/*') if want_to_install?('tmux config')
-  install_files Dir.glob('bash/runcoms/*'), withDirectories: false if want_to_install?('bash configs')
+  install_files Dir.glob('shells/bash/runcoms/*'), withDirectories: false if want_to_install?('bash configs')
   install_files Dir.glob('vim/{*,.[a-zA-Z]*}'), destination: "#{ENV['HOME']}/.vim", prefix: '' if want_to_install?('vim configuration')
 
   link_binaries('shells/bins') if want_to_install?('custom binaries')
@@ -396,8 +396,8 @@ def install_fish
   # run %{ omf theme ocean }
   # run %{ omf theme budspencer }
 
-  install_files Dir.glob('fish/*'), destination: "#{ENV['HOME']}/.config/fish", withDirectories: false, prefix: '' if want_to_install?('Fish configs')
-  install_files Dir.glob('fish/conf.d/*'), destination: "#{ENV['HOME']}/.config/fish/conf.d", withDirectories: false, prefix: '' if want_to_install?('Fish extras')
+  install_files Dir.glob('shells/fish/*'), destination: "#{ENV['HOME']}/.config/fish", withDirectories: false, prefix: '' if want_to_install?('Fish configs')
+  install_files Dir.glob('shells/fish/conf.d/*'), destination: "#{ENV['HOME']}/.config/fish/conf.d", withDirectories: false, prefix: '' if want_to_install?('Fish extras')
 
   shell_list_path =
     if RUBY_PLATFORM.downcase.include?("darwin")

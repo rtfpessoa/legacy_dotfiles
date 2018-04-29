@@ -1,0 +1,14 @@
+#
+# rtfpessoa bash settings
+#
+
+DOTFILES_DEFAULT="$HOME/.$(whoami)rc"
+DOTFILES=${DOTFILES-$DOTFILES_DEFAULT}
+
+if [ -d "$DOTFILES" ]; then
+	# Theme
+	# source $DOTFILES/shells/bash/themes/agnoster/agnoster.bash
+
+	# Customize to your needs...
+	for config_file in "$(ls $DOTFILES/shells/posix/*)"; do source $config_file; done
+fi
