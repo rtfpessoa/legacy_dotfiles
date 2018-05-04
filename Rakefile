@@ -1,5 +1,6 @@
 require 'rake'
 require 'fileutils'
+require 'tmpdir'
 
 desc "Hook Unix configs into system-standard positions."
 task :install => [:update] do
@@ -373,8 +374,7 @@ def setup_fish
   puts
   puts "Installing Fish Enhancements..."
 
-  tmp_dir = run %{ mktemp -d -t fish.XXXXX }
-  tmp_dir = tmp_dir.strip
+  tmp_dir = Dir.mktmpdir("fish-", ENV["TMPDIR"] || "/tmp")
   run %{ git clone https://github.com/oh-my-fish/oh-my-fish #{tmp_dir} }
   run %{ cd #{tmp_dir}; bin/install --offline --noninteractive -y }
   run %{ rm -rf #{tmp_dir} }
@@ -388,7 +388,7 @@ def setup_fish
   # run %{ omf theme budspencer }
 
   install_files Dir.glob('shells/fish/*'), destination: "#{ENV['HOME']}/.config/fish", withDirectories: false, prefix: '' if want_to_install?('Fish configs')
-  install_files Dir.glob('shells/fish/functions/*'), destination: "#{ENV['HOME']}/.config/fish/functions", withDirectories: false, prefix: '' if want_to_install?('Fish extras')
+  install_files Dir.glob('shells/fish/configurations/*'), destination: "#{ENV['HOME']}/.config/fish/configurations", withDirectories: false, prefix: '' if want_to_install?('Fish extras')
 
   set_default_shell("fish")
 end
@@ -446,8 +446,7 @@ end
 
 def install_files(files, origin: ENV["PWD"], destination: ENV["HOME"], method: :symlink, withDirectories: true, prefix: '.')
   run %{ mkdir -p #{ENV["HOME"]}/.dotfiles.bak }
-  backup_dir = run %{ mktemp -d -p #{ENV["HOME"]}/.dotfiles.bak }
-  backup_dir = backup_dir.strip
+  backup_dir = Dir.mktmpdir("backup-", "#{ENV["HOME"]}/.dotfiles.bak")
 
   files.each do |f|
     file = f.split('/').last
