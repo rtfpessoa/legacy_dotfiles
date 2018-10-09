@@ -27,36 +27,6 @@ set -gx EDITOR vim
 set -gx VISUAL vim
 set -gx GREP_COLOR '1;33'
 
-switch "$OPERATING_SYSTEM"
-    case Linux
-        # Linux
-        set -gx HOME "/home/$DEFAULT_USER"
-
-        # Java
-        set -gx JAVA_HOME /usr/lib/jvm/java-8-oracle
-        set -gx JDK_HOME "$JAVA_HOME"
-        set -gx JRE_HOME "$JAVA_HOME/jre"
-
-    case Darwin
-        # Mac OSX
-        set -gx HOME "/Users/$DEFAULT_USER"
-
-        # Java
-        set -gx JAVA_HOME (/usr/libexec/java_home --failfast)
-        set -gx JDK_HOME "$JAVA_HOME"
-        set -gx JRE_HOME "$JAVA_HOME/jre"
-end
-
-# ls alias
-alias l='ls -lisah'
-alias lise='ls -lisa'
-alias lsa='ls -a'
-
-# SBT shortcuts
-alias sbtc='sbt compile'
-alias sbtcc='sbt "~compile"'
-alias sbtclean='rm -rf (find . -type d -iname target)'
-
 function list_paths
     echo $fish_user_paths | tr " " "\n" | nl
 end
@@ -97,6 +67,44 @@ function orDefault
     and echo $$argv[1]
     or echo $argv[2]
 end
+
+switch "$OPERATING_SYSTEM"
+    case Linux
+        # Linux
+        set -gx HOME "/home/$DEFAULT_USER"
+
+        # Java
+        set -gx JAVA_HOME /usr/lib/jvm/java-8-oracle
+        set -gx JDK_HOME "$JAVA_HOME"
+        set -gx JRE_HOME "$JAVA_HOME/jre"
+
+    case Darwin
+        # Mac OSX
+        set -gx HOME "/Users/$DEFAULT_USER"
+
+        # Java
+        set -gx ORACLE_JDK_HOME "/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home"
+        set -gx GRAALVM_HOME "/Library/Java/JavaVirtualMachines/graalvm-ee-1.0.0-rc7/Contents/Home"
+        set -gx JVMCI_HOME "/Library/Java/JavaVirtualMachines/labsjdk1.8.0_172-jvmci-0.48/Contents/Home"
+
+        set -gx JAVA_HOME "$GRAALVM_HOME"
+        set -gx JDK_HOME "$JAVA_HOME"
+        set -gx JRE_HOME "$JAVA_HOME/jre"
+
+        add_to_path "$JAVA_HOME/bin"
+        add_to_path "$GRAALVM_HOME/bin"
+        add_to_path "$JVMCI_HOME/bin"
+end
+
+# ls alias
+alias l='ls -lisah'
+alias lise='ls -lisa'
+alias lsa='ls -a'
+
+# SBT shortcuts
+alias sbtc='sbt compile'
+alias sbtcc='sbt "~compile"'
+alias sbtclean='rm -rf (find . -type d -iname target)'
 
 function sbtdocker
     set dockerName $argv[1]
@@ -184,6 +192,7 @@ add_to_path "$HOME/.composer/vendor/bin"
 # GO
 set -gx GOROOT "/usr/local/opt/go/libexec"
 set -gx GOPATH "$HOME/.go"
+add_to_path "$GOPATH/bin"
 
 alias youtube-dl-playlist='youtube-dl -i --yes-playlist -c --no-check-certificate --prefer-insecure -x --no-post-overwrites --audio-format mp3 --audio-quality 256K -o '"'"'%(upload_date)s - %(title)s - %(id)s.%(ext)s'"'"''
 
