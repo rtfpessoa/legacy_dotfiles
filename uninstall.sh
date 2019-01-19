@@ -27,9 +27,6 @@ cd $HOME
 echo "Removing configs dir..."
 tryRemove "$CONFIG_DIR"
 
-echo "Cleaning bins dir..."
-tryRemove "$HOME/.bins"
-
 echo "Cleaning dead symlinks in '$HOME'..."
 simlinks="$(find -L $HOME -maxdepth 1 -type l)"
 if [ -n "$simlinks" ]; then
@@ -46,9 +43,13 @@ tryRemove $HOME/.rbenv
 
 echo "Cleaning nodenv..."
 tryRemove $HOME/.nodenv
+tryRemove $HOME/.config/yarn
 
 echo "Cleaning pyenv..."
 tryRemove $HOME/.pyenv
+
+echo "Cleaning jabba..."
+tryRemove $HOME/.jabba
 
 echo "Cleaning extra fonts..."
 if [[ "$OSTYPE" == "linux-gnu" ]]; then

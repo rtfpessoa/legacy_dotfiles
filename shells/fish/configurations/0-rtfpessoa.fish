@@ -27,6 +27,22 @@ set -gx EDITOR vim
 set -gx VISUAL vim
 set -gx GREP_COLOR '1;33'
 
+switch "$OPERATING_SYSTEM"
+    case Linux
+        # Linux
+        set -gx HOME "/home/$DEFAULT_USER"
+
+    case Darwin
+        # Mac OSX
+        set -gx HOME "/Users/$DEFAULT_USER"
+end
+
+# ls alias
+alias l='ls -lisah'
+
+# SBT shortcuts
+alias sbtc='sbt compile'
+
 function list_paths
     echo $fish_user_paths | tr " " "\n" | nl
 end
@@ -68,88 +84,17 @@ function orDefault
     or echo $argv[2]
 end
 
-switch "$OPERATING_SYSTEM"
-    case Linux
-        # Linux
-        set -gx HOME "/home/$DEFAULT_USER"
-
-        # Java
-        set -gx JAVA_HOME /usr/lib/jvm/java-8-oracle
-        set -gx JDK_HOME "$JAVA_HOME"
-        set -gx JRE_HOME "$JAVA_HOME/jre"
-
-    case Darwin
-        # Mac OSX
-        set -gx HOME "/Users/$DEFAULT_USER"
-
-        # Java
-        set -gx ORACLE_JDK_HOME "/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home"
-        set -gx GRAALVM_HOME "/Library/Java/JavaVirtualMachines/graalvm-ee-1.0.0-rc7/Contents/Home"
-        set -gx JVMCI_HOME "/Library/Java/JavaVirtualMachines/labsjdk1.8.0_172-jvmci-0.48/Contents/Home"
-
-        set -gx JAVA_HOME "$GRAALVM_HOME"
-        set -gx JDK_HOME "$JAVA_HOME"
-        set -gx JRE_HOME "$JAVA_HOME/jre"
-
-        add_to_path "$JAVA_HOME/bin"
-        add_to_path "$GRAALVM_HOME/bin"
-        add_to_path "$JVMCI_HOME/bin"
-end
-
-# ls alias
-alias l='ls -lisah'
-alias lise='ls -lisa'
-alias lsa='ls -a'
-
-# SBT shortcuts
-alias sbtc='sbt compile'
-alias sbtcc='sbt "~compile"'
-alias sbtclean='rm -rf (find . -type d -iname target)'
-
-function sbtdocker
-    set dockerName $argv[1]
-    set dockerVersion $argv[2]
-    set force_clean $argv[3]
-    set dockerFullName "codacy/$dockerName:$dockerVersion"
-    if test -n "$force_clean"
-        docker rmi -f $dockerFullName
-    end
-    sbt "set version in Docker := \"$dockerVersion\"" "set name := \"$dockerName\"" docker:publishLocal
-    docker tag $dockerName:$dockerVersion $dockerFullName
-    docker rmi -f $dockerName:$dockerVersion
-end
-
-function dockerbuild
-    set dockerName $argv[1]
-    set dockerVersion $argv[2]
-    set force_clean $argv[3]
-    set dockerFullName "codacy/$dockerName:$dockerVersion"
-    if test -n "$force_clean"
-        docker rmi -f $dockerFullName
-    end
-    docker build --rm=true -t $dockerFullName .
-end
-
 # docker alias
 alias docekr='docker'
 
 switch "$OPERATING_SYSTEM"
     case Darwin
-        # Docker for Mac
-        alias docker-ssh='screen ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty'
-
         # Finder
         alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
         alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
 
         # Mac OS DNS Cache Reset
         alias dns-reset-cache='sudo killall -HUP mDNSResponder'
-end
-
-# Copy cmds
-alias dklogs='docker logs --tail 10000 -f (docker ps -q -a)'
-function cpdklogs
-    echo 'docker logs --tail 10000 -f (docker ps -q -a)' | pbcopy
 end
 
 # Tmux shortcuts
@@ -186,14 +131,6 @@ alias tmxsp='tmux select-pane'
 # selects the next pane in numerical order
 alias tmxspn='tmux select-pane -t'
 
-# Composer
-add_to_path "$HOME/.composer/vendor/bin"
-
-# GO
-set -gx GOROOT "/usr/local/opt/go/libexec"
-set -gx GOPATH "$HOME/.go"
-add_to_path "$GOPATH/bin"
-
 alias youtube-dl-playlist='youtube-dl -i --yes-playlist -c --no-check-certificate --prefer-insecure -x --no-post-overwrites --audio-format mp3 --audio-quality 256K -o '"'"'%(upload_date)s - %(title)s - %(id)s.%(ext)s'"'"''
 
 alias pip-install='sudo python3 -m pip install --ignore-installed --no-cache-dir --upgrade'
@@ -216,16 +153,27 @@ alias ka9='killall -9'
 alias ska9='sudo ka9'
 
 # Homebrew
-alias brewu='brew update; and brew upgrade; and brew cleanup; and brew cask cleanup; and brew prune; and brew doctor'
+alias brewu='brew update; and brew upgrade; and brew cleanup; and brew prune; and brew doctor'
 
 # Visual Studio Code
 switch "$OPERATING_SYSTEM"
     case Darwin
         function code
             begin
-                set CONTENTS "/Applications/Visual\ Studio\ Code.app/Contents"
-                set ELECTRON "$CONTENTS/MacOS/Electron"
-                set CLI "$CONTENTS/Resources/app/out/cli.js"
+                set VSCODE_PATH "/Applications/Visual\ Studio\ Code.app/Contents"
+                set ELECTRON "$VSCODE_PATH/MacOS/Electron"
+                set CLI "$VSCODE_PATH/Resources/app/out/cli.js"
+                set -lx ELECTRON_RUN_AS_NODE 1
+                eval "$ELECTRON" "$CLI" "$argv"
+            end
+        end
+    
+    case Linux
+        function code
+            begin
+                set VSCODE_PATH "/usr/share/code"
+                set ELECTRON "$VSCODE_PATH/code"
+                set CLI "$VSCODE_PATH/resources/app/out/cli.js"
                 set -lx ELECTRON_RUN_AS_NODE 1
                 eval "$ELECTRON" "$CLI" "$argv"
             end
@@ -235,8 +183,17 @@ end
 # Just the weather
 alias meteo='curl -4 wttr.in/Lisbon'
 
+# Composer
+add_to_path "$HOME/.composer/vendor/bin"
+
+# GO
+switch "$OPERATING_SYSTEM"
+    case Darwin
+        set -gx GOROOT "/usr/local/opt/go/libexec"
+end
+set -gx GOPATH "$HOME/.go"
 add_to_path "$GOPATH/bin"
-add_to_path "$HOME/.bins"
+
 add_to_path "/usr/local/sbin"
 add_to_path "/usr/local/bin"
 add_to_path "/usr/local/opt/coreutils/libexec/gnubin"
@@ -265,6 +222,11 @@ if test -s "$HOME/.pyenv/bin/pyenv"
     set -gx PYENV_ROOT "$HOME/.pyenv"
     add_to_path "$PYENV_ROOT/bin"
     source (eval $HOME/.pyenv/bin/pyenv init - --no-rehash fish | psub)
+end
+
+# Java
+if test -s "$HOME/.jabba/jabba.fish"
+    source "$HOME/.jabba/jabba.fish"
 end
 
 # krypt.co

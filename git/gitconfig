@@ -8,17 +8,25 @@
   pager = less -x4
   quotepath = false
   ignorecase = false
-	excludesfile = ~/.gitignore
+  excludesfile = ~/.gitignore
 
 #}}}
 # user {{{
 [user]
   email = rtfrodrigo@gmail.com
   name = Rodrigo Fernandes
-  signingkey = 17C96426
 
 [github]
   user = rtfrodrigo@gmail.com
+
+[gpg]
+  program = /usr/local/bin/krgpg
+
+[commit]
+  gpgSign = true
+
+[tag]
+  forceSignAnnotated = true
 
 #}}}
 # color {{{
@@ -181,9 +189,3 @@
     ## List remotes
     rem="!git config -l | grep remote.*url | tail -n +2"
 # }}}
-[gpg]
-	program = /usr/local/bin/krgpg
-[commit]
-	gpgSign = true
-[tag]
-	forceSignAnnotated = true

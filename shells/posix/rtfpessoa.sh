@@ -29,29 +29,15 @@ export GREP_COLOR='1;33'
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
   # Linux
   export HOME="/home/$DEFAULT_USER"
-
-  # Java
-  export JAVA_HOME=/usr/lib/jvm/java-8-oracle
-  export JDK_HOME="${JAVA_HOME}"
-  export JRE_HOME="${JAVA_HOME}/jre"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
   # Mac OSX
   export HOME="/Users/$DEFAULT_USER"
-
-  # Java
-  export JAVA_HOME="$(/usr/libexec/java_home --failfast)"
-  export JDK_HOME="${JAVA_HOME}"
-  export JRE_HOME="${JAVA_HOME}/jre"
 fi
 
 # ls alias
 alias l='ls -lisah'
-alias lise='ls -lisa'
-alias lsa='ls -a'
 
 # SBT shortcuts
-alias sbtc='sbt compile'
-alias sbtcc='sbt "~compile"'
 alias sbtclean='rm -rf $(find . -type d -iname target)'
 
 add_to_path() {
@@ -60,33 +46,10 @@ add_to_path() {
     fi
 }
 
-sbtdocker() {
-  dockerName=$1
-  dockerVersion=$2
-  force_clean=$3
-  dockerFullName="codacy/$dockerName:$dockerVersion"
-  if [ -n "${force_clean}" ]; then docker rmi -f $dockerFullName; fi
-  sbt "set version in Docker := \"$dockerVersion\"" "set name := \"$dockerName\"" docker:publishLocal
-  docker tag $dockerName:$dockerVersion $dockerFullName
-  docker rmi -f $dockerName:$dockerVersion
-}
-
-dockerbuild() {
-  dockerName=$1
-  dockerVersion=$2
-  force_clean=$3
-  dockerFullName="codacy/$dockerName:$dockerVersion"
-  if [ -n "${force_clean}" ]; then docker rmi -f $dockerFullName; fi
-  docker build --rm=true -t $dockerFullName .
-}
-
 # docker alias
 alias docekr='docker'
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  # Docker for Mac
-  alias docker-ssh='screen ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty'
-
   # Finder
   alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
   alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
@@ -94,12 +57,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   # Mac OS DNS Cache Reset
   alias dns-reset-cache='sudo killall -HUP mDNSResponder'
 fi
-
-# Copy cmds
-alias dklogs='docker logs --tail 10000 -f $(docker ps -q -a)'
-cpdklogs() {
-  echo 'docker logs --tail 10000 -f $(docker ps -q -a)' | pbcopy
-}
 
 # Tmux shortcuts
 # creates a new tmux session without name
@@ -135,13 +92,6 @@ alias tmxsp='tmux select-pane'
 # selects the next pane in numerical order
 alias tmxspn='tmux select-pane -t'
 
-# Composer
-add_to_path "$HOME/.composer/vendor/bin"
-
-# GO
-export GOROOT="/usr/local/opt/go/libexec"
-export GOPATH=$HOME/.go
-
 alias youtube-dl-playlist='youtube-dl -i --yes-playlist -c --no-check-certificate --prefer-insecure -x --no-post-overwrites --audio-format mp3 --audio-quality 256K -o '"'"'%(upload_date)s - %(title)s - %(id)s.%(ext)s'"'"''
 
 alias pip-install='sudo python3 -m pip install --ignore-installed --no-cache-dir --upgrade'
@@ -164,7 +114,7 @@ alias ka9='killall -9'
 alias ska9='sudo ka9'
 
 # Homebrew
-alias brewu='brew update && brew upgrade && brew cleanup && brew cask cleanup && brew prune && brew doctor'
+alias brewu='brew update && brew upgrade && brew cleanup && brew prune && brew doctor'
 
 # Timer
 timed() {
@@ -177,9 +127,16 @@ vsc () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
 # Visual Studio Code
 if [[ "$OSTYPE" == "darwin"* ]]; then
   code() {
-    local CONTENTS "/Applications/Visual\ Studio\ Code.app/Contents"
-    local ELECTRON "$CONTENTS/MacOS/Electron"
-    local CLI "$CONTENTS/Resources/app/out/cli.js"
+    local VSCODE_PATH "/Applications/Visual\ Studio\ Code.app/Contents"
+    local ELECTRON "$VSCODE_PATH/MacOS/Electron"
+    local CLI "$VSCODE_PATH/Resources/app/out/cli.js"
+    ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" "$@"
+  }
+elif [[ "$OSTYPE" == "Linux" ]]; then
+  code() {
+    local VSCODE_PATH "/usr/share/code"
+    local ELECTRON "$VSCODE_PATH/code"
+    local CLI "$VSCODE_PATH/resources/app/out/cli.js"
     ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" "$@"
   }
 fi
@@ -187,8 +144,16 @@ fi
 # Just the weather
 alias meteo='curl -4 wttr.in/Lisbon'
 
+# Composer
+add_to_path "$HOME/.composer/vendor/bin"
+
+# GO
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  export GOROOT="/usr/local/opt/go/libexec"
+fi
+export GOPATH=$HOME/.go
+
 add_to_path "$GOPATH/bin"
-add_to_path "$HOME/.bins"
 add_to_path "/usr/local/sbin"
 add_to_path "/usr/local/bin"
 add_to_path "/usr/local/opt/coreutils/libexec/gnubin"
@@ -214,9 +179,14 @@ fi
 # Python
 add_to_path "/usr/local/opt/python@2/bin"
 if test -s "$HOME/.pyenv/bin/pyenv"; then
-    set -gx PYENV_ROOT "$HOME/.pyenv"
+    export PYENV_ROOT="$HOME/.pyenv"
     add_to_path "$PYENV_ROOT/bin"
     eval "$($HOME/.pyenv/bin/pyenv init - --no-rehash $SHELL)"
+fi
+
+# Java
+if test -s "$HOME/.jabba/jabba.sh"; then
+    source "$HOME/.jabba/jabba.sh"
 fi
 
 # krypt.co
@@ -231,7 +201,7 @@ export PATH
 tmuxed() {
   if [[ "$ZSH_NAME" != "zsh" && "$SHELL" != "fish" ]]; then return; fi
   if [[ ! "$OSTYPE" =~ "darwin" ]]; then return; fi
-  
+
   if [[ -z "$TMUX" && -z "$EMACS" && -z "$VIM" && -z "$SSH_TTY" ]]; then
     tmux_session='rtfpessoa'
     tmux start-server

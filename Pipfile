@@ -1,9 +1,0 @@
-pip
-setuptools
-wheel
-ansible
-awscli
-boto
-docker-compose
-git-up
-s3transfer
