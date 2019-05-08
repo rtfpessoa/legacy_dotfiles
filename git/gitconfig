@@ -20,10 +20,11 @@
   user = rtfrodrigo@gmail.com
 
 [gpg]
-  program = /usr/local/bin/krgpg
+  program = /usr/bin/krgpg
 
 [commit]
   gpgSign = true
+  template = ~/.gitmessage
 
 [tag]
   forceSignAnnotated = true
@@ -187,5 +188,5 @@
     theirs = "!f() { git co --theirs $@ && git add $@; }; f"
 
     ## List remotes
-    rem="!git config -l | grep remote.*url | tail -n +2"
+    rem = "!git config -l | grep remote.*url | tail -n +2"
 # }}}

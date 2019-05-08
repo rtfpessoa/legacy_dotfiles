@@ -1,0 +1,25 @@
+<fix|feature|doc|style|clean|test>: subject <jira> :<feature|breaking>:
+#
+#<Type> (Optional)
+# Defined types:
+#  fix (fixing bugs)
+#  doc (adding or maintaining documentation)
+#  style (formatting, missing semi colons, ...)
+#  clean (refactoring current code)
+#  test (adding missing tests)
+#  feature (new feature)
+#
+#If it is just a new feature or regular change it might not need <Type>
+#
+#<Subject> (Required)
+#  What does this commit refer to?
+#
+#<TaskID> (If Exists)
+#  Self explanatory
+#
+#<VersionScope> (Optional)
+# Explicit version scopes:
+#  :breaking:
+#  :feature:
+#
+#<Body> (Optional)
