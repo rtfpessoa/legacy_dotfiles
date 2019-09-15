@@ -61,7 +61,7 @@
   default = current
 [diff]
   memonicprefix = true
-  algorithm = minimal
+  # algorithm = minimal
 [apply]
   whitespace = nowarn
 
