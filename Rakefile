@@ -101,6 +101,8 @@ def install_ubuntu_packages
   run %(sudo apt -y install git)
   run %(sudo apt -y install fish)
   run %(sudo apt -y install xclip fontconfig)
+  run %(sudo locale-gen en_GB.UTF-8)
+  run %(sudo update-locale LANG=en_GB.UTF-8)
 
   puts
   puts
