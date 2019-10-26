@@ -76,26 +76,26 @@ alias fs="stat -f \"%z bytes\""
 
 # Just MacOS
 switch "$OPERATING_SYSTEM"
-    case Darwin
-        # Typos
-        alias brwe=brew
+	case Darwin
+		# Typos
+		alias brwe=brew
 
-        # Finder
-        alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
-        alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
+		# Finder
+		alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
+		alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
 
-        # Mac OS DNS Cache Reset
-        alias dns-reset-cache='sudo killall -HUP mDNSResponder'
+		# Mac OS DNS Cache Reset
+		alias dns-reset-cache='sudo killall -HUP mDNSResponder'
 
-        # Homebrew
-        alias brewu='brew update; and brew upgrade; and brew cleanup; and brew prune; and brew doctor'
+		# Homebrew
+		alias brewu='brew update; and brew upgrade; and brew cleanup; and brew prune; and brew doctor'
 
-        # Empty the Trash on all mounted volumes and the main HDD. then clear the useless sleepimage
-        alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; rm -rfv ~/.Trash; sudo rm /private/var/vm/sleepimage"
+		# Empty the Trash on all mounted volumes and the main HDD. then clear the useless sleepimage
+		alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; rm -rfv ~/.Trash; sudo rm /private/var/vm/sleepimage"
 
-        # Flush Directory Service cache
-        alias flush="dscacheutil -flushcache"
+		# Flush Directory Service cache
+		alias flush="dscacheutil -flushcache"
 
-        # Recursively delete `.DS_Store` files
-        alias cleanup="find . -name '*.DS_Store' -type f -ls -delete"
+		# Recursively delete `.DS_Store` files
+		alias cleanup="find . -name '*.DS_Store' -type f -ls -delete"
 end

@@ -13,10 +13,10 @@ function tryRemove {
 
   read -p "Going to remove '$TO_REMOVE', are you sure? [Y/n]" response
   if [[ $(toLowerCase $response) =~ ^(yes|y) ]]; then
-    rm -rf $TO_REMOVE
-    echo "'$TO_REMOVE' removed!"
+	rm -rf $TO_REMOVE
+	echo "'$TO_REMOVE' removed!"
   else
-    echo "'$TO_REMOVE' skipped!"
+	echo "'$TO_REMOVE' skipped!"
   fi
 }
 

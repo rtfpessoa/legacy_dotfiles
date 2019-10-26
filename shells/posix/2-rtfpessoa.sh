@@ -38,17 +38,17 @@ fi
 # Visual Studio Code
 if [[ "$OSTYPE" == "darwin"* ]]; then
   code() {
-    local VSCODE_PATH "/Applications/Visual\ Studio\ Code.app/Contents"
-    local ELECTRON "$VSCODE_PATH/MacOS/Electron"
-    local CLI "$VSCODE_PATH/Resources/app/out/cli.js"
-    ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" "$@"
+	local VSCODE_PATH "/Applications/Visual\ Studio\ Code.app/Contents"
+	local ELECTRON "$VSCODE_PATH/MacOS/Electron"
+	local CLI "$VSCODE_PATH/Resources/app/out/cli.js"
+	ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" "$@"
   }
 elif [[ "$OSTYPE" == "Linux" ]]; then
   code() {
-    local VSCODE_PATH "/usr/share/code"
-    local ELECTRON "$VSCODE_PATH/code"
-    local CLI "$VSCODE_PATH/resources/app/out/cli.js"
-    ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" "$@"
+	local VSCODE_PATH "/usr/share/code"
+	local ELECTRON "$VSCODE_PATH/code"
+	local CLI "$VSCODE_PATH/resources/app/out/cli.js"
+	ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" "$@"
   }
 fi
 
@@ -69,33 +69,33 @@ fi
 
 # Node
 if test -s "$HOME/.nodenv"; then
-    add_to_path "$HOME/.nodenv/bin"
-    add_to_path "$HOME/.nodenv/shims"
-    eval "$($HOME/.nodenv/bin/nodenv init - --no-rehash $SHELL)"
+	add_to_path "$HOME/.nodenv/bin"
+	add_to_path "$HOME/.nodenv/shims"
+	eval "$($HOME/.nodenv/bin/nodenv init - --no-rehash $SHELL)"
 fi
 
 if which yarn 2>&1 >/dev/null; then
-    add_to_path "$HOME/.config/yarn/global/node_modules/.bin"
+	add_to_path "$HOME/.config/yarn/global/node_modules/.bin"
 fi
 
 # Ruby
 if test -s "$HOME/.rbenv"; then
-    add_to_path "$HOME/.rbenv/bin"
-    add_to_path "$HOME/.rbenv/shims"
-    eval "$($HOME/.rbenv/bin/rbenv init - --no-rehash $SHELL)"
+	add_to_path "$HOME/.rbenv/bin"
+	add_to_path "$HOME/.rbenv/shims"
+	eval "$($HOME/.rbenv/bin/rbenv init - --no-rehash $SHELL)"
 fi
 
 # Python
 add_to_path "/usr/local/opt/python@2/bin"
 if test -s "$HOME/.pyenv/bin/pyenv"; then
-    export_globally PYENV_ROOT "$HOME/.pyenv"
-    add_to_path "$PYENV_ROOT/bin"
-    eval "$($HOME/.pyenv/bin/pyenv init - --no-rehash $SHELL)"
+	export_globally PYENV_ROOT "$HOME/.pyenv"
+	add_to_path "$PYENV_ROOT/bin"
+	eval "$($HOME/.pyenv/bin/pyenv init - --no-rehash $SHELL)"
 fi
 
 # Java
 if test -s "$HOME/.jabba/jabba.sh"; then
-    source "$HOME/.jabba/jabba.sh"
+	source "$HOME/.jabba/jabba.sh"
 fi
 
 # krypt.co

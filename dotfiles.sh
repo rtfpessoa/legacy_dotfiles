@@ -24,27 +24,27 @@ help() {
 
 while getopts ":c:u:d:af" opt; do
   case $opt in
-    b)
-      BRANCH="$OPTARG"
-      ;;
-    c)
-      CMD="$OPTARG"
-      ;;
-    u)
-      ARG_CLONE_URL="$OPTARG"
-      ;;
-    d)
-      ARG_DEST_PATH="$OPTARG"
-      ;;
-    a)
-      ASK_VALUE="ask"
-      ;;
-    f)
-      FORCE_INSTALL="force"
-      ;;
-    \?)
-      help
-      ;;
+	b)
+	  BRANCH="$OPTARG"
+	  ;;
+	c)
+	  CMD="$OPTARG"
+	  ;;
+	u)
+	  ARG_CLONE_URL="$OPTARG"
+	  ;;
+	d)
+	  ARG_DEST_PATH="$OPTARG"
+	  ;;
+	a)
+	  ASK_VALUE="ask"
+	  ;;
+	f)
+	  FORCE_INSTALL="force"
+	  ;;
+	\?)
+	  help
+	  ;;
   esac
 done
 
@@ -63,24 +63,24 @@ export DOTFILES="${DOTFILES_OVERRIDE-$DOTFILES}"
 
 case $CMD in
   install)
-    echo "Installing Unix configs"
-    [[ ! -d "$DOTFILES" ]] && git clone -b ${BRANCH} --recursive $CLONE_URL "$DOTFILES"
-    cd "$DOTFILES"
-    rake install
-    ;;
+	echo "Installing Unix configs"
+	[[ ! -d "$DOTFILES" ]] && git clone -b ${BRANCH} --recursive $CLONE_URL "$DOTFILES"
+	cd "$DOTFILES"
+	rake install
+	;;
 
   update)
-    echo "Updating Unix configs"
-    [[ -d "$DOTFILES" ]] && cd "$DOTFILES"
-    rake update
-    ;;
+	echo "Updating Unix configs"
+	[[ -d "$DOTFILES" ]] && cd "$DOTFILES"
+	rake update
+	;;
 
   uninstall)
-    [[ -d "$DOTFILES" ]] && cd "$DOTFILES"
-    ./uninstall.sh
-    ;;
+	[[ -d "$DOTFILES" ]] && cd "$DOTFILES"
+	./uninstall.sh
+	;;
 
   *)
-    help
-    ;;
+	help
+	;;
 esac
