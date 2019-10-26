@@ -30,7 +30,7 @@ task install: [:update] do
   install_term_theme if RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('Apply custom ITerm2.app settings (ex: solarized theme)')
   install_terminal_app_theme if RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('Apply custom Terminal.app settings (ex: solarized theme)')
 
-  copy_files('keyboard/layouts', '/Library/Keyboard\ Layouts', 'sudo') if
+  copy_files('keyboard/layouts', "#{ENV['HOME']}/Library/Keyboard\ Layouts") if
     RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('Fixed UK keyboard layout')
 
   success_msg('installed')
@@ -263,7 +263,7 @@ def install_fonts
   puts 'Installing patched fonts for Powerline/Lightline.'
   puts 'Source: https://github.com/powerline/fonts'
   puts '======================================================'
-  run %( cp -f $DOTFILES/fonts/* $HOME/Library/Fonts ) if RUBY_PLATFORM.downcase.include?('darwin')
+  run %( cp -f $DOTFILES/fonts/* #{ENV['HOME']}/Library/Fonts ) if RUBY_PLATFORM.downcase.include?('darwin')
   run %( mkdir -p #{ENV['HOME']}/.fonts && cp $DOTFILES/fonts/* #{ENV['HOME']}/.fonts && fc-cache -vf #{ENV['HOME']}/.fonts ) if RUBY_PLATFORM.downcase.include?('linux')
   puts
 end
@@ -355,14 +355,14 @@ def want_to_install?(section, default = true)
   end
 end
 
-def copy_files(src, dest, prefix = '')
+def copy_files(src, dest)
   puts '======================================================'
   puts "Copying files from #{src} to #{dest} ..."
   puts '======================================================'
 
   run %(mkdir -p #{dest})
 
-  run %(#{prefix} cp -rfv #{src}/* #{dest}/) if File.exist?(src) && File.exist?(dest)
+  run %(cp -rfv #{src}/* #{dest}/) if File.exist?(src) && File.exist?(dest)
 end
 
 def install_files(files, origin: ENV['PWD'], destination: ENV['HOME'], method: :symlink, with_directories: true, prefix: '.')

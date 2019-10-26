@@ -1,66 +1,65 @@
-# dotfiles repo
+# dotfiles
 
 Slimmed down version of [dotfiles](https://github.com/skwp/dotfiles)
 edited by [rtfpessoa](https://github.com/rtfpessoa)
 with some changes for personal setup on Mac OS and Ubuntu.
 
-### Summary
+## Summary
 
 **Opinionated dotfile repo that will make your heart sing**
 
-### Supports
+## Supports
 
-* Ubuntu
-* MacOS
+* Ubuntu 18.04
+* MacOS Catalina
 
-### Requirements
+## Requirements
 
-* Curl
-* Ruby (with Rake)
-* Git
+* curl
+* ruby (with rake)
+* git
 
-### Setup
+## Setup
 
-#### Install
+### Install
 
 To get started please run:
 
-```
+```sh
 bash -c "`curl -fsSL https://raw.githubusercontent.com/rtfpessoa/dotfiles/master/dotfiles.sh`" -s -c install
 ```
 
 > The installation directory is `$HOME/.$(whoami)rc`
 
-#### Upgrade
+### Upgrade
 
 Upgrading is easy.
 
-```
+```sh
 ./dotfiles.sh -c update
 ```
 
-#### Uninstall
+### Uninstall
 
-Uninstalling is easy.
+1. Automated part
 
-```
+```sh
 ./dotfiles.sh -c uninstall
 ```
 
 > NOTE: This only removes the main shell files symlinked by the installer.
 
-##### After uninstall
+2. Manual part
 
-  * Uninstall homebrew and all its dependencies
-    * `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"`
   * MacOS
+    * Uninstall homebrew and all its dependencies
+      * `curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall | ruby`
     * Revert Terminal settings
     * Revert iTerm settings
-    * Remove extra keyboard layouts from '/Library/Keyboard Layouts'
+    * Remove extra keyboard layouts from '$HOME/Library/Keyboard Layouts'
   * Ubuntu
     * Remove the installed packages
-      * Check 'install_ubuntu_packages' in Rakefile
-      * Check 'install_oracle_jdk8_ubuntu' in Rakefile
+      * Check 'install_ubuntu_packages' in [Rakefile](./Rakefile)
 
 #### Usage
 
@@ -80,43 +79,27 @@ options:
 
 ### Features
 
-* [Homebrew](https://github.com/Homebrew/homebrew) with all the packages on `Brewfile`
-
-* [Rbenv](https://github.com/sstephenson/rbenv) with Ruby global version setup
-
-* [Nodenv](https://github.com/nodenv/nodenv) with NodeJS global version setup
-
-* [Pyenv](https://github.com/pyenv/pyenv) with Python global version setup
-
-* [Powerline](https://github.com/powerline/powerline) font for MacOS
-
-* iTerm [Solarized](https://github.com/altercation/solarized) Colors
-
-* [Vim](https://github.com/vim) mode and bash style `Ctrl-R` for reverse history finder
-
-* Fish and Zsh with UP/DOWN history search with prefix matching
-
-* Zsh with `Ctrl-x,Ctrl-l` to insert output of last command
-
-* [Tmux](https://github.com/tmux/tmux) with optimized configuration and powerline status
-
-* [Git](https://github.com/git/git) with a nice `.gitconfig` and `.gitignore`
-
-* Fixed MacOS keyboard UK layout for external keyboard (tested with [Code Keyboard](https://codekeyboards.com/))
-
-* Fish, Zsh (with Prezto) and Bash powerline themes with git status and rebase state
-
-* Other personal tweaks and aliases
+* Just in MacOS
+  * [Homebrew](https://github.com/Homebrew/homebrew) with all the packages on `Brewfile`
+  * [Powerline](https://github.com/powerline/powerline) font for MacOS
+  * iTerm [Solarized](https://github.com/altercation/solarized) Colors
+  * Fixed MacOS keyboard UK layout for external keyboard (tested with [Code Keyboard](https://codekeyboards.com/) with  UK Layout)
+* Both
+  * [Jabba](https://github.com/shyiko/jabba) with Java JDK 8 global version setup
+  * [Rbenv](https://github.com/sstephenson/rbenv) with Ruby global version setut
+  * [Nodenv](https://github.com/nodenv/nodenv) with NodeJS global version setup
+  * [Pyenv](https://github.com/pyenv/pyenv) with Python global version setup
+  * [Vim](https://github.com/vim) mode and bash style `Ctrl-R` for reverse history finder
+  * [Tmux](https://github.com/tmux/tmux) with optimized configuration and powerline status
+  * [Git](https://github.com/git/git) with a nice `.gitconfig`, `.gitmessage` and `.gitignore`
+  * Fish and Bash powerline themes with git status and rebase state
+  * Other personal tweaks and aliases
 
 ### Configure
 
-#### Bins
+#### Fish / Bash
 
-Add your binaries to `.gitmodules` or manually on `shells/bins` and they will be linked to `$HOME/.bins`
-
-#### Fish / Zsh / Bash
-
-Shells have some default configs inside `shells/**` that you need to edit before using
+Shells have some default configs inside [shells/**](./shells) that you need to edit before using
 
 #### Others programs
 
