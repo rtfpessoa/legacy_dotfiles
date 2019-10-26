@@ -10,8 +10,6 @@ task install: [:update] do
   puts '======================================================'
   puts
 
-  the_world_is_mine if RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('take control of /usr/local contents')
-
   install_ubuntu_packages if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('ubuntu packages')
   install_homebrew_and_packages if RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('homebrew and packages')
 
@@ -25,7 +23,6 @@ task install: [:update] do
   install_files Dir.glob('vim/{*,.[a-zA-Z]*}'), destination: "#{ENV['HOME']}/.vim", prefix: '' if want_to_install?('vim configuration')
 
   install_files Dir.glob('shells/bash/runcoms/*'), with_directories: false if want_to_install?('bash configs')
-  setup_zsh if want_to_install?('setup zsh', false)
   setup_fish if want_to_install?('setup fish')
 
   install_fonts if want_to_install?('powerline fonts')
@@ -58,13 +55,6 @@ def run(cmd)
   `#{cmd}` unless ENV['DEBUG']
 end
 
-def the_world_is_mine
-  puts '======================================================'
-  puts 'Gaining control of /usr/local on OSX ...'
-  puts '======================================================'
-  run %(sudo chown -R #{ENV['USER']}:staff /usr/local/*)
-end
-
 def install_homebrew_and_packages
   brew_bin = 'brew'
 
@@ -74,7 +64,7 @@ def install_homebrew_and_packages
     puts "Installing Homebrew, the OSX package manager...If it's"
     puts 'already installed, this will do nothing.'
     puts '======================================================'
-    run %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
+    run %{curl -fsSL "https://raw.githubusercontent.com/Homebrew/install/master/install" | ruby}
   end
 
   puts
@@ -88,13 +78,8 @@ def install_homebrew_and_packages
   puts '======================================================'
   puts 'Installing Homebrew packages...There may be some warnings.'
   puts '======================================================'
-  run %(#{brew_bin} tap homebrew/bundle)
   run %(#{brew_bin} bundle)
-  run %(#{brew_bin} uninstall --force reattach-to-user-namespace)
-  run %(#{brew_bin} uninstall --force tmux)
-  run %(#{brew_bin} install reattach-to-user-namespace)
-  run %(#{brew_bin} install tmux)
-  run %(#{brew_bin} install zsh fish)
+  run %(#{brew_bin} bundle)
   puts
   puts
 end
@@ -107,15 +92,14 @@ def install_ubuntu_packages
   puts '======================================================'
 
   run %(sudo apt -y update)
-  run %(sudo apt -y install curl wget unzip nano vim)
-  run %(sudo apt -y install ruby-dev build-essential libssl-dev zlib1g-dev make libbz2-dev libsqlite3-dev llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev)
+  run %(sudo apt -y install curl unzip vim)
+  run %(sudo apt -y install ruby-dev build-essential libssl-dev zlib1g-dev make libbz2-dev libsqlite3-dev llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev libreadline-dev)
   run %(sudo apt-add-repository -y ppa:git-core/ppa)
   run %(sudo apt-add-repository -y ppa:fish-shell/release-2)
   run %(sudo apt -y update)
   run %(sudo apt -y upgrade)
-  run %(sudo apt -y install git git-core)
-  run %(sudo apt -y install fish zsh)
-  run %(sudo apt -y install libreadline-dev)
+  run %(sudo apt -y install git)
+  run %(sudo apt -y install fish)
   run %(sudo apt -y install xclip fontconfig)
 
   puts
@@ -123,7 +107,7 @@ def install_ubuntu_packages
 end
 
 def install_pyenv
-  python_version = '3.7.2'
+  python_version = '3.7.5'
 
   if RUBY_PLATFORM.downcase.include?('darwin')
     run %(brew install python3)
@@ -158,13 +142,13 @@ def install_pyenv
   puts '======================================================'
   puts 'Installing packages...There may be some warnings.'
   puts '======================================================'
-  run %(sudo python3 -m pip install --ignore-installed --no-cache-dir --upgrade --requirement requirements.txt)
+  run %(#{ENV['HOME']}/.pyenv/shims/python3 -m pip install --ignore-installed --no-cache-dir --upgrade --requirement requirements.txt)
   puts
   puts
 end
 
 def install_rbenv
-  ruby_version = '2.6.0'
+  ruby_version = '2.6.5'
 
   run %(which rbenv)
   unless $?.success?
@@ -175,6 +159,7 @@ def install_rbenv
     puts '======================================================'
 
     run %(git clone https://github.com/rbenv/rbenv.git #{ENV['HOME']}/.rbenv)
+    run %(cd #{ENV['HOME']}/.rbenv && src/configure && make -C src)
     run %(git clone https://github.com/rbenv/ruby-build.git #{ENV['HOME']}/.rbenv/plugins/ruby-build)
   end
 
@@ -195,8 +180,9 @@ def install_rbenv
   puts '======================================================'
   puts 'Installing Gems...There may be some warnings.'
   puts '======================================================'
-  run %(gem install bundler sass)
+  run %(#{ENV['HOME']}/.rbenv/shims/gem install bundler)
   run %(#{ENV['HOME']}/.rbenv/bin/rbenv rehash)
+  run %(#{ENV['HOME']}/.rbenv/shims/bundle install)
   puts
   puts
 
@@ -205,7 +191,7 @@ def install_rbenv
 end
 
 def install_nodenv
-  node_version = '10.15.0'
+  node_version = '12.13.0'
 
   run %(which nodenv)
   unless $?.success?
@@ -239,7 +225,6 @@ def install_nodenv
   run %(#{ENV['HOME']}/.nodenv/bin/nodenv rehash)
 
   run %(#{ENV['HOME']}/.nodenv/shims/yarn global add diff2html-cli)
-  run %(#{ENV['HOME']}/.nodenv/shims/yarn global add cloc)
   run %(#{ENV['HOME']}/.nodenv/bin/nodenv rehash)
 
   puts
@@ -247,7 +232,7 @@ def install_nodenv
 end
 
 def install_jabba
-  java_version = '1.8'
+  java_version = 'adopt-openj9@1.8.0-222'
 
   run %(which jabba)
   unless $?.success?
@@ -263,8 +248,11 @@ def install_jabba
   puts '======================================================'
   puts 'Installing Java.'
   puts '======================================================'
-
-  run %(source ~/.jabba/jabba.sh && jabba install 1.8 && jabba alias default 1.8)
+  # run %(source ~/.jabba/jabba.sh && jabba install graalvm@19.2.1)
+  run %(source ~/.jabba/jabba.sh && jabba install adopt@1.8.0-222)
+  run %(source ~/.jabba/jabba.sh && jabba install amazon-corretto@1.8.222-10.1)
+  run %(source ~/.jabba/jabba.sh && jabba install #{java_version})
+  run %(source ~/.jabba/jabba.sh && jabba alias default #{java_version})
 
   puts
   puts
@@ -306,21 +294,6 @@ def ask(message, values)
   end
   selection = selection.to_i - 1
   values[selection]
-end
-
-def setup_zsh
-  puts
-  puts 'Installing Zsh Enhancements...'
-
-  run %( ln -nfs $DOTFILES/shells/zsh/prezto ${ZDOTDIR:-$HOME}/.zprezto )
-
-  # The prezto runcoms are only going to be installed if zprezto has never been installed
-  install_files Dir.glob('shells/zsh/prezto/runcoms/z*'), method: :symlink
-
-  # Override prezto default settings
-  install_files Dir.glob('shells/zsh/overrides/*') if want_to_install?('override prezto default configs')
-
-  set_default_shell('zsh')
 end
 
 def setup_fish

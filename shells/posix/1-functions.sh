@@ -1,8 +1,23 @@
+# Helpers
+export_globally() {
+    export ${1}="${2}"
+}
+
+add_to_path() {
+    if test -d "$1"; then
+        export_globally PATH "$1:$PATH"
+    fi
+}
+
+# Timer
+timed() {
+  { time ( $@ ) } 2>&1
+}
+
 # Create a new directory and enter it
 function md() {
 	mkdir -p "$@" && cd "$@"
 }
-
 
 # find shorthand
 function f() {
@@ -18,15 +33,12 @@ function server() {
 	python -c $'import SimpleHTTPServer;\nmap = SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map;\nmap[""] = "text/plain";\nfor key, value in map.items():\n\tmap[key] = value + ";charset=UTF-8";\nSimpleHTTPServer.test();' "$port"
 }
 
-
 # Copy w/ progress
 cp_p () {
   rsync -WavP --human-readable --progress $1 $2
 }
 
-
-
-# get gzipped size
+# Get gzipped size
 function gz() {
 	echo "orig size    (bytes): "
 	cat "$1" | wc -c
@@ -34,18 +46,18 @@ function gz() {
 	gzip -c "$1" | wc -c
 }
 
-# whois a domain or a URL
+# Whois a domain or a URL
 function whois() {
-	local domain=$(echo "$1" | awk -F/ '{print $3}') # get domain from URL
+	local domain=$(echo "$1" | awk -F/ '{print $3}') # Get domain from URL
 	if [ -z $domain ] ; then
 		domain=$1
 	fi
 	echo "Getting whois record for: $domain …"
 
-	# avoid recursion
-					# this is the best whois server
-													# strip extra fluff
-	/usr/bin/whois -h whois.internic.net $domain | sed '/NOTICE:/q'
+	# Avoid recursion
+	# This is the best whois server
+	# Strip extra fluff
+	whois -h whois.internic.net $domain | sed '/NOTICE:/q'
 }
 
 function strip_diff_leading_symbols(){
@@ -57,10 +69,8 @@ function strip_diff_leading_symbols(){
 	sed -r "s/^($color_code_regex)diff --git .*$//g" | \
 		sed -r "s/^($color_code_regex)index .*$/\n\1$(rule)/g" | \
 		sed -r "s/^($color_code_regex)\+\+\+(.*)$/\1+++\5\n\1$(rule)\x1B\[m/g" |\
-
 	# extra color for @@ context line
 		sed -r "s/@@$reset_color $reset_color(.*$)/@@ $dim_magenta\1/g"  |\
-
 	# actually strips the leading symbols
 		sed -r "s/^($color_code_regex)[\+\-]/\1 /g"
 }
@@ -102,16 +112,15 @@ function extract() {
 	fi
 }
 
-# who is using the laptop's iSight camera?
+# Who is using the laptop's iSight camera?
 camerausedby() {
     echo "Checking to see who is using the iSight camera… 📷"
     usedby=$(lsof | grep -w "AppleCamera\|USBVDC\|iSight" | awk '{printf $2"\n"}' | xargs ps)
     echo -e "Recent camera uses:\n$usedby"
 }
 
-
-# animated gifs from any video
-# from alex sexton   gist.github.com/SlexAxton/4989674
+# Animated gifs from any video
+# From alex sexton => gist.github.com/SlexAxton/4989674
 gifify() {
   if [[ -n "$1" ]]; then
     if [[ $2 == '--good' ]]; then
@@ -126,14 +135,8 @@ gifify() {
   fi
 }
 
-# turn that video into webm.
-# brew reinstall ffmpeg --with-libvpx
+# Turn that video into webm.
+#   - brew reinstall ffmpeg --with-libvpx
 webmify(){
 	ffmpeg -i $1 -vcodec libvpx -acodec libvorbis -isync -copyts -aq 80 -threads 3 -qmax 30 -y $2 $1.webm
-}
-
-# `shellswitch bash`
-# `shellswitch zsh`
-shellswitch () {
-	chsh -s $(brew --prefix)/bin/$1
 }

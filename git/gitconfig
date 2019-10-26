@@ -20,7 +20,7 @@
   user = rtfrodrigo@gmail.com
 
 [gpg]
-  program = /usr/bin/krgpg
+  program = "/usr/local/bin/krgpg"
 
 [commit]
   gpgSign = true

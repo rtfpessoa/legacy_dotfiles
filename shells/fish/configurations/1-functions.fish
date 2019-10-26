@@ -1,3 +1,49 @@
+# Helpers
+function export_globally
+    set -gx $argv[1] "$argv[2]"
+end
+
+function list_paths
+    echo $fish_user_paths | tr " " "\n" | nl
+end
+
+function erase_path
+    set --erase --universal fish_user_paths[$argv[1]]
+end
+
+function add_to_path
+    if test -d "$argv[1]"
+        set -gx fish_user_paths "$argv[1]" $fish_user_paths
+    end
+end
+
+function varclear --description 'Remove duplicates from environment variable'
+    if test (count $argv) = 1
+        set -l newvar
+        set -l count 0
+        for v in $$argv
+            if contains -- $v $newvar
+                set count (math $count+1)
+            else
+                set newvar $newvar $v
+            end
+        end
+        set $argv $newvar
+        test $count -gt 0
+        and echo Removed $count duplicates from $argv
+    else
+        for a in $argv
+            varclear $a
+        end
+    end
+end
+
+function orDefault
+    set -q $argv[1]
+    and echo $$argv[1]
+    or echo $argv[2]
+end
+
 # Create a new directory and enter it
 function md
     mkdir -p "$argv"
@@ -60,56 +106,6 @@ function strip_diff_leading_symbols
       # actually strips the leading symbols
       sed -r "s/^($color_code_regex)[\+\-]/\1 /g"
 end
-
-# Extract archives - use: extract <file>
-# Based on http://dotfiles.org/~pseup/.bashrc
-# function extract --argument target
-#   if test -f "$target"
-#     set -l filename (basename "$target")
-#     set -l foldername "${filename%%.*}"
-#     set -l fullpath `perl -e 'use Cwd "abs_path";print abs_path(shift)' "$target"`
-#     set -l didfolderexist false
-#     if test -d "$foldername"
-#       didfolderexist=true
-#       read -p "$foldername already exists, do you want to overwrite it? (y/n) " -n 1
-#       echo
-#       if string match -r ^[Nn]$ $REPLY
-#         return
-#       end
-#     end
-#     mkdir -p "$foldername"; and cd "$foldername"
-#     switch $target
-#       case *.tar.bz2
-#         tar xjf "$fullpath"
-#       case *.tar.gz
-#         tar xzf "$fullpath"
-#       case *.tar.xz
-#         tar Jxvf "$fullpath"
-#       case *.tar.Z
-#         tar xzf "$fullpath"
-#       case *.tar
-#         tar xf "$fullpath"
-#       case *.taz
-#         tar xzf "$fullpath"
-#       case *.tb2
-#         tar xjf "$fullpath"
-#       case *.tbz
-#         tar xjf "$fullpath"
-#       case *.tbz2
-#         tar xjf "$fullpath"
-#       case *.tgz
-#         tar xzf "$fullpath"
-#       case *.txz
-#         tar Jxvf "$fullpath"
-#       case *.zip
-#         unzip "$fullpath"
-#       case *
-#         echo "'$target' cannot be extracted via extract()"; and cd ..; and ! $didfolderexist; and rm -r "$foldername"
-#     end
-#   else
-#     echo "'$target' is not a valid file"
-#   fi
-# end
 
 # who is using the laptop's iSight camera?
 function camerausedby

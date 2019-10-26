@@ -8,19 +8,13 @@ DisplayMode
 Docker
 Firefox
 Gimp
-Goolgle Chrome Canary
 Goolgle Chrome
-Intellij IDEA
-iTerm
-Logitech Options
-OmniDiskSweeper
-Skype
+Intellij IDEA Ultimate
+iTerm2
 Slack
-Soda Player
 Spectacle
 Spotify
 Steam
-Sublime Text
 Visual Studio Code
 VLC
 WebTorrent
