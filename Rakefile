@@ -250,11 +250,11 @@ def install_jabba
   puts '======================================================'
   puts 'Installing Java.'
   puts '======================================================'
-  # run %(source ~/.jabba/jabba.sh && jabba install graalvm@19.2.1)
-  run %(source ~/.jabba/jabba.sh && jabba install adopt@1.8.0-222)
-  run %(source ~/.jabba/jabba.sh && jabba install amazon-corretto@1.8.222-10.1)
-  run %(source ~/.jabba/jabba.sh && jabba install #{java_version})
-  run %(source ~/.jabba/jabba.sh && jabba alias default #{java_version})
+  # run %(. ~/.jabba/jabba.sh && jabba install graalvm@19.2.1)
+  run %(. ~/.jabba/jabba.sh && jabba install adopt@1.8.0-222)
+  run %(. ~/.jabba/jabba.sh && jabba install amazon-corretto@1.8.222-10.1)
+  run %(. ~/.jabba/jabba.sh && jabba install #{java_version})
+  run %(. ~/.jabba/jabba.sh && jabba alias default #{java_version})
 
   puts
   puts
