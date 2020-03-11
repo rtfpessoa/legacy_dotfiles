@@ -62,6 +62,8 @@ switch "$OPERATING_SYSTEM"
 		end
 end
 
+add_to_path "$HOME/.bin"
+
 # GO
 if test "$OPERATING_SYSTEM" = "Darwin"
 	export_globally GOROOT "/usr/local/opt/go/libexec"

@@ -49,4 +49,7 @@ Session.vim
 /node_modules/
 
 
-/.idea/
+.idea/
+.bloop/
+.metals/
+
