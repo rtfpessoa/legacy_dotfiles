@@ -98,7 +98,7 @@ def install_ubuntu_packages
 
   run %(sudo apt -y update)
   run %(sudo apt -y install curl unzip vim)
-  run %(sudo apt -y install ruby-dev libssl1.0-dev build-essential libssl-dev zlib1g-dev make libbz2-dev libsqlite3-dev llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev libreadline-dev autoconf bison libyaml-dev libreadline6-dev libgdbm5 libgdbm-dev)
+  run %(sudo apt -y install ruby-dev build-essential libssl-dev zlib1g-dev make libbz2-dev libsqlite3-dev llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev libreadline-dev autoconf bison libyaml-dev libreadline6-dev libgdbm5 libgdbm-dev)
   run %(sudo apt-add-repository -y ppa:git-core/ppa)
   run %(sudo apt-add-repository -y ppa:fish-shell/release-2)
   run %(sudo apt -y update)
