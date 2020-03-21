@@ -1,6 +1,6 @@
 [submodule "shells/bash/themes/agnoster"]
 	path = shells/bash/themes/agnoster
-	url = git://gist.github.com/7a745be31e89673b8fc7.git
+	url = git://github.com/7a745be31e89673b8fc7.git
 [submodule "vim/bundle/gundo"]
 	path = vim/bundle/gundo
 	url = git://github.com/sjl/gundo.vim.git
