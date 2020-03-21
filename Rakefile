@@ -139,6 +139,8 @@ def install_ubuntu_packages
   install_files Dir.glob('i3/config/*'), destination: "#{ENV['HOME']}/.config/i3", with_directories: false, prefix: '' if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('i3 configs')
   install_files Dir.glob('x11/*'), destination: "/etc/X11/xorg.conf.d", with_directories: false, prefix: '', sudo: true if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('x11 configs')
   
+  run %(git clone git://github.com/i3-gnome/i3-gnome.git && cd i3-gnome && sudo make install; cd ..; rm -rf i3-gnome)
+
   install_files Dir.glob('systemctl/*'), destination: "/etc/systemd/system", with_directories: false, prefix: '', sudo: true if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('systemd services')
   run %(sudo systemctl daemon-reload)
   Dir.glob('systemctl/*').map { |service|
