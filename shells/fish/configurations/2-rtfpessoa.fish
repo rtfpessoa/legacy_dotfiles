@@ -27,8 +27,8 @@ export_globally EDITOR vim
 export_globally VISUAL vim
 export_globally GREP_COLOR '1;33'
 
-export_globally GDK_SCALE 2
-export_globally QT_SCALE_FACTOR 1.2
+# export_globally GDK_SCALE 2
+# export_globally QT_SCALE_FACTOR 1.2
 
 # Home
 switch "$OPERATING_SYSTEM"

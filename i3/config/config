@@ -52,9 +52,9 @@ bindsym Mod1+F4 kill
 bindsym $mod+Shift+q kill
 
 # rofi/dmenu commands
-bindsym $mod+d exec $HOME/.bin/rofi -show run -theme menu-bar
-bindsym $mod+Shift+d exec $HOME/.bin/rofi -show drun -show-icons -theme menu-center
-bindsym $mod+e exec $HOME/.bin/rofimoji
+bindsym $mod+d exec rofi -show run -theme menu-bar
+bindsym $mod+Shift+d exec rofi -show drun -show-icons -theme menu-center
+bindsym $mod+e exec $HOME/.pyenv/shims/rofimoji
 
 # split in horizontal orientation
 bindsym $mod+h split h
@@ -257,8 +257,10 @@ bindsym $mod+ctrl+m exec $HOME/.config/i3/xrandr-adjust.sh && restart
 # export DISPLAY=:0
 
 # Alt+TAB
-bindsym Mod1+Tab       exec --no-startup-id $HOME/.config/yarn/global/node_modules/.bin/i3-cycle-focus
-bindsym Mod1+Shift+Tab exec --no-startup-id $HOME/.config/yarn/global/node_modules/.bin/i3-cycle-focus --reverse
+# bindsym Mod1+Tab       exec --no-startup-id $HOME/.config/yarn/global/node_modules/.bin/i3-cycle-focus
+# bindsym Mod1+Shift+Tab exec --no-startup-id $HOME/.config/yarn/global/node_modules/.bin/i3-cycle-focus --reverse
+bindsym Mod1+Tab exec --no-startup-id rofi -modi combi -combi-modi window -show combi
+
 
 ## Rules
 # Dropdown rules
@@ -314,7 +316,8 @@ exec --no-startup-id timedatectl set-local-rtc off --adjust-system-clock && time
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
-exec --no-startup-id compton --config $HOME/.config/compton/compton.conf
+# exec --no-startup-id compton --config $HOME/.config/compton/compton.conf
 exec --no-startup-id $HOME/.bin/dunstify
-exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
+# sudo apt install policykit-1-gnome
+# exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id $HOME/.bin/i3-battery-popup

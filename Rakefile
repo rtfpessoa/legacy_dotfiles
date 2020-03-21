@@ -23,8 +23,6 @@ task install: [:update] do
   install_files Dir.glob('tmux/*') if want_to_install?('tmux config')
   install_files Dir.glob('vim/{*,.[a-zA-Z]*}'), destination: "#{ENV['HOME']}/.vim", prefix: '' if want_to_install?('vim configuration')
 
-  install_files Dir.glob('bin/linux/*'), destination: "#{ENV['HOME']}/.bin", prefix: '' if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('linux binaries')
-
   install_files Dir.glob('shells/bash/runcoms/*'), with_directories: false if want_to_install?('bash configs')
   setup_fish if want_to_install?('setup fish')
 
@@ -123,7 +121,7 @@ def install_ubuntu_packages
 
   run %(sudo add-apt-repository -y ppa:kgilmer/speed-ricer)
   run %(sudo apt -y update)
-  run %(sudo apt -y install polybar compton fonts-source-code-pro-ttf i3-gaps-wm xbacklight)
+  run %(sudo apt -y install polybar compton fonts-source-code-pro-ttf i3-gaps-wm xbacklight scrot blueman)
   run %(curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin)
   run %(sudo apt -y install fonts-emojione python3 rofi xdotool xsel)
   run %(curl -fsSL https://raw.githubusercontent.com/UtkarshVerma/installer-scripts/master/betterlockscreen.sh | sudo bash)
@@ -135,13 +133,17 @@ def install_ubuntu_packages
   run %(sudo apt -y install fonts-inconsolata fonts-droid-fallback fonts-dejavu fonts-freefont-ttf fonts-liberation fonts-ubuntu fonts-ubuntu-font-family-console fonts-ubuntu-console fonts-noto fonts-noto-cjk fonts-croscore fonts-open-sans fonts-roboto fonts-dejavu fonts-dejavu-extra)
   run %(curl -fsSL https://raw.githubusercontent.com/rjekker/i3-battery-popup/master/i3-battery-popup -o $HOME/.bin/i3-battery-popup && chmod +x $HOME/.bin/i3-battery-popup)
 
-  install_files Dir.glob('i3/home_configs/*') if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('i3 home configs')
-  install_files Dir.glob('i3/config/*'), destination: "#{ENV['HOME']}/.config/i3", with_directories: false, prefix: '' if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('i3 configs')
-  install_files Dir.glob('x11/*'), destination: "/etc/X11/xorg.conf.d", with_directories: false, prefix: '', sudo: true if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('x11 configs')
+  install_files Dir.glob('bin/linux/*'), destination: "#{ENV['HOME']}/.bin", prefix: '' if want_to_install?('linux binaries')
+  install_files Dir.glob('i3/home_configs/*') if want_to_install?('i3 home configs')
+  install_files Dir.glob('i3/config/*'), destination: "#{ENV['HOME']}/.config/i3", with_directories: false, prefix: '' if want_to_install?('i3 configs')
+  install_files Dir.glob('x11/*'), destination: "/etc/X11/xorg.conf.d", with_directories: false, prefix: '', sudo: true if want_to_install?('x11 configs')
+  install_files Dir.glob('dunst/*'), destination: "#{ENV['HOME']}/.config/dunst", with_directories: false, prefix: '' if want_to_install?('dunst configs')
+  install_files Dir.glob('polybar/*'), destination: "#{ENV['HOME']}/.config/polybar", with_directories: false, prefix: '' if want_to_install?('polybar configs')
+  install_files Dir.glob('rofi/*'), destination: "#{ENV['HOME']}/.config/rofi", with_directories: false, prefix: '' if want_to_install?('rofi configs')
   
   run %(git clone git://github.com/i3-gnome/i3-gnome.git && cd i3-gnome && sudo make install; cd ..; rm -rf i3-gnome)
 
-  install_files Dir.glob('systemctl/*'), destination: "/etc/systemd/system", with_directories: false, prefix: '', sudo: true if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('systemd services')
+  install_files Dir.glob('systemctl/*'), destination: "/etc/systemd/system", with_directories: false, prefix: '', sudo: true if want_to_install?('systemd services')
   run %(sudo systemctl daemon-reload)
   Dir.glob('systemctl/*').map { |service|
     run %(sudo systemctl start #{File.basename(service)})
