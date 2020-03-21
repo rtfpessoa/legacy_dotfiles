@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -e
+
+NR_OF_DRIVES="$(sudo blkid | grep "ext4" | wc -l)"
+
+if [ ! "${NR_OF_DRIVES}" -eq 1 ]; then
+    echo "Found more than one possible drive"
+    echo "Cannot continue"
+    echo "Please run the steps manually using the correct drive"
+    exit 1
+fi
+
+RESUME_UUID="$(sudo blkid | grep "ext4" | awk '{print $2}' | awk -F'=' '{print substr($2, 2, length($2)-2)}')"
+RESUME_OFFSET="$(sudo filefrag -v /swapfile | head -n 4 | tail -n '-1' | awk '{print substr($4, 0, length($4)-1)}')"
+echo "resume=UUID=${RESUME_UUID} resume_offset=${RESUME_OFFSET}" | sudo tee /etc/initramfs-tools/conf.d/resume
+
+echo "Now manually add to GRUB_CMDLINE_LINUX_DEFAULT in /etc/default/grub => `resume=UUID=${RESUME_UUID} resume_offset=${RESUME_OFFSET}`"

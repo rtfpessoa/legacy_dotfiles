@@ -1,0 +1,39 @@
+! filename: ~/.Xresources
+
+!
+! Commands:
+!   [[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
+!   xrdb -query -all
+!   xdpyinfo | grep dots
+!   xrdb -query | grep dpi
+!
+
+! Formula 1
+! $ xrandr | grep -w connected
+! > eDP-1 connected primary 3840x2160+0+0 (normal left inverted right x axis y axis) 344mm x 194mm
+! > Screen size = 15.6 inches
+! = sqrt(3840^2+2160^2)/15.6
+! DPI:  282.42
+
+! Formula 2
+! $ xrandr | grep -w connected
+! > eDP-1 connected primary 3840x2160+0+0 (normal left inverted right x axis y axis) 344mm x 194mm
+! = 3840/34.4
+! DPI:  111.62
+
+*customization:	-color
+
+Xft.dpi:	192
+Xft.antialias:	1
+Xft.hinting:	1
+Xft.hintstyle:	hintslight
+Xft.rgba:	rgb
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+
+Xcursor.size:	48
+Xcursor.theme:	DMZ-White
+
+XTerm.termName: xterm-256color
+XTerm.vt100.locale: true
+XTerm.vt100.saveLines: 4096

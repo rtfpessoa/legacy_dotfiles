@@ -1,1 +1,5 @@
 awscli
+ytool
+mkdocs
+aws-google-auth
+undervolt

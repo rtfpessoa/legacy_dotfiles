@@ -11,6 +11,7 @@ task install: [:update] do
   puts
 
   install_ubuntu_packages if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('ubuntu packages')
+
   install_homebrew_and_packages if RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('homebrew and packages')
 
   install_pyenv if want_to_install?('pyenv')
@@ -21,6 +22,8 @@ task install: [:update] do
   install_files Dir.glob('git/*') if want_to_install?('git configs (color, aliases)')
   install_files Dir.glob('tmux/*') if want_to_install?('tmux config')
   install_files Dir.glob('vim/{*,.[a-zA-Z]*}'), destination: "#{ENV['HOME']}/.vim", prefix: '' if want_to_install?('vim configuration')
+
+  install_files Dir.glob('bin/linux/*'), destination: "#{ENV['HOME']}/.bin", prefix: '' if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('linux binaries')
 
   install_files Dir.glob('shells/bash/runcoms/*'), with_directories: false if want_to_install?('bash configs')
   setup_fish if want_to_install?('setup fish')
@@ -42,7 +45,7 @@ task :update do
     puts '======================================================'
     puts 'Downloading Unix configs submodules...please wait'
     puts '======================================================'
-    puts run %( cd $DOTFILES; git submodule update --init --recursive --remote --force --jobs 8 )
+    puts run %( cd $DOTFILES; git submodule update --init --recursive --remote --force --jobs 12 )
     puts
   end
 end
@@ -91,9 +94,11 @@ def install_ubuntu_packages
   puts 'Installing Ubuntu Packages.'
   puts '======================================================'
 
+  run %(mkdir -p #{ENV['HOME']}/.bin)
+
   run %(sudo apt -y update)
   run %(sudo apt -y install curl unzip vim)
-  run %(sudo apt -y install ruby-dev build-essential libssl-dev zlib1g-dev make libbz2-dev libsqlite3-dev llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev libreadline-dev)
+  run %(sudo apt -y install ruby ruby-dev ruby-rake libssl1.0-dev build-essential libssl-dev zlib1g-dev make libbz2-dev libsqlite3-dev llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev libreadline-dev autoconf bison libyaml-dev libreadline6-dev libgdbm5 libgdbm-dev)
   run %(sudo apt-add-repository -y ppa:git-core/ppa)
   run %(sudo apt-add-repository -y ppa:fish-shell/release-2)
   run %(sudo apt -y update)
@@ -104,12 +109,54 @@ def install_ubuntu_packages
   run %(sudo locale-gen en_GB.UTF-8)
   run %(sudo update-locale LANG=en_GB.UTF-8)
 
+  run %(sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackHack96/dell-xps-9570-ubuntu-respin/master/xps-tweaks.sh)")
+  run %(sudo apt -y install intel-microcode inteltool intel-gpu-tools)
+  run %(sudo systemctl daemon-reload)
+  run %(sudo systemctl start undervolt.service)
+  run %(sudo systemctl enable undervolt.service)
+  run %(sudo systemctl start undervolt.timer)
+  run %(sudo systemctl enable undervolt.timer)
+  run %(sudo apt -y install gnome-software-plugin-snap gnome-software-plugin-flatpak)
+  run %(sudo add-apt-repository ppa:yubico/stable)
+  run %(sudo apt -y install yubikey-manager-qt yubioath-desktop yubikey-personalization-gui yubikey-piv-manager)
+  run %(sudo apt -y install chrome-gnome-shell)
+  run %(sudo apt -y install smbios-utils)
+  run %(sudo smbios-thermal-ctl --set-thermal-mode=cool-bottom)
+  run %(sudo apt -y install xserver-xorg-input-libinput)
+  run %(sudo apt -y remove --purge xserver-xorg-input-synaptics)
+  run %(sudo apt -y install i7z powertop powerstat i8kutils)
+
+  run %(sudo apt -y install xbacklight)
+  run %(curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin)
+  run %(sudo apt -y install fonts-emojione rofi xdotool)
+  run %(curl -fsSL https://raw.githubusercontent.com/fdw/rofimoji/master/rofimoji.py -o #{ENV['HOME']}/.bin/rofimoji && chmod +x #{ENV['HOME']}/.bin/rofimoji)
+  run %(curl -fsSL https://raw.githubusercontent.com/UtkarshVerma/installer-scripts/master/betterlockscreen.sh | sudo bash)
+  run %(sudo apt -y install bc imagemagick libjpeg-turbo8-dev libpam0g-dev libxcb-composite0 libxcb-composite0-dev libxcb-image0-dev libxcb-randr0 libxcb-util-dev libxcb-xinerama0 libxcb-xinerama0-dev libxcb-xkb-dev libxkbcommon-x11-dev feh libev-dev)
+  run %(curl -fsSL https://github.com/altdesktop/playerctl/releases/download/v2.1.1/playerctl-2.1.1_amd64.deb -o playerctl.deb && sudo dpkg -i playerctl.deb && rm -f playerctl.deb)
+  run %(sudo apt -y install polybar)
+  run %(sudo apt -y install libdbus-1-dev libx11-dev libxinerama-dev libxrandr-dev libxss-dev libglib2.0-dev libpango1.0-dev libgtk-3-dev libxdg-basedir-dev libnotify-dev)
+  run %(cd /tmp && git clone https://github.com/dunst-project/dunst.git && cd dunst && make dunstify && cp -vs ./dunstify #{ENV['HOME']}/.bin/dunstify)
+  run %(sudo apt -y install libxcb-xrm-dev checkinstall xautolock xss-lock)
+  run %(sudo apt -y install fonts-inconsolata fonts-droid-fallback fonts-dejavu fonts-freefont-ttf fonts-liberation fonts-ubuntu fonts-ubuntu-font-family-console fonts-ubuntu-console fonts-noto fonts-noto-cjk fonts-croscore fonts-open-sans fonts-roboto fonts-dejavu fonts-dejavu-extra)
+  run %(curl -fsSL https://raw.githubusercontent.com/rjekker/i3-battery-popup/master/i3-battery-popup -o $HOME/.bin/i3-battery-popup && chmod +x $HOME/.bin/i3-battery-popup)
+
+  install_files Dir.glob('i3/home_configs/*') if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('i3 home configs')
+  install_files Dir.glob('i3/config/*'), destination: "#{ENV['HOME']}/.config/i3", with_directories: false, prefix: '' if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('i3 configs')
+  install_files Dir.glob('x11/*'), destination: "/etc/X11/xorg.conf.d", with_directories: false, prefix: '', sudo: true if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('x11 configs')
+  install_files Dir.glob('systemctl/*'), destination: "/etc/systemd/system", with_directories: false, prefix: '', sudo: true if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('systemd services')
+
+  Dir.glob('systemctl/*').map { |service|
+    run %(sudo systemctl start #{service})
+    run %(sudo systemctl enable #{service})
+  }
+
   puts
   puts
 end
 
 def install_pyenv
-  python_version = '3.7.5'
+  python2_version = '2.7.17'
+  python3_version = '3.7.7'
 
   if RUBY_PLATFORM.downcase.include?('darwin')
     run %(brew install python3)
@@ -135,8 +182,9 @@ def install_pyenv
   puts '======================================================'
 
   run %(cd #{ENV['HOME']}/.pyenv && git pull)
-  run %(#{ENV['HOME']}/.pyenv/bin/pyenv install -s #{python_version})
-  run %(#{ENV['HOME']}/.pyenv/bin/pyenv global #{python_version})
+  run %(#{ENV['HOME']}/.pyenv/bin/pyenv install -s #{python2_version})
+  run %(#{ENV['HOME']}/.pyenv/bin/pyenv install -s #{python3_version})
+  run %(#{ENV['HOME']}/.pyenv/bin/pyenv global #{python3_version})
   run %(#{ENV['HOME']}/.pyenv/bin/pyenv rehash)
 
   puts
@@ -144,13 +192,13 @@ def install_pyenv
   puts '======================================================'
   puts 'Installing packages...There may be some warnings.'
   puts '======================================================'
-  run %(#{ENV['HOME']}/.pyenv/shims/python3 -m pip install --ignore-installed --no-cache-dir --upgrade --requirement requirements.txt)
+  run %(#{ENV['HOME']}/.pyenv/shims/python -m pip install --ignore-installed --no-cache-dir --upgrade --requirement requirements.txt)
   puts
   puts
 end
 
 def install_rbenv
-  ruby_version = '2.6.5'
+  ruby_version = '2.7.0'
 
   run %(which rbenv)
   unless $?.success?
@@ -193,7 +241,7 @@ def install_rbenv
 end
 
 def install_nodenv
-  node_version = '12.13.0'
+  node_version = '12.16.1'
 
   run %(which nodenv)
   unless $?.success?
@@ -226,7 +274,7 @@ def install_nodenv
   run %(#{ENV['HOME']}/.nodenv/shims/npm install -g yarn)
   run %(#{ENV['HOME']}/.nodenv/bin/nodenv rehash)
 
-  run %(#{ENV['HOME']}/.nodenv/shims/yarn global add diff2html-cli)
+  run %(#{ENV['HOME']}/.nodenv/shims/yarn global add diff2html-cli i3-cycle-focus)
   run %(#{ENV['HOME']}/.nodenv/bin/nodenv rehash)
 
   puts
@@ -234,7 +282,7 @@ def install_nodenv
 end
 
 def install_jabba
-  java_version = 'adopt-openj9@1.8.0-222'
+  java_version = 'amazon-corretto@1.8.242-08.1'
 
   run %(which jabba)
   unless $?.success?
@@ -250,9 +298,9 @@ def install_jabba
   puts '======================================================'
   puts 'Installing Java.'
   puts '======================================================'
-  # run %(. ~/.jabba/jabba.sh && jabba install graalvm@19.2.1)
-  run %(. ~/.jabba/jabba.sh && jabba install adopt@1.8.0-222)
-  run %(. ~/.jabba/jabba.sh && jabba install amazon-corretto@1.8.222-10.1)
+  run %(. ~/.jabba/jabba.sh && jabba install adopt@1.8.0-242)
+  run %(. ~/.jabba/jabba.sh && jabba install adopt-openj9@1.8.0-242)
+  run %(. ~/.jabba/jabba.sh && jabba install graalvm@20.0.0)
   run %(. ~/.jabba/jabba.sh && jabba install #{java_version})
   run %(. ~/.jabba/jabba.sh && jabba alias default #{java_version})
 
@@ -367,8 +415,14 @@ def copy_files(src, dest)
   run %(cp -rfv #{src}/* #{dest}/) if File.exist?(src) && File.exist?(dest)
 end
 
-def install_files(files, origin: ENV['PWD'], destination: ENV['HOME'], method: :symlink, with_directories: true, prefix: '.')
-  run %( mkdir -p #{ENV['HOME']}/.dotfiles.bak )
+def install_files(files, origin: ENV['PWD'], destination: ENV['HOME'], method: :symlink, with_directories: true, prefix: '.', sudo: false)
+  maybe_sudo = if sudo
+    'sudo'
+  else
+    ''
+  end
+
+  run %( #{maybe_sudo} mkdir -p #{ENV['HOME']}/.dotfiles.bak )
   backup_dir = Dir.mktmpdir('backup-', "#{ENV['HOME']}/.dotfiles.bak")
 
   files.each do |f|
@@ -382,16 +436,16 @@ def install_files(files, origin: ENV['PWD'], destination: ENV['HOME'], method: :
 
     if File.exist?(target) && !File.symlink?(target)
       puts "[Overwriting] #{target}...leaving original at #{backup_dir}/#{file}..."
-      run %( mkdir -p "#{backup_dir}" )
-      run %( mv "#{target}" "#{backup_dir}/#{file}" )
+      run %( #{maybe_sudo} mkdir -p "#{backup_dir}" )
+      run %( #{maybe_sudo} mv "#{target}" "#{backup_dir}/#{file}" )
     end
 
     if !File.directory?(source) || with_directories
-      run %( mkdir -p "#{destination}" )
+      run %( #{maybe_sudo} mkdir -p "#{destination}" )
       if method == :symlink
-        run %( ln -nfs "#{source}" "#{target}" )
+        run %( #{maybe_sudo} ln -nfs "#{source}" "#{target}" )
       else
-        run %( cp -f "#{source}" "#{target}" )
+        run %( #{maybe_sudo} cp -f "#{source}" "#{target}" )
       end
     end
 

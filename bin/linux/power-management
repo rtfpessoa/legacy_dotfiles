@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Enable turbo boost
+#   - https://www.kernel.org/doc/html/v4.12/admin-guide/pm/intel_pstate.html
+
+# VALUES
+
+PROFILE="$1"
+
+PROFILES=( "performance" "balanced" "powersave" "survival" )
+
+# Defaults for performance
+TURBO_BOOT_DISABLED="0"
+ENERGY_PREFERENCE="performance"
+GOVERNOR="performance"
+THERMAL_PROFILE="cool-bottom"
+MIN_CPU_FREQ="800000"
+MAX_CPU_FREQ="4800000"
+MIN_PERF_PCT="16"
+MAX_PERF_PCT="100"
+
+# Count number of processors
+# CPU_COUNT="$(cat /proc/cpuinfo | grep processor | wc -l)"
+
+# FUNCTIONS
+
+function usage() {
+    echo "usage: $0 ( ${PROFILES[@]} )"
+    exit 1
+}
+
+if [[ -z "$PROFILE" ]]; then
+    echo "A profile argument is required"
+    usage
+elif [[ ! "${PROFILES[@]}" =~ "${PROFILE}" ]]; then
+    echo "The profile ${PROFILE} is not valid"
+    usage
+fi
+
+if [ "$PROFILE" = "performance" ]; then
+    TURBO_BOOT_DISABLED="0"
+    ENERGY_PREFERENCE="performance"
+    GOVERNOR="performance"
+    THERMAL_PROFILE="cool-bottom"
+    MAX_CPU_FREQ="4800000"
+    MIN_CPU_FREQ="800000"
+elif [ "$PROFILE" = "balanced" ]; then
+    TURBO_BOOT_DISABLED="1"
+    ENERGY_PREFERENCE="balance_performance"
+    GOVERNOR="performance"
+    THERMAL_PROFILE="cool-bottom"
+    MAX_CPU_FREQ="2900000"
+    MIN_CPU_FREQ="800000"
+elif [ "$PROFILE" = "powersave" ]; then
+    TURBO_BOOT_DISABLED="1"
+    ENERGY_PREFERENCE="balance_power"
+    GOVERNOR="powersave"
+    THERMAL_PROFILE="cool-bottom"
+    MAX_CPU_FREQ="1500000"
+    MIN_CPU_FREQ="240000"
+elif [ "$PROFILE" = "survival" ]; then
+    TURBO_BOOT_DISABLED="1"
+    ENERGY_PREFERENCE="power"
+    GOVERNOR="powersave"
+    THERMAL_PROFILE="balanced"
+    MAX_CPU_FREQ="1000000"
+    MIN_CPU_FREQ="240000"
+else
+    echo "The profile ${PROFILE} is missing settings to be applied"
+    exit 1
+fi
+
+set -eux
+
+# NoTurbo options: 0 | 1
+echo "${TURBO_BOOT_DISABLED}" | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo
+
+# Energy options: default | performance | balance_performance | balance_power | power
+echo "${ENERGY_PREFERENCE}" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference
+
+# Governor options: powersave | performance
+cpupower frequency-set -g "${GOVERNOR}"
+# echo "${GOVERNOR}" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+
+# Thermal options: quiet | balanced | cool-bottom | performance
+smbios-thermal-ctl --set-thermal-mode="${THERMAL_PROFILE}"
+
+# Performance options: 0...100
+# NOTE: Seems to influence the frequencies you can set but does not affect previous usages?
+echo "${MAX_PERF_PCT}" | sudo tee /sys/devices/system/cpu/intel_pstate/max_perf_pct
+echo "${MIN_PERF_PCT}" | sudo tee /sys/devices/system/cpu/intel_pstate/min_perf_pct
+
+# Frequency options: 800000...4800000
+cpupower frequency-set -u "${MAX_CPU_FREQ}"
+cpupower frequency-set -d "${MIN_CPU_FREQ}"
+# echo "${MAX_CPU_FREQ}" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq
+# echo "${MIN_CPU_FREQ}" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_min_freq
+
+# Status options:
+# NOTE: Cannot be changed in runtime
+#   - "active" The driver is functional and in the active mode.
+#   - "passive" The driver is functional and in the passive mode.
+#   - "off" The driver is not functional (it is not registered as a scaling driver with the CPUFreq core).
+# PSTATE="active"
+# echo "${PSTATE}" | sudo tee /sys/devices/system/cpu/intel_pstate/status
+
+# Check processor max and min frequencies
+# cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_max_freq
+# cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_min_freq
+
+# Monitor current CPU FREQ
+# watch grep \"cpu MHz\" /proc/cpuinfo
+
+# Monitor temperature
+# sensors

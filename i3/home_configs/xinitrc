@@ -1,0 +1,10 @@
+# filename: ~/.xinitrc
+
+# Config parameters for X client applications
+[ -f ~/.Xresources ] && xrdb -merge ~/.Xresources
+
+# Disable DPMS and turn off screen blanking
+xset s off -dpms
+
+# Janitor
+[ -d ~/.local/share/Trash ] && rm -rf ~/.local/share/Trash/*
