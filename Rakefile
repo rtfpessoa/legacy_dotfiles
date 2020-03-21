@@ -99,8 +99,8 @@ def install_ubuntu_packages
   run %(sudo apt -y update)
   run %(sudo apt -y install curl unzip vim)
   run %(sudo apt -y install ruby-dev build-essential libssl-dev zlib1g-dev make libbz2-dev libsqlite3-dev llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev libreadline-dev autoconf bison libyaml-dev libreadline6-dev libgdbm5 libgdbm-dev)
-  run %(sudo apt-add-repository -y ppa:git-core/ppa)
-  run %(sudo apt-add-repository -y ppa:fish-shell/release-2)
+  run %(sudo add-apt-repository -y ppa:git-core/ppa)
+  run %(sudo add-apt-repository -y ppa:fish-shell/release-2)
   run %(sudo apt -y update)
   run %(sudo apt -y upgrade)
   run %(sudo apt -y install git)
@@ -109,15 +109,10 @@ def install_ubuntu_packages
   run %(sudo locale-gen en_GB.UTF-8)
   run %(sudo update-locale LANG=en_GB.UTF-8)
 
-  run %(sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackHack96/dell-xps-9570-ubuntu-respin/master/xps-tweaks.sh)")
+  # run %(sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackHack96/dell-xps-9570-ubuntu-respin/master/xps-tweaks.sh)")
   run %(sudo apt -y install intel-microcode inteltool intel-gpu-tools)
-  run %(sudo systemctl daemon-reload)
-  run %(sudo systemctl start undervolt.service)
-  run %(sudo systemctl enable undervolt.service)
-  run %(sudo systemctl start undervolt.timer)
-  run %(sudo systemctl enable undervolt.timer)
   run %(sudo apt -y install gnome-software-plugin-snap gnome-software-plugin-flatpak)
-  run %(sudo add-apt-repository ppa:yubico/stable)
+  run %(sudo add-apt-repository -y ppa:yubico/stable)
   run %(sudo apt -y install yubikey-manager-qt yubioath-desktop yubikey-personalization-gui yubikey-piv-manager)
   run %(sudo apt -y install chrome-gnome-shell)
   run %(sudo apt -y install smbios-utils)
@@ -126,17 +121,16 @@ def install_ubuntu_packages
   run %(sudo apt -y remove --purge xserver-xorg-input-synaptics)
   run %(sudo apt -y install i7z powertop powerstat i8kutils)
 
-  run %(sudo add-apt-repository ppa:kgilmer/speed-ricer)
+  run %(sudo add-apt-repository -y ppa:kgilmer/speed-ricer)
   run %(sudo apt -y update)
   run %(sudo apt -y install polybar compton fonts-source-code-pro-ttf i3-gaps-wm xbacklight)
-  run %(curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin)
-  run %(sudo apt -y install fonts-emojione rofi xdotool)
-  run %(curl -fsSL https://raw.githubusercontent.com/fdw/rofimoji/master/rofimoji.py -o #{ENV['HOME']}/.bin/rofimoji && chmod +x #{ENV['HOME']}/.bin/rofimoji)
+  run %(curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin)
+  run %(sudo apt -y install fonts-emojione python3 rofi xdotool xsel)
   run %(curl -fsSL https://raw.githubusercontent.com/UtkarshVerma/installer-scripts/master/betterlockscreen.sh | sudo bash)
   run %(sudo apt -y install bc imagemagick libjpeg-turbo8-dev libpam0g-dev libxcb-composite0 libxcb-composite0-dev libxcb-image0-dev libxcb-randr0 libxcb-util-dev libxcb-xinerama0 libxcb-xinerama0-dev libxcb-xkb-dev libxkbcommon-x11-dev feh libev-dev)
-  run %(curl -fsSL https://github.com/altdesktop/playerctl/releases/download/v2.1.1/playerctl-2.1.1_amd64.deb -o playerctl.deb && sudo dpkg -i playerctl.deb && rm -f playerctl.deb)
+  run %(curl -fsSL https://github.com/altdesktop/playerctl/releases/download/v2.1.1/playerctl-2.1.1_amd64.deb -o playerctl.deb && sudo dpkg -i playerctl.deb; rm -f playerctl.deb)
   run %(sudo apt -y install libdbus-1-dev libx11-dev libxinerama-dev libxrandr-dev libxss-dev libglib2.0-dev libpango1.0-dev libgtk-3-dev libxdg-basedir-dev libnotify-dev)
-  run %(cd /tmp && git clone https://github.com/dunst-project/dunst.git && cd dunst && make dunstify && cp -vs ./dunstify #{ENV['HOME']}/.bin/dunstify)
+  run %(cd /tmp && git clone https://github.com/dunst-project/dunst.git && cd dunst && make dunstify && cp -f ./dunstify #{ENV['HOME']}/.bin/dunstify)
   run %(sudo apt -y install libxcb-xrm-dev checkinstall xautolock xss-lock)
   run %(sudo apt -y install fonts-inconsolata fonts-droid-fallback fonts-dejavu fonts-freefont-ttf fonts-liberation fonts-ubuntu fonts-ubuntu-font-family-console fonts-ubuntu-console fonts-noto fonts-noto-cjk fonts-croscore fonts-open-sans fonts-roboto fonts-dejavu fonts-dejavu-extra)
   run %(curl -fsSL https://raw.githubusercontent.com/rjekker/i3-battery-popup/master/i3-battery-popup -o $HOME/.bin/i3-battery-popup && chmod +x $HOME/.bin/i3-battery-popup)
@@ -144,11 +138,12 @@ def install_ubuntu_packages
   install_files Dir.glob('i3/home_configs/*') if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('i3 home configs')
   install_files Dir.glob('i3/config/*'), destination: "#{ENV['HOME']}/.config/i3", with_directories: false, prefix: '' if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('i3 configs')
   install_files Dir.glob('x11/*'), destination: "/etc/X11/xorg.conf.d", with_directories: false, prefix: '', sudo: true if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('x11 configs')
+  
   install_files Dir.glob('systemctl/*'), destination: "/etc/systemd/system", with_directories: false, prefix: '', sudo: true if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('systemd services')
-
+  run %(sudo systemctl daemon-reload)
   Dir.glob('systemctl/*').map { |service|
-    run %(sudo systemctl start #{service})
-    run %(sudo systemctl enable #{service})
+    run %(sudo systemctl start #{File.basename(service)})
+    run %(sudo systemctl enable #{File.basename(service)})
   }
 
   puts
@@ -194,6 +189,7 @@ def install_pyenv
   puts 'Installing packages...There may be some warnings.'
   puts '======================================================'
   run %(#{ENV['HOME']}/.pyenv/shims/python -m pip install --ignore-installed --no-cache-dir --upgrade --requirement requirements.txt)
+  run %(curl -fsSL https://github.com/fdw/rofimoji/releases/download/4.1.0/rofimoji-4.1.0-py3-none-any.whl -o rofimoji-4.1.0-py3-none-any.whl && #{ENV['HOME']}/.pyenv/shims/python -m pip install rofimoji-4.1.0-py3-none-any.whl; rm -f rofimoji-4.1.0-py3-none-any.whl)
   puts
   puts
 end
@@ -291,7 +287,7 @@ def install_jabba
     puts 'Installing jabba'
     puts 'already installed, this will do nothing.'
     puts '======================================================'
-    run %(curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash)
+    run %(curl -fsSL https://github.com/shyiko/jabba/raw/master/install.sh | bash)
   end
 
   puts

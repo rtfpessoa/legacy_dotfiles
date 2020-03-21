@@ -5,9 +5,5 @@ Description=undervolt
 
 [Service]
 Type=oneshot
-# If you have installed undervolt globally (via sudo pip install):
-# ExecStart=undervolt -v --core -150 --cache -150 --gpu -50
 # If you want to run from source:
-ExecStart=/usr/local/bin/undervolt -v --core -150 --gpu -50 --cache -150 --uncore -50 --temp 75
-# Using throttlestop
-# ExecStart=/usr/local/bin/undervolt -v --throttlestop /home/rtfpessoa/.config/throttlestop/config.ini --tsindex 0
+ExecStart=/home/rtfpessoa/.pyenv/shims/undervolt -v --core -150 --gpu -50 --cache -150 --uncore -50 --temp 75

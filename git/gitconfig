@@ -20,14 +20,14 @@
   user = rtfrodrigo@gmail.com
 
 [gpg]
-  program = "/usr/local/bin/krgpg"
+	program = /usr/bin/krgpg
 
 [commit]
-  gpgSign = true
+	gpgSign = true
   template = ~/.gitmessage
 
 [tag]
-  forceSignAnnotated = true
+	forceSignAnnotated = true
 
 #}}}
 # color {{{
