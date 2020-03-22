@@ -2,18 +2,22 @@
 
 set -e
 
-NR_OF_DRIVES="$(sudo blkid | grep "ext4" | grep -v "PARTUUID" | wc -l)"
+DRIVE_UUID=$(cat /etc/fstab | grep -E 'UUID.+\s+\/\s+' | awk '{print $1}' | awk -F'=' '{print $2}')
+DRIVE="$(sudo blkid | grep "${DRIVE_UUID}")"
+NR_OF_DRIVES="$(sudo blkid | grep "${DRIVE_UUID}" | wc -l)"
 
 if [ ! "${NR_OF_DRIVES}" -eq 1 ]; then
-    echo "Found more than one possible drive"
+    echo "Found a number differente from one of possible drives"
     echo "Cannot continue"
     echo "Please run the steps manually using the correct drive"
     exit 1
 fi
 
-RESUME_UUID="$(sudo blkid | grep "ext4" | grep -v "PARTUUID" | awk '{print $2}' | awk -F'=' '{print substr($2, 2, length($2)-2)}')"
-RESUME_OFFSET="$(sudo filefrag -v /swapfile | head -n 4 | tail -n '-1' | awk '{print substr($4, 0, length($4)-1)}')"
-echo "resume=UUID=${RESUME_UUID} resume_offset=${RESUME_OFFSET}" | sudo tee /etc/initramfs-tools/conf.d/resume
+RESUME_OFFSET="$(sudo filefrag -v /swapfile | head -n 4 | tail -n '-1' | awk '{print $4}' | awk -F'.' '{print $1}')"
+echo "resume=UUID=${DRIVE_UUID} resume_offset=${RESUME_OFFSET}" | sudo tee /etc/initramfs-tools/conf.d/resume
+if ! grep -q 'resume=UUID' /etc/default/grub; then
+    sudo sed -Ei 's/GRUB_CMDLINE_LINUX_DEFAULT="(.*)"/GRUB_CMDLINE_LINUX_DEFAULT="\1 '"resume=UUID=${DRIVE_UUID} resume_offset=${RESUME_OFFSET}"'"/g' /etc/default/grub
+fi
 
-echo "Now manually add to GRUB_CMDLINE_LINUX_DEFAULT in /etc/default/grub => 'resume=UUID=${RESUME_UUID} resume_offset=${RESUME_OFFSET}'"
-echo "resume=UUID=${RESUME_UUID} resume_offset=${RESUME_OFFSET}" | xclip -selection clipboard
+ sudo update-initramfs -u -k all
+ sudo update-grub2
