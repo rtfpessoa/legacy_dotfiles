@@ -120,6 +120,7 @@ def install_ubuntu_packages
 
   run %(curl -fsSL https://github.com/Versent/saml2aws/releases/download/v2.25.0/saml2aws_2.25.0_linux_amd64.tar.gz -o saml2aws.tar.gz && tar -xzvf saml2aws.tar.gz -C $HOME/.bin saml2aws && chmod u+x ~/.bin/saml2aws; rm -f saml2aws.tar.gz)
   run %(curl -fsSL https://github.com/derailed/k9s/releases/download/v0.17.7/k9s_Linux_x86_64.tar.gz -o k9s.tar.gz && tar -xzvf k9s.tar.gz -C $HOME/.bin k9s && chmod u+x ~/.bin/k9s; rm -f k9s.tar.gz)
+  run %(curl -fsSL https://github.com/digitalocean/doctl/releases/download/v1.39.0/doctl-1.39.0-linux-amd64.tar.gz -o doctl.tar.gz && tar -xzvf doctl.tar.gz -C $HOME/.bin doctl && chmod u+x ~/.bin/doctl; rm -f doctl.tar.gz)
 
   # run %(sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackHack96/dell-xps-9570-ubuntu-respin/master/xps-tweaks.sh)")
   run %(sudo apt -y install intel-microcode inteltool intel-gpu-tools lm-sensors)
@@ -176,6 +177,16 @@ def install_ubuntu_packages
   run %(sudo snap install go --classic)
   run %(sudo snap install snapcraft --classic)
   run %(sudo snap install helm --channel=2.16/stable --classic)
+
+  # Setup swap and hibernation
+  run %(sudo apt -y install policykit-1-gnome)
+  run %(swapon --show)
+  run %(sudo swapoff /swapfile)
+  run %(sudo fallocate -l 32G /swapfile)
+  run %(sudo mkswap /swapfile)
+  run %(sudo chmod 600 /swapfile)
+  run %(sudo swapon /swapfile)
+  run %(swapon --show)
 
   puts
   puts

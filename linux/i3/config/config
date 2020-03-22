@@ -318,6 +318,5 @@ exec_always --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 exec --no-startup-id compton --config $HOME/.config/compton/compton.conf
 exec --no-startup-id $HOME/.bin/dunstify
-# sudo apt install policykit-1-gnome
-# exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
+exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id $HOME/.bin/i3-battery-popup
