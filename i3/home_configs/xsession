@@ -1,4 +1,4 @@
-# filename: ~/.xinitrc
+# filename: ~/.xsession
 
 # Config parameters for X client applications
 [ -f ~/.Xresources ] && xrdb -merge ~/.Xresources

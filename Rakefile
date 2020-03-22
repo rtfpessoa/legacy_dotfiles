@@ -136,13 +136,12 @@ def install_ubuntu_packages
   install_files Dir.glob('bin/linux/*'), destination: "#{ENV['HOME']}/.bin", prefix: '' if want_to_install?('linux binaries')
   install_files Dir.glob('i3/home_configs/*') if want_to_install?('i3 home configs')
   install_files Dir.glob('i3/config/*'), destination: "#{ENV['HOME']}/.config/i3", with_directories: false, prefix: '' if want_to_install?('i3 configs')
+  install_files Dir.glob('i3/xsession/*'), destination: "/usr/share/xsessions", with_directories: false, prefix: '', sudo: true if want_to_install?('i3 xsession configs')
   install_files Dir.glob('x11/*'), destination: "/etc/X11/xorg.conf.d", with_directories: false, prefix: '', sudo: true if want_to_install?('x11 configs')
   install_files Dir.glob('dunst/*'), destination: "#{ENV['HOME']}/.config/dunst", with_directories: false, prefix: '' if want_to_install?('dunst configs')
   install_files Dir.glob('polybar/*'), destination: "#{ENV['HOME']}/.config/polybar", with_directories: false, prefix: '' if want_to_install?('polybar configs')
   install_files Dir.glob('rofi/*'), destination: "#{ENV['HOME']}/.config/rofi", with_directories: false, prefix: '' if want_to_install?('rofi configs')
   install_files Dir.glob('systemd/*'), destination: "#{ENV['HOME']}/.config/systemd", with_directories: false, prefix: '' if want_to_install?('systemd user configs')
-  
-  run %(git clone git://github.com/i3-gnome/i3-gnome.git && cd i3-gnome && sudo make install; cd ..; rm -rf i3-gnome)
 
   install_files Dir.glob('systemctl/*'), destination: "/etc/systemd/system", with_directories: false, prefix: '', sudo: true if want_to_install?('systemd services')
   run %(sudo systemctl daemon-reload)
