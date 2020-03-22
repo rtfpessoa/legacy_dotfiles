@@ -159,6 +159,7 @@ def install_ubuntu_packages
   install_files Dir.glob('linux/systemd/*'), destination: "/etc/systemd", with_directories: false, prefix: '', sudo: true if want_to_install?('systemd user configs')
   install_files Dir.glob('linux/polkit-1/*'), destination: "/etc/polkit-1/localauthority/50-local.d", with_directories: false, prefix: '', sudo: true if want_to_install?('polkit-1 configs')
   install_files Dir.glob('linux/compton/*'), destination: "#{ENV['HOME']}/.config/compton", with_directories: false, prefix: '' if want_to_install?('compton configs')
+  install_files Dir.glob('linux/spotify/*'), destination: "/var/lib/snapd/desktop/applications", with_directories: false, prefix: '', sudo: true if want_to_install?('spotify scaling')
 
   install_files Dir.glob('linux/udev/*'), destination: "/etc/udev/rules.d", with_directories: false, prefix: '', sudo: true if want_to_install?('udev configs')
   run %(sudo usermod -aG video #{ENV['USER']})
