@@ -23,7 +23,12 @@ with some changes for personal setup on Mac OS and Ubuntu.
 
 ### Install
 
-To get started please run:
+**To prepare Ubuntu in Dell XPS 15 9570**
+```sh
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackHack96/dell-xps-9570-ubuntu-respin/master/xps-tweaks.sh)"
+```
+
+**To setup the dotfiles**
 
 ```sh
 bash -c "`curl -fsSL https://raw.githubusercontent.com/rtfpessoa/dotfiles/master/dotfiles.sh`" -s -c install

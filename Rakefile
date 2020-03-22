@@ -171,18 +171,18 @@ def install_ubuntu_packages
     run %(sudo systemctl enable #{File.basename(service)})
   }
 
-  run %(sudo snap install intellij-idea-ultimate --classic)
   run %(sudo snap install code --classic)
   run %(sudo snap install spotify)
   run %(sudo snap install vlc)
-  run %(sudo snap install kubectl --classic) # --channel=1.17/stable
-  run %(sudo snap install go --classic)
+  run %(sudo snap install kubectl --classic)
   run %(sudo snap install snapcraft --classic)
   run %(sudo snap install helm --channel=2.16/stable --classic)
+  # run %(sudo snap install intellij-idea-ultimate --classic)
+  # run %(sudo snap install go --classic)
 
   # Setup swap and hibernation
-  run %(sudo apt -y install policykit-1-gnome)
-  run %(swapon --show | grep "32G" || \(sudo swapoff /swapfile && sudo fallocate -l 32G /swapfile && sudo mkswap /swapfile && sudo chmod 600 /swapfile && sudo swapon /swapfile && swapon --show\))
+  # run %(sudo apt -y install policykit-1-gnome)
+  run %(swapon --show | grep "32G" || \(sudo swapoff /swapfile && sudo fallocate -l 32G /swapfile && sudo mkswap /swapfile && sudo chmod 600 /swapfile && sudo swapon /swapfile && swapon --show && bash ./linux/bin/update-hibernate\))
 
   puts
   puts
