@@ -133,7 +133,7 @@ def install_ubuntu_packages
   run %(sudo apt -y install fonts-inconsolata fonts-droid-fallback fonts-dejavu fonts-freefont-ttf fonts-liberation fonts-ubuntu fonts-ubuntu-font-family-console fonts-ubuntu-console fonts-noto fonts-noto-cjk fonts-croscore fonts-open-sans fonts-roboto fonts-dejavu fonts-dejavu-extra)
   run %(curl -fsSL https://raw.githubusercontent.com/rjekker/i3-battery-popup/master/i3-battery-popup -o $HOME/.bin/i3-battery-popup && chmod +x $HOME/.bin/i3-battery-popup)
 
-  install_files Dir.glob('linux/bin/linux/*'), destination: "#{ENV['HOME']}/.bin", prefix: '' if want_to_install?('linux binaries')
+  install_files Dir.glob('linux/bin/*'), destination: "#{ENV['HOME']}/.bin", prefix: '' if want_to_install?('linux binaries')
   install_files Dir.glob('linux/i3/home_configs/*') if want_to_install?('i3 home configs')
   install_files Dir.glob('linux/i3/config/*'), destination: "#{ENV['HOME']}/.config/i3", with_directories: false, prefix: '' if want_to_install?('i3 configs')
   install_files Dir.glob('linux/i3/xsession/*'), destination: "/usr/share/xsessions", with_directories: false, prefix: '', sudo: true if want_to_install?('i3 xsession configs')
