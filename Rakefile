@@ -107,6 +107,12 @@ def install_ubuntu_packages
   run %(sudo locale-gen en_GB.UTF-8)
   run %(sudo update-locale LANG=en_GB.UTF-8)
 
+  run %(grep -q 'https://dl.bintray.com/sbt/debian' /etc/apt/sources.list.d/sbt.list || echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list)
+  run %(curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo apt-key add)
+  run %(sudo apt -y update)
+  run %(sudo apt -y install sbt)
+  run %(echo "#!/usr/bin/env sh" | tee #{ENV['HOME']}/.bin/amm && curl -fsSL "https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4" | tee -a #{ENV['HOME']}/.bin/amm && chmod +x #{ENV['HOME']}/.bin/amm)
+
   # run %(sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackHack96/dell-xps-9570-ubuntu-respin/master/xps-tweaks.sh)")
   run %(sudo apt -y install intel-microcode inteltool intel-gpu-tools lm-sensors)
   run %(sudo apt -y install gnome-software-plugin-snap gnome-software-plugin-flatpak)
@@ -122,7 +128,7 @@ def install_ubuntu_packages
   run %(sudo add-apt-repository -y ppa:kgilmer/speed-ricer)
   run %(sudo apt -y update)
   run %(sudo apt -y install polybar compton fonts-source-code-pro-ttf i3-gaps-wm xbacklight scrot blueman)
-  run %(curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin)
+  run %(curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n)
   run %(sudo apt -y install fonts-emojione python3 rofi xdotool xsel)
   run %(curl -fsSL https://raw.githubusercontent.com/UtkarshVerma/installer-scripts/master/betterlockscreen.sh | sudo bash)
   run %(sudo apt -y install bc imagemagick libjpeg-turbo8-dev libpam0g-dev libxcb-composite0 libxcb-composite0-dev libxcb-image0-dev libxcb-randr0 libxcb-util-dev libxcb-xinerama0 libxcb-xinerama0-dev libxcb-xkb-dev libxkbcommon-x11-dev feh libev-dev)
@@ -131,7 +137,7 @@ def install_ubuntu_packages
   run %(cd /tmp && git clone https://github.com/dunst-project/dunst.git && cd dunst && make dunstify && cp -f ./dunstify #{ENV['HOME']}/.bin/dunstify)
   run %(sudo apt -y install libxcb-xrm-dev checkinstall xautolock xss-lock)
   run %(sudo apt -y install fonts-inconsolata fonts-droid-fallback fonts-dejavu fonts-freefont-ttf fonts-liberation fonts-ubuntu fonts-ubuntu-font-family-console fonts-ubuntu-console fonts-noto fonts-noto-cjk fonts-croscore fonts-open-sans fonts-roboto fonts-dejavu fonts-dejavu-extra)
-  run %(curl -fsSL https://raw.githubusercontent.com/rjekker/i3-battery-popup/master/i3-battery-popup -o $HOME/.bin/i3-battery-popup && chmod +x $HOME/.bin/i3-battery-popup)
+  run %(curl -fsSL https://raw.githubusercontent.com/rjekker/i3-battery-popup/master/i3-battery-popup -o #{ENV['HOME']}/.bin/i3-battery-popup && chmod +x #{ENV['HOME']}/.bin/i3-battery-popup)
 
   install_files Dir.glob('linux/bin/*'), destination: "#{ENV['HOME']}/.bin", prefix: '' if want_to_install?('linux binaries')
   install_files Dir.glob('linux/i3/home_configs/*') if want_to_install?('i3 home configs')
@@ -310,9 +316,9 @@ def install_jabba
     awk_command = <<'EOS'.strip
     awk '!/\.jabba\/jabba\./ { if (m) print buf; buf=$0; m=1} /\.jabba\/jabba\./ {m=0}'
 EOS
-    run %(#{awk_command} shells/bash/runcoms/bash_profile | tee shells/bash/runcoms/bash_profile)
-    run %(#{awk_command} shells/bash/runcoms/bashrc | tee shells/bash/runcoms/bashrc)
-    run %(#{awk_command} shells/fish/config.fish | tee shells/fish/config.fish)
+    run %(grep -q '.jabba/jabba.' shells/bash/runcoms/bash_profile && #{awk_command} shells/bash/runcoms/bash_profile | tee shells/bash/runcoms/bash_profile)
+    run %(grep -q '.jabba/jabba.' shells/bash/runcoms/bashrc && #{awk_command} shells/bash/runcoms/bashrc | tee shells/bash/runcoms/bashrc)
+    run %(grep -q '.jabba/jabba.' shells/fish/config.fish && #{awk_command} shells/fish/config.fish | tee shells/fish/config.fish)
   end
 
   puts
