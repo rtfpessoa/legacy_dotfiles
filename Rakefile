@@ -118,6 +118,9 @@ def install_ubuntu_packages
   run %(sudo add-apt-repository -y "deb [arch=amd64] \"https://download.docker.com/linux/ubuntu\" $(lsb_release -cs) stable")
   run %(sudo apt -y install docker-ce docker-ce-cli containerd.io)
 
+  run %(curl -fsSL https://github.com/Versent/saml2aws/releases/download/v2.25.0/saml2aws_2.25.0_linux_amd64.tar.gz -o saml2aws.tar.gz && tar -xzvf saml2aws.tar.gz -C $HOME/.bin saml2aws && chmod u+x ~/.bin/saml2aws; rm -f saml2aws.tar.gz)
+  run %(curl -fsSL https://github.com/derailed/k9s/releases/download/v0.17.7/k9s_Linux_x86_64.tar.gz -o k9s.tar.gz && tar -xzvf k9s.tar.gz -C $HOME/.bin k9s && chmod u+x ~/.bin/k9s; rm -f k9s.tar.gz)
+
   # run %(sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackHack96/dell-xps-9570-ubuntu-respin/master/xps-tweaks.sh)")
   run %(sudo apt -y install intel-microcode inteltool intel-gpu-tools lm-sensors)
   run %(sudo apt -y install gnome-software-plugin-snap gnome-software-plugin-flatpak)
