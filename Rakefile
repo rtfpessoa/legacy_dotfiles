@@ -140,6 +140,7 @@ def install_ubuntu_packages
   install_files Dir.glob('dunst/*'), destination: "#{ENV['HOME']}/.config/dunst", with_directories: false, prefix: '' if want_to_install?('dunst configs')
   install_files Dir.glob('polybar/*'), destination: "#{ENV['HOME']}/.config/polybar", with_directories: false, prefix: '' if want_to_install?('polybar configs')
   install_files Dir.glob('rofi/*'), destination: "#{ENV['HOME']}/.config/rofi", with_directories: false, prefix: '' if want_to_install?('rofi configs')
+  install_files Dir.glob('systemd/*'), destination: "#{ENV['HOME']}/.config/systemd", with_directories: false, prefix: '' if want_to_install?('systemd user configs')
   
   run %(git clone git://github.com/i3-gnome/i3-gnome.git && cd i3-gnome && sudo make install; cd ..; rm -rf i3-gnome)
 
