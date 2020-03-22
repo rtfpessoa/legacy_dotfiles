@@ -113,6 +113,9 @@ def install_ubuntu_packages
   run %(sudo apt -y install sbt)
   run %(echo "#!/usr/bin/env sh" | tee #{ENV['HOME']}/.bin/amm && curl -fsSL "https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4" | tee -a #{ENV['HOME']}/.bin/amm && chmod +x #{ENV['HOME']}/.bin/amm)
 
+  run %(sudo apt -y install libxcb-xtest0)
+  run %(curl -fsSL https://zoom.us/client/latest/zoom_amd64.deb -o zoom.deb && sudo dpkg -i zoom.deb; rm -f zoom.deb)
+
   run %(sudo apt -y install apt-transport-https ca-certificates gnupg-agent software-properties-common)
   run %(curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -)
   run %(sudo add-apt-repository -y "deb [arch=amd64] \"https://download.docker.com/linux/ubuntu\" $(lsb_release -cs) stable")
@@ -160,6 +163,7 @@ def install_ubuntu_packages
   install_files Dir.glob('linux/polkit-1/*'), destination: "/etc/polkit-1/localauthority/50-local.d", with_directories: false, prefix: '', sudo: true if want_to_install?('polkit-1 configs')
   install_files Dir.glob('linux/compton/*'), destination: "#{ENV['HOME']}/.config/compton", with_directories: false, prefix: '' if want_to_install?('compton configs')
   install_files Dir.glob('linux/spotify/*'), destination: "/var/lib/snapd/desktop/applications", with_directories: false, prefix: '', sudo: true if want_to_install?('spotify scaling')
+  install_files Dir.glob('linux/sysctl/*'), destination: "/etc/sysctl.d", with_directories: false, prefix: '', sudo: true if want_to_install?('sysctl configs')
 
   install_files Dir.glob('linux/udev/*'), destination: "/etc/udev/rules.d", with_directories: false, prefix: '', sudo: true if want_to_install?('udev configs')
   run %(sudo usermod -aG video #{ENV['USER']})
