@@ -144,6 +144,9 @@ def install_ubuntu_packages
   install_files Dir.glob('linux/systemd/*'), destination: "/etc/systemd", with_directories: false, prefix: '', sudo: true if want_to_install?('systemd user configs')
   install_files Dir.glob('linux/compton/*'), destination: "#{ENV['HOME']}/.config/compton", with_directories: false, prefix: '' if want_to_install?('compton configs')
 
+  install_files Dir.glob('linux/udev/*'), destination: "/etc/udev/rules.d", with_directories: false, prefix: '', sudo: true if want_to_install?('udev configs')
+  run %(sudo usermod -aG video #{ENV['USER']})
+
   install_files Dir.glob('linux/systemctl/*'), destination: "/etc/systemd/system", with_directories: false, prefix: '', sudo: true if want_to_install?('systemd services')
   run %(sudo systemctl daemon-reload)
   Dir.glob('linux/systemctl/*').map { |service|
