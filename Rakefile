@@ -327,13 +327,13 @@ def install_jabba
     puts '======================================================'
     run %(curl -fsSL https://github.com/shyiko/jabba/raw/master/install.sh | bash)
     # Remove source of jabba config injected during install since we already have our own
-    # https://stackoverflow.com/a/7378912
-    awk_command = <<'EOS'.strip
-    awk '!/\.jabba\/jabba\./ { if (m) print buf; buf=$0; m=1} /\.jabba\/jabba\./ {m=0}'
-EOS
-    run %(grep -q '.jabba/jabba.' shells/bash/runcoms/bash_profile && #{awk_command} shells/bash/runcoms/bash_profile | tee shells/bash/runcoms/bash_profile)
-    run %(grep -q '.jabba/jabba.' shells/bash/runcoms/bashrc && #{awk_command} shells/bash/runcoms/bashrc | tee shells/bash/runcoms/bashrc)
-    run %(grep -q '.jabba/jabba.' shells/fish/config.fish && #{awk_command} shells/fish/config.fish | tee shells/fish/config.fish)
+    # https://unix.stackexchange.com/a/29928
+    bash_profile="shells/bash/runcoms/bash_profile"
+    run %(grep '.jabba/jabba.' #{bash_profile} && cat #{bash_profile} | tac | sed '/\\.jabba\\/jabba\\./I,+1 d' | tac | tee #{bash_profile})
+    bashrc="shells/bash/runcoms/bashrc"
+    run %(grep '.jabba/jabba.' #{bashrc} && cat #{bashrc} | tac | sed '/\\.jabba\\/jabba\\./I,+1 d' | tac | tee #{bashrc})
+    config_fish="shells/fish/config.fish"
+    run %(grep '.jabba/jabba.' #{config_fish} && cat #{config_fish} | tac | sed '/\\.jabba\\/jabba\\./I,+1 d' | tac | tee #{config_fish})
   end
 
   puts
