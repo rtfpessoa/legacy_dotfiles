@@ -157,6 +157,7 @@ def install_ubuntu_packages
   install_files Dir.glob('linux/polybar/*'), destination: "#{ENV['HOME']}/.config/polybar", with_directories: false, prefix: '' if want_to_install?('polybar configs')
   install_files Dir.glob('linux/rofi/*'), destination: "#{ENV['HOME']}/.config/rofi", with_directories: false, prefix: '' if want_to_install?('rofi configs')
   install_files Dir.glob('linux/systemd/*'), destination: "/etc/systemd", with_directories: false, prefix: '', sudo: true if want_to_install?('systemd user configs')
+  install_files Dir.glob('linux/polkit-1/*'), destination: "/etc/polkit-1/localauthority/50-local.d", with_directories: false, prefix: '', sudo: true if want_to_install?('polkit-1 configs')
   install_files Dir.glob('linux/compton/*'), destination: "#{ENV['HOME']}/.config/compton", with_directories: false, prefix: '' if want_to_install?('compton configs')
 
   install_files Dir.glob('linux/udev/*'), destination: "/etc/udev/rules.d", with_directories: false, prefix: '', sudo: true if want_to_install?('udev configs')
@@ -180,13 +181,7 @@ def install_ubuntu_packages
 
   # Setup swap and hibernation
   run %(sudo apt -y install policykit-1-gnome)
-  run %(swapon --show)
-  run %(sudo swapoff /swapfile)
-  run %(sudo fallocate -l 32G /swapfile)
-  run %(sudo mkswap /swapfile)
-  run %(sudo chmod 600 /swapfile)
-  run %(sudo swapon /swapfile)
-  run %(swapon --show)
+  run %(swapon --show | grep "32G" || \(sudo swapoff /swapfile && sudo fallocate -l 32G /swapfile && sudo mkswap /swapfile && sudo chmod 600 /swapfile && sudo swapon /swapfile && swapon --show\))
 
   puts
   puts

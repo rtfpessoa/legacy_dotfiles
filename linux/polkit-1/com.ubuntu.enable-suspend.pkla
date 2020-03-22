@@ -1,0 +1,10 @@
+# /etc/polkit-1/localauthority/50-local.d/com.ubuntu.enable-suspend.pkla
+[Re-enable suspend by default in upower]
+Identity=unix-user:*
+Action=org.freedesktop.upower.suspend
+ResultActive=yes
+
+[Re-enable suspend by default in logind]
+Identity=unix-user:*
+Action=org.freedesktop.login1.suspend;org.freedesktop.login1.handle-suspend-key;org.freedesktop.login1;org.freedesktop.login1.suspend-multiple-sessions;org.freedesktop.login1.suspend-ignore-inhibit
+ResultActive=yes
