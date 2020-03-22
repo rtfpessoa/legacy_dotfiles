@@ -296,6 +296,14 @@ def install_jabba
     puts 'already installed, this will do nothing.'
     puts '======================================================'
     run %(curl -fsSL https://github.com/shyiko/jabba/raw/master/install.sh | bash)
+    # Remove source of jabba config injected during install since we already have our own
+    # https://stackoverflow.com/a/7378912
+    awk_command = <<'EOS'.strip
+    awk '!/\.jabba\/jabba\./ { if (m) print buf; buf=$0; m=1} /\.jabba\/jabba\./ {m=0}'
+EOS
+    run %(#{awk_command} shells/bash/runcoms/bash_profile | tee shells/bash/runcoms/bash_profile)
+    run %(#{awk_command} shells/bash/runcoms/bashrc | tee shells/bash/runcoms/bashrc)
+    run %(#{awk_command} shells/fish/config.fish | tee shells/fish/config.fish)
   end
 
   puts

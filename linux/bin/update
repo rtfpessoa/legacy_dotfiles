@@ -5,6 +5,7 @@ set -e
 sudo apt -y update
 sudo apt -y full-upgrade
 sudo ubuntu-drivers autoinstall
+sudo snap refresh
 sudo apt -y autoremove
 sudo apt -y autoclean all
 sudo apt -y clean all
