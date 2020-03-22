@@ -108,7 +108,7 @@ def install_ubuntu_packages
   run %(sudo update-locale LANG=en_GB.UTF-8)
 
   # run %(sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackHack96/dell-xps-9570-ubuntu-respin/master/xps-tweaks.sh)")
-  run %(sudo apt -y install intel-microcode inteltool intel-gpu-tools)
+  run %(sudo apt -y install intel-microcode inteltool intel-gpu-tools lm-sensors)
   run %(sudo apt -y install gnome-software-plugin-snap gnome-software-plugin-flatpak)
   run %(sudo add-apt-repository -y ppa:yubico/stable)
   run %(sudo apt -y install yubikey-manager-qt yubioath-desktop yubikey-personalization-gui yubikey-piv-manager)
@@ -142,6 +142,7 @@ def install_ubuntu_packages
   install_files Dir.glob('polybar/*'), destination: "#{ENV['HOME']}/.config/polybar", with_directories: false, prefix: '' if want_to_install?('polybar configs')
   install_files Dir.glob('rofi/*'), destination: "#{ENV['HOME']}/.config/rofi", with_directories: false, prefix: '' if want_to_install?('rofi configs')
   install_files Dir.glob('systemd/*'), destination: "#{ENV['HOME']}/.config/systemd", with_directories: false, prefix: '' if want_to_install?('systemd user configs')
+  install_files Dir.glob('compton/*'), destination: "#{ENV['HOME']}/.config/compton", with_directories: false, prefix: '' if want_to_install?('compton configs')
 
   install_files Dir.glob('systemctl/*'), destination: "/etc/systemd/system", with_directories: false, prefix: '', sudo: true if want_to_install?('systemd services')
   run %(sudo systemctl daemon-reload)
