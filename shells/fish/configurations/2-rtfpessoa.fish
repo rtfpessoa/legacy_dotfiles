@@ -52,17 +52,7 @@ switch "$OPERATING_SYSTEM"
 				eval "$ELECTRON" "$CLI" "$argv"
 			end
 		end
-
-	case Linux
-		function code
-			begin
-				set VSCODE_PATH "/usr/share/code"
-				set ELECTRON "$VSCODE_PATH/code"
-				set CLI "$VSCODE_PATH/resources/app/out/cli.js"
-				set -lx ELECTRON_RUN_AS_NODE 1
-				eval "$ELECTRON" "$CLI" "$argv"
-			end
-		end
+	# Since in Linux we are using snap we do not need any alias :)
 end
 
 add_to_path "$HOME/.bin"

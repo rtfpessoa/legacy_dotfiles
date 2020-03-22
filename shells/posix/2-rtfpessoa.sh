@@ -27,8 +27,8 @@ export_globally EDITOR "vim"
 export_globally VISUAL "vim"
 export_globally GREP_COLOR '1;33'
 
-export_globally GDK_SCALE 2
-export_globally QT_SCALE_FACTOR 1.2
+# export_globally GDK_SCALE 2
+# export_globally QT_SCALE_FACTOR 1.2
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
   # Linux
@@ -39,18 +39,12 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 # Visual Studio Code
+# Since in Linux we are using snap we do not need any alias :)
 if [[ "$OSTYPE" == "darwin"* ]]; then
   code() {
 	local VSCODE_PATH "/Applications/Visual\ Studio\ Code.app/Contents"
 	local ELECTRON "$VSCODE_PATH/MacOS/Electron"
 	local CLI "$VSCODE_PATH/Resources/app/out/cli.js"
-	ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" "$@"
-  }
-elif [[ "$OSTYPE" == "Linux" ]]; then
-  code() {
-	local VSCODE_PATH "/usr/share/code"
-	local ELECTRON "$VSCODE_PATH/code"
-	local CLI "$VSCODE_PATH/resources/app/out/cli.js"
 	ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" "$@"
   }
 fi
