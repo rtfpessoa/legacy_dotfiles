@@ -108,10 +108,15 @@ def install_ubuntu_packages
   run %(sudo update-locale LANG=en_GB.UTF-8)
 
   run %(grep -q 'https://dl.bintray.com/sbt/debian' /etc/apt/sources.list.d/sbt.list || echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list)
-  run %(curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo apt-key add)
+  run %(curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo apt-key add -)
   run %(sudo apt -y update)
   run %(sudo apt -y install sbt)
   run %(echo "#!/usr/bin/env sh" | tee #{ENV['HOME']}/.bin/amm && curl -fsSL "https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4" | tee -a #{ENV['HOME']}/.bin/amm && chmod +x #{ENV['HOME']}/.bin/amm)
+
+  run %(sudo apt -y install apt-transport-https ca-certificates gnupg-agent software-properties-common)
+  run %(curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -)
+  run %(sudo add-apt-repository -y "deb [arch=amd64] \"https://download.docker.com/linux/ubuntu\" $(lsb_release -cs) stable")
+  run %(sudo apt -y install docker-ce docker-ce-cli containerd.io)
 
   # run %(sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackHack96/dell-xps-9570-ubuntu-respin/master/xps-tweaks.sh)")
   run %(sudo apt -y install intel-microcode inteltool intel-gpu-tools lm-sensors)
