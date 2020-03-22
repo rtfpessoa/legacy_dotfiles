@@ -31,7 +31,7 @@ task install: [:update] do
   install_term_theme if RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('Apply custom ITerm2.app settings (ex: solarized theme)')
   install_terminal_app_theme if RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('Apply custom Terminal.app settings (ex: solarized theme)')
 
-  copy_files('keyboard/layouts', "#{ENV['HOME']}/Library/Keyboard\ Layouts") if
+  copy_files('macos/keyboard/layouts', "#{ENV['HOME']}/Library/Keyboard\ Layouts") if
     RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('Fixed UK keyboard layout')
 
   success_msg('installed')
@@ -133,20 +133,20 @@ def install_ubuntu_packages
   run %(sudo apt -y install fonts-inconsolata fonts-droid-fallback fonts-dejavu fonts-freefont-ttf fonts-liberation fonts-ubuntu fonts-ubuntu-font-family-console fonts-ubuntu-console fonts-noto fonts-noto-cjk fonts-croscore fonts-open-sans fonts-roboto fonts-dejavu fonts-dejavu-extra)
   run %(curl -fsSL https://raw.githubusercontent.com/rjekker/i3-battery-popup/master/i3-battery-popup -o $HOME/.bin/i3-battery-popup && chmod +x $HOME/.bin/i3-battery-popup)
 
-  install_files Dir.glob('bin/linux/*'), destination: "#{ENV['HOME']}/.bin", prefix: '' if want_to_install?('linux binaries')
-  install_files Dir.glob('i3/home_configs/*') if want_to_install?('i3 home configs')
-  install_files Dir.glob('i3/config/*'), destination: "#{ENV['HOME']}/.config/i3", with_directories: false, prefix: '' if want_to_install?('i3 configs')
-  install_files Dir.glob('i3/xsession/*'), destination: "/usr/share/xsessions", with_directories: false, prefix: '', sudo: true if want_to_install?('i3 xsession configs')
-  install_files Dir.glob('x11/*'), destination: "/etc/X11/xorg.conf.d", with_directories: false, prefix: '', sudo: true if want_to_install?('x11 configs')
-  install_files Dir.glob('dunst/*'), destination: "#{ENV['HOME']}/.config/dunst", with_directories: false, prefix: '' if want_to_install?('dunst configs')
-  install_files Dir.glob('polybar/*'), destination: "#{ENV['HOME']}/.config/polybar", with_directories: false, prefix: '' if want_to_install?('polybar configs')
-  install_files Dir.glob('rofi/*'), destination: "#{ENV['HOME']}/.config/rofi", with_directories: false, prefix: '' if want_to_install?('rofi configs')
-  install_files Dir.glob('systemd/*'), destination: "#{ENV['HOME']}/.config/systemd", with_directories: false, prefix: '' if want_to_install?('systemd user configs')
-  install_files Dir.glob('compton/*'), destination: "#{ENV['HOME']}/.config/compton", with_directories: false, prefix: '' if want_to_install?('compton configs')
+  install_files Dir.glob('linux/bin/linux/*'), destination: "#{ENV['HOME']}/.bin", prefix: '' if want_to_install?('linux binaries')
+  install_files Dir.glob('linux/i3/home_configs/*') if want_to_install?('i3 home configs')
+  install_files Dir.glob('linux/i3/config/*'), destination: "#{ENV['HOME']}/.config/i3", with_directories: false, prefix: '' if want_to_install?('i3 configs')
+  install_files Dir.glob('linux/i3/xsession/*'), destination: "/usr/share/xsessions", with_directories: false, prefix: '', sudo: true if want_to_install?('i3 xsession configs')
+  install_files Dir.glob('linux/x11/*'), destination: "/etc/X11/xorg.conf.d", with_directories: false, prefix: '', sudo: true if want_to_install?('x11 configs')
+  install_files Dir.glob('linux/dunst/*'), destination: "#{ENV['HOME']}/.config/dunst", with_directories: false, prefix: '' if want_to_install?('dunst configs')
+  install_files Dir.glob('linux/polybar/*'), destination: "#{ENV['HOME']}/.config/polybar", with_directories: false, prefix: '' if want_to_install?('polybar configs')
+  install_files Dir.glob('linux/rofi/*'), destination: "#{ENV['HOME']}/.config/rofi", with_directories: false, prefix: '' if want_to_install?('rofi configs')
+  install_files Dir.glob('linux/systemd/*'), destination: "/etc/systemd", with_directories: false, prefix: '', sudo: true if want_to_install?('systemd user configs')
+  install_files Dir.glob('linux/compton/*'), destination: "#{ENV['HOME']}/.config/compton", with_directories: false, prefix: '' if want_to_install?('compton configs')
 
-  install_files Dir.glob('systemctl/*'), destination: "/etc/systemd/system", with_directories: false, prefix: '', sudo: true if want_to_install?('systemd services')
+  install_files Dir.glob('linux/systemctl/*'), destination: "/etc/systemd/system", with_directories: false, prefix: '', sudo: true if want_to_install?('systemd services')
   run %(sudo systemctl daemon-reload)
-  Dir.glob('systemctl/*').map { |service|
+  Dir.glob('linux/systemctl/*').map { |service|
     run %(sudo systemctl start #{File.basename(service)})
     run %(sudo systemctl enable #{File.basename(service)})
   }
@@ -324,8 +324,8 @@ def install_terminal_app_theme
   puts '======================================================'
   puts 'Restoring Terminal.app settings.'
   puts '======================================================'
-  if File.exist?('terminal.app/com.apple.Terminal.plist')
-    run %(defaults import #{ENV['HOME']}/Library/Preferences/com.apple.Terminal.plist terminal.app/com.apple.Terminal.plist)
+  if File.exist?('macos/terminal.app/com.apple.Terminal.plist')
+    run %(defaults import #{ENV['HOME']}/Library/Preferences/com.apple.Terminal.plist macos/terminal.app/com.apple.Terminal.plist)
   end
 end
 
@@ -460,17 +460,17 @@ def install_term_theme
   puts '======================================================'
   puts 'Restoring iTerm2 settings.'
   puts '======================================================'
-  if File.exist?('iTerm2/com.googlecode.iterm2.plist')
-    run %(defaults import #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist iTerm2/com.googlecode.iterm2.plist)
+  if File.exist?('macos/iTerm2/com.googlecode.iterm2.plist')
+    run %(defaults import #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist macos/iTerm2/com.googlecode.iterm2.plist)
   end
 
   puts '======================================================'
   puts 'Installing iTerm2 solarized theme.'
   puts '======================================================'
   run %( /usr/libexec/PlistBuddy -c "Add :'Custom Color Presets':'Solarized Light' dict" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist )
-  run %( /usr/libexec/PlistBuddy -c "Merge 'iTerm2/themes/Solarized-Light.itermcolors' :'Custom Color Presets':'Solarized Light'" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist )
+  run %( /usr/libexec/PlistBuddy -c "Merge 'macos/iTerm2/themes/Solarized-Light.itermcolors' :'Custom Color Presets':'Solarized Light'" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist )
   run %( /usr/libexec/PlistBuddy -c "Add :'Custom Color Presets':'Solarized Dark' dict" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist )
-  run %( /usr/libexec/PlistBuddy -c "Merge 'iTerm2/themes/Solarized-Dark.itermcolors' :'Custom Color Presets':'Solarized Dark'" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist )
+  run %( /usr/libexec/PlistBuddy -c "Merge 'macos/iTerm2/themes/Solarized-Dark.itermcolors' :'Custom Color Presets':'Solarized Dark'" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist )
 
   # If iTerm2 is not installed or has never run, we can't autoinstall the profile since the plist is not there
   unless File.exist?(File.join(ENV['HOME'], '/Library/Preferences/com.googlecode.iterm2.plist'))
@@ -488,7 +488,7 @@ def install_term_theme
 
   return if color_scheme == 'None'
 
-  color_scheme_file = File.join('iTerm2/themes', "#{color_scheme}.itermcolors")
+  color_scheme_file = File.join('macos/iTerm2/themes', "#{color_scheme}.itermcolors")
 
   # Ask the user on which profile he wants to install the theme
   profiles = iTerm_profile_list
@@ -504,7 +504,7 @@ def install_term_theme
 end
 
 def iTerm_available_themes
-  Dir['iTerm2/themes/*.itermcolors'].map { |value| File.basename(value, '.itermcolors') } << 'None'
+  Dir['macos/iTerm2/themes/*.itermcolors'].map { |value| File.basename(value, '.itermcolors') } << 'None'
 end
 
 def iTerm_profile_list
