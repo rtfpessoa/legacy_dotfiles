@@ -35,6 +35,9 @@ else
   echo "No dead symlinks found!"
 fi
 
+echo "Cleaning user binaries..."
+tryRemove $HOME/.bin
+
 echo "Cleaning fish shell..."
 tryRemove $HOME/.local/share/fish $HOME/.config/fish $HOME/.local/share/omf $HOME/.cache/omf $HOME/.config/omf
 
@@ -50,6 +53,16 @@ tryRemove $HOME/.pyenv
 
 echo "Cleaning jabba..."
 tryRemove $HOME/.jabba
+
+echo "Cleaning i3..."
+tryRemove $HOME/.config/i3 $HOME/.xsession $HOME/.Xresources $HOME/.config/dunst $HOME/.config/polybar $HOME/.config/rofi $HOME/.config/compton
+
+echo "Cleaning i3 system..."
+sudo systemctl stop undervolt.timer
+sudo systemctl disable undervolt.timer
+sudo systemctl stop undervolt.service
+sudo systemctl disable undervolt.service
+tryRemove /usr/share/xsessions/i3*.desktop /etc/X11/xorg.conf.d/40-libinput.conf /etc/systemd/system/undervolt.service /etc/systemd/system/undervolt.timer
 
 echo "Cleaning extra fonts..."
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
