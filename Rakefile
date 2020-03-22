@@ -154,6 +154,15 @@ def install_ubuntu_packages
     run %(sudo systemctl enable #{File.basename(service)})
   }
 
+  run %(sudo snap install intellij-idea-ultimate --classic)
+  run %(sudo snap install code --classic)
+  run %(sudo snap install spotify)
+  run %(sudo snap install vlc)
+  run %(sudo snap install kubectl --classic) # --channel=1.17/stable
+  run %(sudo snap install go --classic)
+  run %(sudo snap install snapcraft --classic)
+  run %(sudo snap install helm --channel=2.16/stable --classic)
+
   puts
   puts
 end
