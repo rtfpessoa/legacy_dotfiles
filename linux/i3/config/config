@@ -236,11 +236,11 @@ bindsym --release $mod+Print exec --no-startup-id scrot -u -e 'mkdir -p $HOME/Pi
 # Pulse Audio controls
 bindsym XF86AudioRaiseVolume exec --no-startup-id $HOME/.config/i3/volume.sh -npy -i 1 -l 100 # increase sound volume
 bindsym XF86AudioLowerVolume exec --no-startup-id $HOME/.config/i3/volume.sh -npy -d 1 # decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id $HOME/.config/i3/volume.sh -amn # mute sound
+bindsym XF86AudioMute exec --no-startup-id $HOME/.config/i3/volume.sh -mn # mute sound
 
 # Sreen brightness controls
-bindsym XF86MonBrightnessUp exec --no-startup-id $HOME/.config/i3/backlight.sh up # increase screen brightness
-bindsym XF86MonBrightnessDown exec --no-startup-id $HOME/.config/i3/backlight.sh down # decrease screen brightness
+bindsym XF86MonBrightnessUp exec --no-startup-id $HOME/.config/i3/backlight.sh inc # increase screen brightness
+bindsym XF86MonBrightnessDown exec --no-startup-id $HOME/.config/i3/backlight.sh dec # decrease screen brightness
 
 # Media player controls
 bindsym XF86AudioPlay exec playerctl play-pause

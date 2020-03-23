@@ -441,6 +441,9 @@ if ! $opt_use_amixer; then
 fi
 
 if ${opt_increase_volume}; then
+    if is_muted; then
+        toggle_mute $sink
+    fi
     raise_volume $volume
 fi
 
