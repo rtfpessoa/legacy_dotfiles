@@ -234,8 +234,8 @@ bindsym --release $mod+Shift+Print exec --no-startup-id scrot -s -e 'mkdir -p $H
 bindsym --release $mod+Print exec --no-startup-id scrot -u -e 'mkdir -p $HOME/Pictures/Screenshots/ && mv $f $HOME/Pictures/Screenshots/ && xclip -selection clipboard -target image/png -i $HOME/Pictures/Screenshots/$f'
 
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id $HOME/.config/i3/volume.sh -npy -i 1 -l 100 # increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id $HOME/.config/i3/volume.sh -npy -d 1 # decrease sound volume
+bindsym XF86AudioRaiseVolume exec --no-startup-id $HOME/.config/i3/volume.sh -np -i 1 -l 100 # increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id $HOME/.config/i3/volume.sh -np -d 1 # decrease sound volume
 bindsym XF86AudioMute exec --no-startup-id $HOME/.config/i3/volume.sh -mn # mute sound
 
 # Sreen brightness controls
@@ -317,5 +317,4 @@ exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 exec --no-startup-id compton --config $HOME/.config/compton/compton.conf
-exec --no-startup-id $HOME/.bin/dunstify
 exec --no-startup-id $HOME/.bin/i3-battery-popup

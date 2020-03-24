@@ -22,6 +22,10 @@ function usage {
     exit 1
 }
 
+function cur {
+    echo "$((100 * ${CURRENT_BRIGHTNESS} / ${MAX_BRIGHTNESS}))"
+}
+
 function set {
     echo "${1}" | tee "${SET_BRIGHTNESS_FILE}"
 }
@@ -38,12 +42,33 @@ function inc {
     set "${NEXT_BRIGHTNESS}"
 }
 
+function get_brightness_icon {
+    local brightness="$1"
+    local icon
+
+    if [ "$brightness" -ge 70 ]; then icon="notification-display-brightness-high"
+    elif [ "$brightness" -ge 40 ]; then icon="notification-display-brightness-medium"
+    elif [ "$brightness" -gt 0 ]; then icon="notification-display-brightness-low"
+    else icon="notification-display-brightness-low"
+    fi
+
+    echo "${icon}"
+}
+
+function notify {
+    local brightness=$(cur)
+    local icon=$(get_brightness_icon "$brightness")
+    notify-send -i $icon -h int:value:$brightness -h string:x-canonical-private-synchronous:brightness " "
+}
+
 if [[ "${ACTION}" =~ "cur" ]]; then
-    echo "$((100 * ${CURRENT_BRIGHTNESS} / ${MAX_BRIGHTNESS}))"
+    cur
 elif [[ "${ACTION}" =~ "dec" ]]; then
     dec
+    notify
 elif [[ "${ACTION}" =~ "inc" ]]; then
     inc
+    notify
 else
     echo "Could not find action '${ACTION}'"
     usage
