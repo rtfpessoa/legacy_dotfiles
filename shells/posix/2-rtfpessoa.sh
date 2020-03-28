@@ -27,8 +27,8 @@ export_globally EDITOR "vim"
 export_globally VISUAL "vim"
 export_globally GREP_COLOR '1;33'
 
-# export_globally GDK_SCALE 2
-# export_globally QT_SCALE_FACTOR 1.2
+# Check https://wiki.archlinux.org/index.php/HiDPI
+export_globally QT_SCALE_FACTOR 1.5
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
   # Linux
@@ -48,6 +48,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 	ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" "$@"
   }
 fi
+
+add_to_path "$HOME/.local/bin"
 
 # GO
 if [[ "$OSTYPE" == "darwin"* ]]; then

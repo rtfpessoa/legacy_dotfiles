@@ -35,9 +35,6 @@ else
   echo "No dead symlinks found!"
 fi
 
-echo "Cleaning user binaries..."
-tryRemove $HOME/.bin
-
 echo "Cleaning fish shell..."
 tryRemove $HOME/.local/share/fish $HOME/.config/fish $HOME/.local/share/omf $HOME/.cache/omf $HOME/.config/omf
 
@@ -55,7 +52,7 @@ echo "Cleaning jabba..."
 tryRemove $HOME/.jabba
 
 echo "Cleaning i3..."
-tryRemove $HOME/.config/i3 $HOME/.xsession $HOME/.Xresources $HOME/.config/dunst $HOME/.config/polybar $HOME/.config/rofi $HOME/.config/compton
+tryRemove $HOME/.config/i3 $HOME/.xsession $HOME/.Xresources $HOME/.config/polybar $HOME/.config/rofi $HOME/.config/compton
 
 echo "Cleaning i3 system..."
 sudo systemctl stop undervolt.timer

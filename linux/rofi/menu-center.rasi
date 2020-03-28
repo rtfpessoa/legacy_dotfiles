@@ -1,16 +1,17 @@
 * {
-    background: #00C1DDE8;
-    foreground: #263238;
-    selected:   #2c6787E8;
+    background: #2F343F;
+    foreground: #CCCCCC;
+    selected:   #1793D1;
     accent:     #F5F5F5;
     urgent:     #FF5252;
 
     spacing: 1;
     background-color: #FFFFFF00;
+    text-color: @foreground;
     anchor: north;
     location: center;
 
-    font: "DejaVu Sans Mono Nerd Font Mono 15";
+    font: "DejaVu Sans Mono Nerd Font Mono 20";
 }
 
 #window {
@@ -26,11 +27,9 @@
     border: 2px;
     padding: 1em;
     background-color: @background;
-    text-color: @foreground;
 }
 
 #textbox normal {
-    text-color: @foreground;
     padding: 0;
     border: 0;
 }
@@ -43,7 +42,6 @@
 
 #element {
     padding: 2px;
-    text-color: @foreground;
 }
 #element .urgent {
     text-color: @urgent;
@@ -70,5 +68,4 @@
     expand:     false;
     str:        ":";
     margin:     0px 0.3em 0em 0em ;
-    text-color: @foreground;
 }

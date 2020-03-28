@@ -2,10 +2,15 @@
 
 set -e
 
-sudo apt -y update
-sudo apt -y full-upgrade
-sudo ubuntu-drivers autoinstall
-sudo snap refresh
-sudo apt -y autoremove
-sudo apt -y autoclean all
-sudo apt -y clean all
+if [ $EUID != 0 ]; then
+    sudo "$0" "$@"
+    exit $?
+fi
+
+apt -y update
+apt -y full-upgrade
+ubuntu-drivers autoinstall
+snap refresh
+apt -y autoremove
+apt -y autoclean all
+apt -y clean all

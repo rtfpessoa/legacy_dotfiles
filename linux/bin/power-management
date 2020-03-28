@@ -5,6 +5,11 @@ set -e
 # Enable turbo boost
 #   - https://www.kernel.org/doc/html/v4.12/admin-guide/pm/intel_pstate.html
 
+if [ $EUID != 0 ]; then
+    sudo "$0" "$@"
+    exit $?
+fi
+
 # VALUES
 
 PROFILE="$1"

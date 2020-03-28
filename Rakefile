@@ -21,9 +21,9 @@ task install: [:update] do
 
   install_files Dir.glob('git/*') if want_to_install?('git configs (color, aliases)')
   install_files Dir.glob('tmux/*') if want_to_install?('tmux config')
-  install_files Dir.glob('vim/{*,.[a-zA-Z]*}'), destination: "#{ENV['HOME']}/.vim", prefix: '' if want_to_install?('vim configuration')
+  install_file File.expand_path('vim'), "#{ENV['HOME']}/.vim" if want_to_install?('vim configuration')
 
-  install_files Dir.glob('shells/bash/runcoms/*'), with_directories: false if want_to_install?('bash configs')
+  install_files Dir.glob('shells/bash/runcoms/*') if want_to_install?('bash configs')
   setup_fish if want_to_install?('setup fish')
 
   install_fonts if want_to_install?('powerline fonts')
@@ -92,10 +92,10 @@ def install_ubuntu_packages
   puts 'Installing Ubuntu Packages.'
   puts '======================================================'
 
-  run %(mkdir -p #{ENV['HOME']}/.bin)
+  run %(mkdir -p #{ENV['HOME']}/.local/bin)
 
   run %(sudo apt -y update)
-  run %(sudo apt -y install curl unzip vim)
+  run %(sudo apt -y install curl unzip vim bc)
   run %(sudo apt -y install ruby-dev build-essential libssl-dev zlib1g-dev make libbz2-dev libsqlite3-dev llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev libreadline-dev autoconf bison libyaml-dev libreadline6-dev libgdbm5 libgdbm-dev)
   run %(sudo add-apt-repository -y ppa:git-core/ppa)
   run %(sudo add-apt-repository -y ppa:fish-shell/release-2)
@@ -111,7 +111,7 @@ def install_ubuntu_packages
   run %(curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo apt-key add -)
   run %(sudo apt -y update)
   run %(sudo apt -y install sbt)
-  run %(echo "#!/usr/bin/env sh" | tee #{ENV['HOME']}/.bin/amm && curl -fsSL "https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4" | tee -a #{ENV['HOME']}/.bin/amm && chmod +x #{ENV['HOME']}/.bin/amm)
+  run %(echo "#!/usr/bin/env sh" | tee #{ENV['HOME']}/.local/bin/amm && curl -fsSL "https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4" | tee -a #{ENV['HOME']}/.local/bin/amm && chmod +x #{ENV['HOME']}/.local/bin/amm)
 
   run %(sudo apt -y install libxcb-xtest0)
   run %(curl -fsSL https://zoom.us/client/latest/zoom_amd64.deb -o zoom.deb && sudo dpkg -i zoom.deb; rm -f zoom.deb)
@@ -121,70 +121,67 @@ def install_ubuntu_packages
   run %(sudo add-apt-repository -y "deb [arch=amd64] \"https://download.docker.com/linux/ubuntu\" $(lsb_release -cs) stable")
   run %(sudo apt -y install docker-ce docker-ce-cli containerd.io)
 
-  run %(curl -fsSL https://github.com/Versent/saml2aws/releases/download/v2.25.0/saml2aws_2.25.0_linux_amd64.tar.gz -o saml2aws.tar.gz && tar -xzvf saml2aws.tar.gz -C $HOME/.bin saml2aws && chmod u+x ~/.bin/saml2aws; rm -f saml2aws.tar.gz)
-  run %(curl -fsSL https://github.com/derailed/k9s/releases/download/v0.17.7/k9s_Linux_x86_64.tar.gz -o k9s.tar.gz && tar -xzvf k9s.tar.gz -C $HOME/.bin k9s && chmod u+x ~/.bin/k9s; rm -f k9s.tar.gz)
-  run %(curl -fsSL https://github.com/digitalocean/doctl/releases/download/v1.39.0/doctl-1.39.0-linux-amd64.tar.gz -o doctl.tar.gz && tar -xzvf doctl.tar.gz -C $HOME/.bin doctl && chmod u+x ~/.bin/doctl; rm -f doctl.tar.gz)
+  run %(curl -fsSL https://github.com/Versent/saml2aws/releases/download/v2.25.0/saml2aws_2.25.0_linux_amd64.tar.gz -o saml2aws.tar.gz && tar -xzvf saml2aws.tar.gz -C #{ENV['HOME']}/.local/bin saml2aws && chmod u+x #{ENV['HOME']}/.local/bin/saml2aws; rm -f saml2aws.tar.gz)
+  run %(curl -fsSL https://github.com/derailed/k9s/releases/download/v0.17.7/k9s_Linux_x86_64.tar.gz -o k9s.tar.gz && tar -xzvf k9s.tar.gz -C #{ENV['HOME']}/.local/bin k9s && chmod u+x #{ENV['HOME']}/.local/bin/k9s; rm -f k9s.tar.gz)
+  run %(curl -fsSL https://github.com/digitalocean/doctl/releases/download/v1.39.0/doctl-1.39.0-linux-amd64.tar.gz -o doctl.tar.gz && tar -xzvf doctl.tar.gz -C #{ENV['HOME']}/.local/bin doctl && chmod u+x #{ENV['HOME']}/.local/bin/doctl; rm -f doctl.tar.gz)
 
-  # run %(sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackHack96/dell-xps-9570-ubuntu-respin/master/xps-tweaks.sh)")
   run %(sudo apt -y install intel-microcode inteltool intel-gpu-tools lm-sensors)
   run %(sudo apt -y install gnome-software-plugin-snap gnome-software-plugin-flatpak)
   run %(sudo add-apt-repository -y ppa:yubico/stable)
   run %(sudo apt -y install yubikey-manager-qt yubioath-desktop yubikey-personalization-gui yubikey-piv-manager)
   run %(sudo apt -y install chrome-gnome-shell)
   run %(sudo apt -y install smbios-utils)
-  run %(sudo smbios-thermal-ctl --set-thermal-mode=cool-bottom)
-  run %(sudo apt -y install xserver-xorg-input-libinput)
-  run %(sudo apt -y remove --purge xserver-xorg-input-synaptics)
+  run %(sudo apt -y install xserver-xorg-input-libinput && sudo apt -y remove --purge xserver-xorg-input-synaptics)
   run %(sudo apt -y install i7z powertop powerstat i8kutils)
 
   run %(sudo add-apt-repository -y ppa:kgilmer/speed-ricer)
   run %(sudo apt -y update)
-  run %(sudo apt -y install polybar compton fonts-source-code-pro-ttf i3-gaps-wm xbacklight scrot blueman)
+  run %(sudo apt -y install polybar compton fonts-source-code-pro-ttf i3-gaps-wm xbacklight blueman feh)
+  run %(sudo apt -y install fonts-source-code-pro-ttf fonts-inconsolata fonts-droid-fallback fonts-dejavu fonts-freefont-ttf fonts-liberation fonts-ubuntu fonts-ubuntu-font-family-console fonts-ubuntu-console fonts-noto fonts-noto-cjk fonts-croscore fonts-open-sans fonts-roboto fonts-dejavu fonts-dejavu-extra)
   run %(curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n)
   run %(sudo apt -y install fonts-emojione python3 rofi xdotool xsel)
-  run %(curl -fsSL https://raw.githubusercontent.com/UtkarshVerma/installer-scripts/master/betterlockscreen.sh | sudo bash)
-  run %(sudo apt -y install bc imagemagick libjpeg-turbo8-dev libpam0g-dev libxcb-composite0 libxcb-composite0-dev libxcb-image0-dev libxcb-randr0 libxcb-util-dev libxcb-xinerama0 libxcb-xinerama0-dev libxcb-xkb-dev libxkbcommon-x11-dev feh libev-dev)
   run %(curl -fsSL https://github.com/altdesktop/playerctl/releases/download/v2.1.1/playerctl-2.1.1_amd64.deb -o playerctl.deb && sudo dpkg -i playerctl.deb; rm -f playerctl.deb)
   run %(sudo apt -y install libdbus-1-dev libx11-dev libxinerama-dev libxrandr-dev libxss-dev libglib2.0-dev libpango1.0-dev libgtk-3-dev libxdg-basedir-dev libnotify-dev)
   run %(sudo apt -y install notify-osd)
   run %(sudo apt -y install libxcb-xrm-dev checkinstall xautolock xss-lock)
-  run %(sudo apt -y install fonts-inconsolata fonts-droid-fallback fonts-dejavu fonts-freefont-ttf fonts-liberation fonts-ubuntu fonts-ubuntu-font-family-console fonts-ubuntu-console fonts-noto fonts-noto-cjk fonts-croscore fonts-open-sans fonts-roboto fonts-dejavu fonts-dejavu-extra)
-  run %(curl -fsSL https://raw.githubusercontent.com/rjekker/i3-battery-popup/master/i3-battery-popup -o #{ENV['HOME']}/.bin/i3-battery-popup && chmod +x #{ENV['HOME']}/.bin/i3-battery-popup)
+  run %(curl -fsSL https://raw.githubusercontent.com/rjekker/i3-battery-popup/master/i3-battery-popup -o #{ENV['HOME']}/.local/bin/i3-battery-popup && chmod +x #{ENV['HOME']}/.local/bin/i3-battery-popup)
 
-  install_files Dir.glob('linux/bin/*'), destination: "#{ENV['HOME']}/.bin", prefix: '' if want_to_install?('linux binaries')
+  install_files Dir.glob('linux/bin/*'), destination_directory: File.join(ENV['HOME'], ".local/bin"), prefix: '' if want_to_install?('linux binaries')
+  install_file File.expand_path("linux/i3/config"), File.join(ENV['HOME'], ".config/i3") if want_to_install?('i3 configs')
   install_files Dir.glob('linux/i3/home_configs/*') if want_to_install?('i3 home configs')
-  install_files Dir.glob('linux/i3/config/*'), destination: "#{ENV['HOME']}/.config/i3", with_directories: false, prefix: '' if want_to_install?('i3 configs')
-  install_files Dir.glob('linux/i3/xsession/*'), destination: "/usr/share/xsessions", with_directories: false, prefix: '', sudo: true if want_to_install?('i3 xsession configs')
-  install_files Dir.glob('linux/x11/*'), destination: "/etc/X11/xorg.conf.d", with_directories: false, prefix: '', sudo: true if want_to_install?('x11 configs')
-  install_files Dir.glob('linux/polybar/*'), destination: "#{ENV['HOME']}/.config/polybar", with_directories: false, prefix: '' if want_to_install?('polybar configs')
-  install_files Dir.glob('linux/rofi/*'), destination: "#{ENV['HOME']}/.config/rofi", with_directories: false, prefix: '' if want_to_install?('rofi configs')
-  install_files Dir.glob('linux/systemd/*'), destination: "/etc/systemd", with_directories: false, prefix: '', sudo: true if want_to_install?('systemd user configs')
-  install_files Dir.glob('linux/polkit-1/*'), destination: "/etc/polkit-1/localauthority/50-local.d", with_directories: false, prefix: '', sudo: true if want_to_install?('polkit-1 configs')
-  install_files Dir.glob('linux/compton/*'), destination: "#{ENV['HOME']}/.config/compton", with_directories: false, prefix: '' if want_to_install?('compton configs')
-  install_files Dir.glob('linux/spotify/*'), destination: "/var/lib/snapd/desktop/applications", with_directories: false, prefix: '', sudo: true if want_to_install?('spotify scaling')
-  install_files Dir.glob('linux/sysctl/*'), destination: "/etc/sysctl.d", with_directories: false, prefix: '', sudo: true if want_to_install?('sysctl configs')
+  install_files Dir.glob('linux/i3/xsession/*'), destination_directory: "/usr/share/xsessions", prefix: '', sudo: true if want_to_install?('i3 xsession configs')
+  install_file File.expand_path("linux/polybar"), File.join(ENV['HOME'], ".config/polybar") if want_to_install?('polybar configs')
+  install_file File.expand_path("linux/rofi"), File.join(ENV['HOME'], ".config/rofi") if want_to_install?('rofi configs')
+  install_file File.expand_path("linux/compton"), File.join(ENV['HOME'], ".config/compton") if want_to_install?('compton configs')
+  install_files Dir.glob('linux/fonts/*') if want_to_install?('font configs')
+  install_files Dir.glob('linux/x11/*'), destination_directory: "/etc/X11/xorg.conf.d", prefix: '', sudo: true if want_to_install?('x11 configs')
+  install_files Dir.glob('linux/systemd/*'), destination_directory: "/etc/systemd", prefix: '', sudo: true if want_to_install?('systemd user configs')
+  install_files Dir.glob('linux/polkit-1/*'), destination_directory: "/etc/polkit-1/localauthority/50-local.d", prefix: '', sudo: true if want_to_install?('polkit-1 configs')
+  install_files Dir.glob('linux/spotify/*'), destination_directory: "/var/lib/snapd/desktop/applications", prefix: '', sudo: true if want_to_install?('spotify scaling')
+  install_files Dir.glob('linux/sysctl/*'), destination_directory: "/etc/sysctl.d", prefix: '', sudo: true if want_to_install?('sysctl configs')
 
-  install_files Dir.glob('linux/udev/*'), destination: "/etc/udev/rules.d", with_directories: false, prefix: '', sudo: true if want_to_install?('udev configs')
+  install_files Dir.glob('linux/udev/*'), destination_directory: "/etc/udev/rules.d", prefix: '', sudo: true if want_to_install?('udev configs')
   run %(sudo usermod -aG video #{ENV['USER']})
 
-  install_files Dir.glob('linux/systemctl/*'), destination: "/etc/systemd/system", with_directories: false, prefix: '', sudo: true if want_to_install?('systemd services')
+  install_files Dir.glob('linux/systemctl/*'), destination_directory: "/etc/systemd/system", prefix: '', sudo: true if want_to_install?('systemd services')
   run %(sudo systemctl daemon-reload)
   Dir.glob('linux/systemctl/*').map { |service|
     run %(sudo systemctl start #{File.basename(service)})
     run %(sudo systemctl enable #{File.basename(service)})
   }
 
-  run %(sudo snap install code --classic)
   run %(sudo snap install spotify)
   run %(sudo snap install vlc)
   run %(sudo snap install kubectl --classic)
   run %(sudo snap install snapcraft --classic)
   run %(sudo snap install helm --channel=2.16/stable --classic)
+  # TODO: Uncomment after configurations from previous installation of these programs are backup
+  # run %(sudo snap install code --classic)
   # run %(sudo snap install intellij-idea-ultimate --classic)
   # run %(sudo snap install go --classic)
 
   # Setup swap and hibernation
-  # run %(sudo apt -y install policykit-1-gnome)
+  run %(sudo apt -y install policykit-1-gnome)
   run %(swapon --show | grep "32G" || \(sudo swapoff /swapfile && sudo fallocate -l 32G /swapfile && sudo mkswap /swapfile && sudo chmod 600 /swapfile && sudo swapon /swapfile && swapon --show && bash ./linux/bin/update-hibernate\))
 
   puts
@@ -312,7 +309,7 @@ def install_nodenv
   run %(#{ENV['HOME']}/.nodenv/shims/npm install -g yarn)
   run %(#{ENV['HOME']}/.nodenv/bin/nodenv rehash)
 
-  run %(#{ENV['HOME']}/.nodenv/shims/yarn global add diff2html-cli i3-cycle-focus)
+  run %(#{ENV['HOME']}/.nodenv/shims/yarn global add diff2html-cli)
   run %(#{ENV['HOME']}/.nodenv/bin/nodenv rehash)
 
   puts
@@ -344,11 +341,13 @@ def install_jabba
   puts '======================================================'
   puts 'Installing Java.'
   puts '======================================================'
-  run %(. ~/.jabba/jabba.sh && jabba install adopt@1.8.0-242)
-  run %(. ~/.jabba/jabba.sh && jabba install adopt-openj9@1.8.0-242)
-  run %(. ~/.jabba/jabba.sh && jabba install graalvm@20.0.0)
-  run %(. ~/.jabba/jabba.sh && jabba install #{java_version})
-  run %(. ~/.jabba/jabba.sh && jabba alias default #{java_version})
+  run %(. #{ENV['HOME']}/.jabba/jabba.sh &&
+    jabba install adopt@1.8.0-242 &&
+    jabba install adopt-openj9@1.8.0-242 &&
+    jabba install graalvm@20.0.0 &&
+    jabba install #{java_version} &&
+    jabba alias default #{java_version}
+  )
 
   puts
   puts
@@ -409,8 +408,8 @@ def setup_fish
   # run %{ omf theme ocean }
   # run %{ omf theme budspencer }
 
-  install_files Dir.glob('shells/fish/*'), destination: "#{ENV['HOME']}/.config/fish", with_directories: false, prefix: '' if want_to_install?('Fish configs')
-  install_files Dir.glob('shells/fish/configurations/*'), destination: "#{ENV['HOME']}/.config/fish/configurations", with_directories: false, prefix: '' if want_to_install?('Fish extras')
+  install_file File.expand_path('shells/fish/config.fish'), "#{ENV['HOME']}/.config/fish/config.fish" if want_to_install?('Fish configs')
+  install_files Dir.glob('shells/fish/conf.d/*'), destination_directory: "#{ENV['HOME']}/.config/fish/conf.d", prefix: '' if want_to_install?('Fish extras')
 
   set_default_shell('fish')
 end
@@ -461,43 +460,36 @@ def copy_files(src, dest)
   run %(cp -rfv #{src}/* #{dest}/) if File.exist?(src) && File.exist?(dest)
 end
 
-def install_files(files, origin: ENV['PWD'], destination: ENV['HOME'], method: :symlink, with_directories: true, prefix: '.', sudo: false)
+def install_files(files, source_directory: ENV['PWD'], destination_directory: ENV['HOME'], prefix: '.', sudo: false)
+  files.each do |file|
+    source = File.join(source_directory, file)
+    filename = "#{prefix}#{File.basename(file)}"
+    destination = File.join(destination_directory, filename)
+
+    install_file source, destination, sudo: sudo
+  end
+end
+
+def install_file(source, destination, sudo: false)
   maybe_sudo = if sudo
     'sudo'
   else
     ''
   end
 
-  run %( #{maybe_sudo} mkdir -p #{ENV['HOME']}/.dotfiles.bak )
-  backup_dir = Dir.mktmpdir('backup-', "#{ENV['HOME']}/.dotfiles.bak")
+  puts "=========================================================="
+  puts "Source: #{source}"
+  puts "Target: #{destination}"
 
-  files.each do |f|
-    file = f.split('/').last
-    source = "#{origin}/#{f}"
-    target = "#{destination}/#{prefix}#{file}"
-
-    puts "======================#{file}=============================="
-    puts "Source: #{source}"
-    puts "Target: #{target}"
-
-    if File.exist?(target) && !File.symlink?(target)
-      puts "[Overwriting] #{target}...leaving original at #{backup_dir}/#{file}..."
-      run %( #{maybe_sudo} mkdir -p "#{backup_dir}" )
-      run %( #{maybe_sudo} mv "#{target}" "#{backup_dir}/#{file}" )
-    end
-
-    if !File.directory?(source) || with_directories
-      run %( #{maybe_sudo} mkdir -p "#{destination}" )
-      if method == :symlink
-        run %( #{maybe_sudo} ln -nfs "#{source}" "#{target}" )
-      else
-        run %( #{maybe_sudo} cp -f "#{source}" "#{target}" )
-      end
-    end
-
-    puts '=========================================================='
-    puts
+  destination_directory = File.dirname(destination)
+  if File.exist?(destination_directory)
+    run %( #{maybe_sudo} mkdir -p "#{destination_directory}" )
   end
+
+  run %( #{maybe_sudo} ln -nfs "#{source}" "#{destination}" )
+
+  puts '=========================================================='
+  puts
 end
 
 def install_term_theme

@@ -2,9 +2,14 @@
 
 set -e
 
+if [ $EUID != 0 ]; then
+    sudo "$0" "$@"
+    exit $?
+fi
+
 DRIVE_UUID=$(cat /etc/fstab | grep -E 'UUID.+\s+\/\s+' | awk '{print $1}' | awk -F'=' '{print $2}')
-DRIVE="$(sudo blkid | grep "${DRIVE_UUID}")"
-NR_OF_DRIVES="$(sudo blkid | grep "${DRIVE_UUID}" | wc -l)"
+DRIVE="$(blkid | grep "${DRIVE_UUID}")"
+NR_OF_DRIVES="$(blkid | grep "${DRIVE_UUID}" | wc -l)"
 
 if [ ! "${NR_OF_DRIVES}" -eq 1 ]; then
     echo "Found a number differente from one of possible drives"
@@ -13,11 +18,11 @@ if [ ! "${NR_OF_DRIVES}" -eq 1 ]; then
     exit 1
 fi
 
-RESUME_OFFSET="$(sudo filefrag -v /swapfile | head -n 4 | tail -n '-1' | awk '{print $4}' | awk -F'.' '{print $1}')"
-echo "resume=UUID=${DRIVE_UUID} resume_offset=${RESUME_OFFSET}" | sudo tee /etc/initramfs-tools/conf.d/resume
+RESUME_OFFSET="$(filefrag -v /swapfile | head -n 4 | tail -n '-1' | awk '{print $4}' | awk -F'.' '{print $1}')"
+echo "resume=UUID=${DRIVE_UUID} resume_offset=${RESUME_OFFSET}" | tee /etc/initramfs-tools/conf.d/resume
 if ! grep -q 'resume=UUID' /etc/default/grub; then
-    sudo sed -Ei 's/GRUB_CMDLINE_LINUX_DEFAULT="(.*)"/GRUB_CMDLINE_LINUX_DEFAULT="\1 '"resume=UUID=${DRIVE_UUID} resume_offset=${RESUME_OFFSET}"'"/g' /etc/default/grub
+    sed -Ei 's/GRUB_CMDLINE_LINUX_DEFAULT="(.*)"/GRUB_CMDLINE_LINUX_DEFAULT="\1 '"resume=UUID=${DRIVE_UUID} resume_offset=${RESUME_OFFSET}"'"/g' /etc/default/grub
 fi
 
- sudo update-initramfs -u -k all
- sudo update-grub2
+ update-initramfs -u -k all
+ update-grub2
