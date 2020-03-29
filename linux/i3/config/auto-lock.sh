@@ -23,7 +23,7 @@ xidlehook \
   --not-when-audio \
   `# Dim the screen after 3 minutes, undim if user becomes active` \
   --timer 180 \
-    'xrandr --output "$PRIMARY_DISPLAY" --brightness .1' \
+    'xrandr --output "$PRIMARY_DISPLAY" --brightness .3' \
     'xrandr --output "$PRIMARY_DISPLAY" --brightness 1' \
   `# Undim & lock after 10 more seconds` \
   --timer 10 \

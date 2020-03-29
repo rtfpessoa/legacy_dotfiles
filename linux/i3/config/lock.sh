@@ -5,11 +5,13 @@
 set -e 
 
 revert() {
+    sleep 1
     xset dpms 0 0 0
 }
 
 lock_screen() {
-    xset +dpms dpms 5 5 5
+    sleep 1
+    xset +dpms dpms 15 30 60
     $LOCK_CMD
     revert
 }
