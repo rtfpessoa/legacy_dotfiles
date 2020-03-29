@@ -252,13 +252,13 @@ bindsym Print exec /usr/bin/gnome-screenshot -i
 bindsym --release $mod+Print exec /usr/bin/gnome-screenshot -a
 
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id $HOME/.config/i3/volume.sh -np -i 1 -l 100 # increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id $HOME/.config/i3/volume.sh -np -d 1 # decrease sound volume
+bindsym XF86AudioRaiseVolume exec --no-startup-id $HOME/.config/i3/volume.sh -np -i 1 -l 100
+bindsym XF86AudioLowerVolume exec --no-startup-id $HOME/.config/i3/volume.sh -np -d 1
 bindsym XF86AudioMute exec --no-startup-id $HOME/.config/i3/volume.sh -mn # mute sound
 
 # Sreen brightness controls
-bindsym XF86MonBrightnessUp exec --no-startup-id $HOME/.config/i3/backlight.sh inc # increase screen brightness
-bindsym XF86MonBrightnessDown exec --no-startup-id $HOME/.config/i3/backlight.sh dec # decrease screen brightness
+bindsym XF86MonBrightnessUp exec --no-startup-id $HOME/.config/i3/backlight.sh inc
+bindsym XF86MonBrightnessDown exec --no-startup-id $HOME/.config/i3/backlight.sh dec
 
 # Media player controls
 bindsym XF86AudioPlay exec playerctl play-pause
@@ -266,7 +266,7 @@ bindsym XF86AudioPause exec playerctl play-pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
-# show battery stats
+# Show battery stats
 bindsym XF86Battery exec gnome-power-statistics
 
 # Multi-monitor

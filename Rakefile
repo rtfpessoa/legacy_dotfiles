@@ -153,6 +153,7 @@ def install_ubuntu_packages
   install_file File.expand_path("linux/polybar"), File.join(ENV['HOME'], ".config/polybar") if want_to_install?('polybar configs')
   install_file File.expand_path("linux/rofi"), File.join(ENV['HOME'], ".config/rofi") if want_to_install?('rofi configs')
   install_file File.expand_path("linux/compton"), File.join(ENV['HOME'], ".config/compton") if want_to_install?('compton configs')
+  install_file File.expand_path("kitty"), File.join(ENV['HOME'], ".config/kitty") if want_to_install?('kitty configs')
   install_files Dir.glob('linux/fonts/*') if want_to_install?('font configs')
   install_files Dir.glob('linux/x11/*'), destination_directory: "/etc/X11/xorg.conf.d", prefix: '', sudo: true if want_to_install?('x11 configs')
   install_files Dir.glob('linux/systemd/*'), destination_directory: "/etc/systemd", prefix: '', sudo: true if want_to_install?('systemd user configs')

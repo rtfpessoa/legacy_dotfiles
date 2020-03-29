@@ -4,7 +4,11 @@ alias docekr='docker'
 # Why not?
 alias :q='exit'
 
+# grep alias
+alias grep='grep --color=auto'
+
 # ls alias
+alias ls='ls --color=auto'
 alias l='ls -lisah'
 alias lsorted='ls -lisaht'
 

@@ -52,11 +52,6 @@ fi
 while read LINE; do
   # If we are reading the line that contains the position information
   if [[ $LINE =~ $DISPLAY_RE ]]; then
-    echo ""
-    echo "LINE"
-    echo ""
-    echo $LINE
-    echo ""
     # Extract information and append some parameters to the ones that will be given to ImageMagick
     SCREEN_WIDTH=${BASH_REMATCH[1]}
     SCREEN_HEIGHT=${BASH_REMATCH[2]}
