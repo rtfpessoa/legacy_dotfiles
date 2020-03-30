@@ -126,6 +126,7 @@ def install_ubuntu_packages
   run %(curl -fsSL https://github.com/derailed/k9s/releases/download/v0.17.7/k9s_Linux_x86_64.tar.gz -o k9s.tar.gz && tar -xzvf k9s.tar.gz -C #{ENV['HOME']}/.local/bin k9s && chmod u+x #{ENV['HOME']}/.local/bin/k9s; rm -f k9s.tar.gz)
   run %(curl -fsSL https://github.com/digitalocean/doctl/releases/download/v1.39.0/doctl-1.39.0-linux-amd64.tar.gz -o doctl.tar.gz && tar -xzvf doctl.tar.gz -C #{ENV['HOME']}/.local/bin doctl && chmod u+x #{ENV['HOME']}/.local/bin/doctl; rm -f doctl.tar.gz)
 
+  run %(sudo apt -y install linux-tools-\(uname -r\))
   run %(sudo apt -y install intel-microcode inteltool intel-gpu-tools lm-sensors)
   run %(sudo apt -y install gnome-software-plugin-snap gnome-software-plugin-flatpak)
   run %(sudo add-apt-repository -y ppa:yubico/stable)
