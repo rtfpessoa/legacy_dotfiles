@@ -113,6 +113,7 @@ def install_ubuntu_packages
   run %(sudo apt -y install sbt)
   run %(echo "#!/usr/bin/env sh" | tee #{ENV['HOME']}/.local/bin/amm && curl -fsSL "https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4" | tee -a #{ENV['HOME']}/.local/bin/amm && chmod +x #{ENV['HOME']}/.local/bin/amm)
 
+  run %(sudo apt -y install openvpn)
   run %(sudo apt -y install libxcb-xtest0)
   run %(curl -fsSL https://zoom.us/client/latest/zoom_amd64.deb -o zoom.deb && sudo dpkg -i zoom.deb; rm -f zoom.deb)
 
