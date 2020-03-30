@@ -112,6 +112,7 @@ def install_ubuntu_packages
   run %(sudo apt -y update)
   run %(sudo apt -y install sbt)
   run %(echo "#!/usr/bin/env sh" | tee #{ENV['HOME']}/.local/bin/amm && curl -fsSL "https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4" | tee -a #{ENV['HOME']}/.local/bin/amm && chmod +x #{ENV['HOME']}/.local/bin/amm)
+  run %(curl -fsSL https://git.io/coursier-cli-linux -o #{ENV['HOME']}/.local/bin/coursier && chmod u+x #{ENV['HOME']}/.local/bin/coursier)
 
   run %(sudo apt -y install openvpn)
   run %(sudo apt -y install libxcb-xtest0)
@@ -138,7 +139,7 @@ def install_ubuntu_packages
 
   run %(sudo add-apt-repository -y ppa:kgilmer/speed-ricer)
   run %(sudo apt -y update)
-  run %(sudo apt -y install polybar compton fonts-source-code-pro-ttf i3-gaps-wm xbacklight blueman feh)
+  run %(sudo apt -y install polybar compton fonts-source-code-pro-ttf i3-gaps-wm xbacklight blueman feh suckless-tools)
   run %(sudo apt -y install fonts-source-code-pro-ttf fonts-inconsolata fonts-droid-fallback fonts-dejavu fonts-freefont-ttf fonts-liberation fonts-ubuntu fonts-ubuntu-font-family-console fonts-ubuntu-console fonts-noto fonts-noto-cjk fonts-croscore fonts-open-sans fonts-roboto fonts-dejavu fonts-dejavu-extra)
   run %(curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n)
   run %(sudo apt -y install fonts-emojione python3 rofi xdotool xsel)

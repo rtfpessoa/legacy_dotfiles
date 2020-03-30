@@ -51,17 +51,15 @@ bindsym ctrl+Mod1+f exec nautilus -w
 bindsym Mod1+F4 kill
 bindsym $mod+Shift+q kill
 
-# Split in horizontal/vertical orientation
-bindsym $mod+h split h
-bindsym $mod+v split v
-
 # enter fullscreen mode for the focused container
-bindsym $mod+f fullscreen toggle
+bindsym $mod+ctrl+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+t layout tabbed
-bindsym $mod+w layout toggle split
+bindsym $mod+ctrl+h split h
+bindsym $mod+ctrl+v split v
+bindsym $mod+ctrl+s layout stacking
+bindsym $mod+ctrl+t layout tabbed
+bindsym $mod+ctrl+w layout toggle split
 
 # Toggle tiling / floating
 bindsym $mod+Shift+space floating toggle

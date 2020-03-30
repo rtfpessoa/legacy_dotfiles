@@ -28,4 +28,4 @@ elif [ ${NR_CONNECTED_MONITORS} -eq 3 ]; then
         --output DP-1 --primary --mode 3840x2160 --pos 0x0 --rotate normal
 fi
 
-feh --bg-fill /usr/share/backgrounds/Manhattan_Sunset_by_Giacomo_Ferroni.jpg
+${SCRIPT_DIRECTORY}/background.sh

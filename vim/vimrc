@@ -1,7 +1,7 @@
 "
-" rtfpessoa .vimrc
+" rtfpessoa vimrc
 "
-" Source URLs (~/.vim/.vimrc):
+" Source URLs (~/.vim/vimrc):
 "   - http://vim.wikia.com/wiki/Example_vimrc
 "   - https://gist.github.com/simonista/8703722
 "   - https://dougblack.io/words/a-good-vimrc.html
@@ -31,6 +31,7 @@ set encoding=utf-8
 
 " Clipboard
 set clipboard=unnamed
+" set clipboard=unnamedplus
 
 "------------------------------------------------------------
 " Must have options {{{1
