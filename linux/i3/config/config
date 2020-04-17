@@ -35,7 +35,7 @@ bindsym $mod+d exec --no-startup-id dmenu_run -nf '#F3F4F5' -nb '#2F343F' -sb '#
 ### Rofi
 # bindsym $mod+d exec rofi -show run -theme menu-bar
 bindsym $mod+Shift+d exec rofi -show drun -show-icons -theme menu-center
-bindsym $mod+e exec $HOME/.pyenv/shims/rofimoji --rofi-args="'-theme menu-center'"
+bindsym $mod+e exec $HOME/.pyenv/shims/rofimoji --rofi-args="\"'-theme menu-center'\""
 ### Alt+Tab
 bindsym Mod1+Tab exec --no-startup-id rofi -modi combi -combi-modi window -show-icons -theme menu-center -show combi
 
