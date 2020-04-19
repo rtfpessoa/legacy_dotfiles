@@ -1,26 +1,11 @@
-<fix|feature|doc|style|refactor|test>: subject <jira> :<feature|breaking>:
-# **Specification**
+<feature|fix|docs|style|refactor|test|chore>: subject [:breaking:]
 #
-# <Type> (Optional)
-#  Defined types:
-#   fix (fixing bugs)
-#   doc (adding or maintaining documentation)
-#   style (formatting, missing semi colons, ...)
-#   refactor (refactoring current code)
-#   test (adding missing tests)
-#   feature (new feature)
+#  Types:
+#    - feature(new feature)
+#    - fix (bug fix)
+#    - docs (changes to documentation)
+#    - style (formatting, missing semi colons, etc; no code change)
+#    - refactor (refactoring production code)
+#    - test (adding missing tests, refactoring tests; no production code change)
+#    - chore (updating grunt tasks etc; no production code change)
 #
-# If it is just a new feature or regular change it might not need <Type>
-#
-# <Subject> (Required)
-#   What does this commit refer to?
-#
-# <TaskID> (If Exists)
-#   Self explanatory
-#
-# <VersionScope> (Optional)
-#  Explicit version scopes:
-#   :breaking:
-#   :feature:
-#
-# <Body> (Optional)
