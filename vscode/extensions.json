@@ -1,0 +1,27 @@
+{
+  "recommendations": [
+    "af4jm.vscode-m3u",
+    "dawhite.mustache",
+    "dbaeumer.vscode-eslint",
+    "dcasella.i3",
+    "esbenp.prettier-vscode",
+    "GrapeCity.gc-excelviewer",
+    "lunaryorn.fish-ide",
+    "skyapps.fish-vscode",
+    "mechatroner.rainbow-csv",
+    "mauve.terraform",
+    "misogi.ruby-rubocop",
+    "wingrunr21.vscode-ruby",
+    "mjmcloug.vscode-elixir",
+    "mrorz.language-gettext",
+    "ms-azuretools.vscode-docker",
+    "ms-python.python",
+    "ms-vscode.cpptools",
+    "Orta.vscode-jest",
+    "rebornix.ruby",
+    "saratravi.elixir-formatter",
+    "scala-lang.scala",
+    "scalameta.metals",
+    "tomoki1207.pdf"
+  ]
+}

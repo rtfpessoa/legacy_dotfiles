@@ -23,6 +23,8 @@ task install: [:update] do
   install_files Dir.glob('tmux/*') if want_to_install?('tmux config')
   install_file File.expand_path('vim'), "#{ENV['HOME']}/.vim" if want_to_install?('vim configuration')
 
+  install_files Dir.glob('vscode/*'), destination_directory: File.join(ENV['HOME'], ".config/Code/User"), prefix: '' if want_to_install?('VSCode settings and keybindings')
+
   install_files Dir.glob('shells/bash/runcoms/*') if want_to_install?('bash configs')
   setup_fish if want_to_install?('setup fish')
 
