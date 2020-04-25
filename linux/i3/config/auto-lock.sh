@@ -4,6 +4,10 @@ set -e
 
 # Source: https://github.com/jD91mZM2/xidlehook
 #
+# docker run --rm --entrypoint=bash -v $PWD:/pwd rust -c 'apt -y update && apt -y install git libpulse-dev libxcb-screensaver0-dev && git clone https://gitlab.com/jD91mZM2/xidlehook && cd xidlehook && cargo build --release --bins && mv ./target/release/xidlehook /pwd'
+#
+# or
+#
 # docker run -it --rm --net=host --entrypoint=bash -v $PWD:/pwd rust
 # apt -y update
 # apt -y install libpulse-dev libxcb-screensaver0-dev
@@ -15,7 +19,9 @@ set -e
 # Only exported variables can be used within the timer's command.
 export PRIMARY_DISPLAY="$(xrandr | awk '/ primary/{print $1}')"
 
+# Requires: 'sudo apt -y install xautolock'
 # xautolock -time 1 -notify 5 -notifier 'notify-send -u critical -t 10000 "Locking screen in 5 seconds"' -locker "loginctl lock-session $XDG_SESSION_ID"
+
 xidlehook \
   `# Don't lock when there's a fullscreen application` \
   --not-when-fullscreen \

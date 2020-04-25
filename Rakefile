@@ -97,10 +97,10 @@ def install_ubuntu_packages
   run %(mkdir -p #{ENV['HOME']}/.local/bin)
 
   run %(sudo apt -y update)
-  run %(sudo apt -y install curl unzip vim bc)
+  run %(sudo apt -y install curl unzip bc)
   run %(sudo apt -y install ruby-dev build-essential libssl-dev zlib1g-dev make libbz2-dev libsqlite3-dev llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev libreadline-dev autoconf bison libyaml-dev libreadline6-dev libgdbm5 libgdbm-dev)
   run %(sudo add-apt-repository -y ppa:git-core/ppa)
-  run %(sudo add-apt-repository -y ppa:fish-shell/release-2)
+  run %(sudo add-apt-repository -y ppa:fish-shell/release-3)
   run %(sudo apt -y update)
   run %(sudo apt -y upgrade)
   run %(sudo apt -y install git)
@@ -109,6 +109,18 @@ def install_ubuntu_packages
   run %(sudo locale-gen en_GB.UTF-8)
   run %(sudo update-locale LANG=en_GB.UTF-8)
 
+  # System tools
+  run %(sudo apt -y install linux-tools-$\(uname -r\) intel-microcode inteltool intel-gpu-tools lm-sensors smbios-utils)
+
+  # Setup swap and hibernation
+  run %(sudo apt -y install policykit-1-gnome)
+  run %(swapon --show | grep "32G" || \(sudo swapoff /swapfile && sudo fallocate -l 32G /swapfile && sudo mkswap /swapfile && sudo chmod 600 /swapfile && sudo swapon /swapfile && swapon --show && bash ./linux/bin/update-hibernate\))
+
+  # Gnome software plugins & Flatpak
+  run %(sudo apt -y install gnome-software-plugin-snap)
+  run %(sudo apt -y install flatpak && sudo apt install gnome-software-plugin-flatpak && flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo)
+
+  # SBT & Coursier (Scala)
   run %(grep -q 'https://dl.bintray.com/sbt/debian' /etc/apt/sources.list.d/sbt.list || echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list)
   run %(curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo apt-key add -)
   run %(sudo apt -y update)
@@ -116,39 +128,31 @@ def install_ubuntu_packages
   run %(echo "#!/usr/bin/env sh" | tee #{ENV['HOME']}/.local/bin/amm && curl -fsSL "https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4" | tee -a #{ENV['HOME']}/.local/bin/amm && chmod +x #{ENV['HOME']}/.local/bin/amm)
   run %(curl -fsSL https://git.io/coursier-cli-linux -o #{ENV['HOME']}/.local/bin/coursier && chmod u+x #{ENV['HOME']}/.local/bin/coursier)
 
-  run %(sudo apt -y install openvpn)
-  run %(sudo apt -y install libxcb-xtest0)
-  run %(curl -fsSL https://zoom.us/client/latest/zoom_amd64.deb -o zoom.deb && sudo dpkg -i zoom.deb; rm -f zoom.deb)
-
+  # Docker & K8s tools
   run %(sudo apt -y install apt-transport-https ca-certificates gnupg-agent software-properties-common)
-  run %(curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -)
-  run %(sudo add-apt-repository -y "deb [arch=amd64] \"https://download.docker.com/linux/ubuntu\" $(lsb_release -cs) stable")
-  run %(sudo apt -y install docker-ce docker-ce-cli containerd.io)
+  # run %(curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -)
+  # run %(sudo add-apt-repository -y "deb [arch=amd64] \"https://download.docker.com/linux/ubuntu\" $(lsb_release -cs) stable")
+  # run %(sudo apt -y install docker-ce docker-ce-cli containerd.io)
+  run %(curl -fsSL https://api.github.com/repos/derailed/k9s/releases/latest | grep -E "browser_download_url.*k9s_Linux_x86_64\.tar\.gz" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o k9s_Linux_x86_64.tar.gz && tar -xzvf k9s_Linux_x86_64.tar.gz -C #{ENV['HOME']}/.local/bin k9s && chmod u+x #{ENV['HOME']}/.local/bin/k9s; rm -f k9s_Linux_x86_64.tar.gz)
 
-  run %(curl -fsSL https://github.com/Versent/saml2aws/releases/download/v2.25.0/saml2aws_2.25.0_linux_amd64.tar.gz -o saml2aws.tar.gz && tar -xzvf saml2aws.tar.gz -C #{ENV['HOME']}/.local/bin saml2aws && chmod u+x #{ENV['HOME']}/.local/bin/saml2aws; rm -f saml2aws.tar.gz)
-  run %(curl -fsSL https://github.com/derailed/k9s/releases/download/v0.17.7/k9s_Linux_x86_64.tar.gz -o k9s.tar.gz && tar -xzvf k9s.tar.gz -C #{ENV['HOME']}/.local/bin k9s && chmod u+x #{ENV['HOME']}/.local/bin/k9s; rm -f k9s.tar.gz)
-  run %(curl -fsSL https://github.com/digitalocean/doctl/releases/download/v1.39.0/doctl-1.39.0-linux-amd64.tar.gz -o doctl.tar.gz && tar -xzvf doctl.tar.gz -C #{ENV['HOME']}/.local/bin doctl && chmod u+x #{ENV['HOME']}/.local/bin/doctl; rm -f doctl.tar.gz)
-
-  run %(sudo apt -y install linux-tools-\(uname -r\))
-  run %(sudo apt -y install intel-microcode inteltool intel-gpu-tools lm-sensors)
-  run %(sudo apt -y install gnome-software-plugin-snap gnome-software-plugin-flatpak)
+  # Yubico
   run %(sudo add-apt-repository -y ppa:yubico/stable)
-  run %(sudo apt -y install yubikey-manager-qt yubioath-desktop yubikey-personalization-gui yubikey-piv-manager)
-  run %(sudo apt -y install chrome-gnome-shell)
-  run %(sudo apt -y install smbios-utils)
-  run %(sudo apt -y install xserver-xorg-input-libinput && sudo apt -y remove --purge xserver-xorg-input-synaptics)
-  run %(sudo apt -y install i7z powertop powerstat i8kutils)
+  run %(sudo apt -y install yubikey-manager-qt yubioath-desktop yubikey-personalization-gui)
 
-  run %(sudo add-apt-repository -y ppa:kgilmer/speed-ricer)
+  # Trackpad
+  run %(sudo apt -y install xserver-xorg-input-libinput && sudo apt -y remove --purge xserver-xorg-input-synaptics)
+
+  # I3 & tools
+  run %(sudo add-apt-repository -y ppa:regolith-linux/release)
   run %(sudo apt -y update)
-  run %(sudo apt -y install polybar compton fonts-source-code-pro-ttf i3-gaps-wm xbacklight blueman feh suckless-tools)
-  run %(sudo apt -y install fonts-source-code-pro-ttf fonts-inconsolata fonts-droid-fallback fonts-dejavu fonts-freefont-ttf fonts-liberation fonts-ubuntu fonts-ubuntu-font-family-console fonts-ubuntu-console fonts-noto fonts-noto-cjk fonts-croscore fonts-open-sans fonts-roboto fonts-dejavu fonts-dejavu-extra)
+  run %(sudo apt -y install compton fonts-source-code-pro-ttf i3-gaps-wm playerctl)
+  run %(sudo apt -y install xbacklight blueman feh suckless-tools)
+  run %(curl -fsSL http://ftp.es.debian.org/debian/pool/main/p/polybar/polybar_3.4.2-4_amd64.deb -o polybar.deb && sudo apt -y install ./polybar.deb; rm -f polybar.deb)
+  run %(sudo apt -y install fonts-inconsolata fonts-droid-fallback fonts-freefont-ttf fonts-liberation fonts-ubuntu fonts-ubuntu-font-family-console fonts-ubuntu-console fonts-noto fonts-noto-cjk fonts-croscore fonts-open-sans fonts-roboto fonts-dejavu fonts-dejavu-extra)
   run %(curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n)
   run %(sudo apt -y install fonts-emojione python3 rofi xdotool xsel)
-  run %(curl -fsSL https://github.com/altdesktop/playerctl/releases/download/v2.1.1/playerctl-2.1.1_amd64.deb -o playerctl.deb && sudo dpkg -i playerctl.deb; rm -f playerctl.deb)
-  run %(sudo apt -y install libdbus-1-dev libx11-dev libxinerama-dev libxrandr-dev libxss-dev libglib2.0-dev libpango1.0-dev libgtk-3-dev libxdg-basedir-dev libnotify-dev)
-  run %(sudo apt -y install notify-osd)
-  run %(sudo apt -y install libxcb-xrm-dev checkinstall xautolock xss-lock)
+  run %(sudo apt -y install libdbus-1-dev libx11-dev libxinerama-dev libxrandr-dev libxss-dev libglib2.0-dev libpango1.0-dev libgtk-3-dev libxdg-basedir-dev libnotify-dev notify-osd)
+  run %(sudo apt -y install libxcb-xrm-dev checkinstall xss-lock i3lock)
   run %(curl -fsSL https://raw.githubusercontent.com/rjekker/i3-battery-popup/master/i3-battery-popup -o #{ENV['HOME']}/.local/bin/i3-battery-popup && chmod +x #{ENV['HOME']}/.local/bin/i3-battery-popup)
 
   install_files Dir.glob('linux/bin/*'), destination_directory: File.join(ENV['HOME'], ".local/bin"), prefix: '' if want_to_install?('linux binaries')
@@ -179,23 +183,29 @@ def install_ubuntu_packages
   run %(sudo snap install spotify)
   run %(sudo snap install vlc)
   run %(sudo snap install kubectl --classic)
-  run %(sudo snap install snapcraft --classic)
   run %(sudo snap install helm --channel=2.16/stable --classic)
-  # TODO: Uncomment after configurations from previous installation of these programs are backup
-  # run %(sudo snap install code --classic)
-  # run %(sudo snap install intellij-idea-ultimate --classic)
-  # run %(sudo snap install go --classic)
+  run %(sudo snap install code --classic)
+  run %(sudo snap install intellij-idea-ultimate --classic)
+  run %(sudo snap install go --classic)
+  run %(flatpak install flathub us.zoom.Zoom)
+  # run %(sudo snap install glimpse-editor)
+  run %(flatpak install flathub org.glimpse_editor.Glimpse)
+  run %(sudo snap install circleci)
+  run %(sudo snap install yq)
+  run %(flatpak install flathub org.vim.Vim)
+  run %(flatpak install flathub io.neovim.nvim)
 
-  # Setup swap and hibernation
-  run %(sudo apt -y install policykit-1-gnome)
-  run %(swapon --show | grep "32G" || \(sudo swapoff /swapfile && sudo fallocate -l 32G /swapfile && sudo mkswap /swapfile && sudo chmod 600 /swapfile && sudo swapon /swapfile && swapon --show && bash ./linux/bin/update-hibernate\))
+  # Work
+  run %(sudo apt -y install openvpn)
+  run %(curl -fsSL https://api.github.com/repos/Versent/saml2aws/releases/latest | grep -E "browser_download_url.*saml2aws_.*_linux_amd64\.tar\.gz" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o saml2aws.tar.gz && tar -xzvf saml2aws.tar.gz -C #{ENV['HOME']}/.local/bin saml2aws && chmod u+x #{ENV['HOME']}/.local/bin/saml2aws; rm -f saml2aws.tar.gz)
+  run %(curl -fsSL https://api.github.com/repos/digitalocean/doctl/releases/latest | grep -E "browser_download_url.*doctl-.*-linux-amd64\.tar\.gz" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o doctl.tar.gz && tar -xzvf doctl.tar.gz -C #{ENV['HOME']}/.local/bin doctl && chmod u+x #{ENV['HOME']}/.local/bin/doctl; rm -f doctl.tar.gz)
 
   puts
   puts
 end
 
 def install_pyenv
-  python2_version = '2.7.17'
+  python2_version = '2.7.18'
   python3_version = '3.7.7'
 
   if RUBY_PLATFORM.downcase.include?('darwin')
@@ -239,7 +249,7 @@ def install_pyenv
 end
 
 def install_rbenv
-  ruby_version = '2.7.0'
+  ruby_version = '2.7.1'
 
   run %(which rbenv)
   unless $?.success?
@@ -282,7 +292,7 @@ def install_rbenv
 end
 
 def install_nodenv
-  node_version = '12.16.1'
+  node_version = '12.16.2'
 
   run %(which nodenv)
   unless $?.success?

@@ -82,7 +82,7 @@ end
 function whois --argument url
 	set -l domain (echo "$url" | awk -F/ '{print $3}') # get domain from URL
 	if test -z $domain
-		domain=$url
+		set -l domain $url
 	end
 	echo "Getting whois record for: $domain ..."
 
@@ -93,9 +93,9 @@ function whois --argument url
 end
 
 function strip_diff_leading_symbols
-	color_code_regex="(\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K])"
-	reset_color="\x1B\[m"
-	dim_magenta="\x1B\[38;05;146m"
+	set -l color_code_regex "(\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K])"
+	set -l reset_color "\x1B\[m"
+	set -l dim_magenta "\x1B\[38;05;146m"
 
 	# simplify the unified patch diff header
 	sed -r "s/^($color_code_regex)diff --git .*\$//g" | \
