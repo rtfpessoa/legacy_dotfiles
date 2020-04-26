@@ -1,0 +1,3 @@
+#include "/etc/regolith/styles/nord/root"
+
+i3-wm.bar.position: top

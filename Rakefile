@@ -97,7 +97,7 @@ def install_ubuntu_packages
   run %(mkdir -p #{ENV['HOME']}/.local/bin)
 
   run %(sudo apt -y update)
-  run %(sudo apt -y install curl unzip bc)
+  run %(sudo apt -y install curl unzip bc vim-gtk3)
   run %(sudo apt -y install ruby-dev build-essential libssl-dev zlib1g-dev make libbz2-dev libsqlite3-dev llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev libreadline-dev autoconf bison libyaml-dev libreadline6-dev libgdbm5 libgdbm-dev)
   run %(sudo add-apt-repository -y ppa:git-core/ppa)
   run %(sudo add-apt-repository -y ppa:fish-shell/release-3)
@@ -113,7 +113,6 @@ def install_ubuntu_packages
   run %(sudo apt -y install linux-tools-$\(uname -r\) intel-microcode inteltool intel-gpu-tools lm-sensors smbios-utils)
 
   # Setup swap and hibernation
-  run %(sudo apt -y install policykit-1-gnome)
   run %(swapon --show | grep "32G" || \(sudo swapoff /swapfile && sudo fallocate -l 32G /swapfile && sudo mkswap /swapfile && sudo chmod 600 /swapfile && sudo swapon /swapfile && swapon --show && bash ./linux/bin/update-hibernate\))
 
   # Gnome software plugins & Flatpak
@@ -142,31 +141,24 @@ def install_ubuntu_packages
   # Trackpad
   run %(sudo apt -y install xserver-xorg-input-libinput && sudo apt -y remove --purge xserver-xorg-input-synaptics)
 
+  # Kitty terminal
+  run %(curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n)
+  install_file File.expand_path("kitty"), File.join(ENV['HOME'], ".config/kitty") if want_to_install?('kitty configs')
+
   # I3 & tools
   run %(sudo add-apt-repository -y ppa:regolith-linux/release)
   run %(sudo apt -y update)
-  run %(sudo apt -y install compton fonts-source-code-pro-ttf i3-gaps-wm playerctl)
-  run %(sudo apt -y install xbacklight blueman feh suckless-tools)
-  run %(curl -fsSL http://ftp.es.debian.org/debian/pool/main/p/polybar/polybar_3.4.2-4_amd64.deb -o polybar.deb && sudo apt -y install ./polybar.deb; rm -f polybar.deb)
-  run %(sudo apt -y install fonts-inconsolata fonts-droid-fallback fonts-freefont-ttf fonts-liberation fonts-ubuntu fonts-ubuntu-font-family-console fonts-ubuntu-console fonts-noto fonts-noto-cjk fonts-croscore fonts-open-sans fonts-roboto fonts-dejavu fonts-dejavu-extra)
-  run %(curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n)
-  run %(sudo apt -y install fonts-emojione python3 rofi xdotool xsel)
-  run %(sudo apt -y install libdbus-1-dev libx11-dev libxinerama-dev libxrandr-dev libxss-dev libglib2.0-dev libpango1.0-dev libgtk-3-dev libxdg-basedir-dev libnotify-dev notify-osd)
-  run %(sudo apt -y install libxcb-xrm-dev checkinstall xss-lock i3lock)
-  run %(curl -fsSL https://raw.githubusercontent.com/rjekker/i3-battery-popup/master/i3-battery-popup -o #{ENV['HOME']}/.local/bin/i3-battery-popup && chmod +x #{ENV['HOME']}/.local/bin/i3-battery-popup)
+  run %(sudo apt -y install regolith-desktop regolith-look-nord i3xrocks-focused-window-name i3xrocks-media-player i3xrocks-wifi i3xrocks-volume i3xrocks-time i3xrocks-temp i3xrocks-keyboard-layout i3xrocks-memory i3xrocks-cpu-usage i3xrocks-battery)
+  install_file File.expand_path("linux/regolith/i3/config"), File.join(ENV['HOME'], ".config/regolith/i3/config") if want_to_install?('regolith i3 configs')
+  install_files Dir.glob('linux/regolith/home/*') if want_to_install?('regolith home configs')
 
+  # Others
+  run %(sudo apt -y install policykit-1-gnome)
+  install_files Dir.glob('linux/polkit-1/*'), destination_directory: "/etc/polkit-1/localauthority/50-local.d", prefix: '', sudo: true if want_to_install?('polkit-1 configs')
   install_files Dir.glob('linux/bin/*'), destination_directory: File.join(ENV['HOME'], ".local/bin"), prefix: '' if want_to_install?('linux binaries')
-  install_file File.expand_path("linux/i3/config"), File.join(ENV['HOME'], ".config/i3") if want_to_install?('i3 configs')
-  install_files Dir.glob('linux/i3/home_configs/*') if want_to_install?('i3 home configs')
-  install_files Dir.glob('linux/i3/xsession/*'), destination_directory: "/usr/share/xsessions", prefix: '', sudo: true if want_to_install?('i3 xsession configs')
-  install_file File.expand_path("linux/polybar"), File.join(ENV['HOME'], ".config/polybar") if want_to_install?('polybar configs')
-  install_file File.expand_path("linux/rofi"), File.join(ENV['HOME'], ".config/rofi") if want_to_install?('rofi configs')
-  install_file File.expand_path("linux/compton"), File.join(ENV['HOME'], ".config/compton") if want_to_install?('compton configs')
-  install_file File.expand_path("kitty"), File.join(ENV['HOME'], ".config/kitty") if want_to_install?('kitty configs')
   install_files Dir.glob('linux/fonts/*') if want_to_install?('font configs')
   install_files Dir.glob('linux/x11/*'), destination_directory: "/etc/X11/xorg.conf.d", prefix: '', sudo: true if want_to_install?('x11 configs')
   install_files Dir.glob('linux/systemd/*'), destination_directory: "/etc/systemd", prefix: '', sudo: true if want_to_install?('systemd user configs')
-  install_files Dir.glob('linux/polkit-1/*'), destination_directory: "/etc/polkit-1/localauthority/50-local.d", prefix: '', sudo: true if want_to_install?('polkit-1 configs')
   install_files Dir.glob('linux/spotify/*'), destination_directory: "/var/lib/snapd/desktop/applications", prefix: '', sudo: true if want_to_install?('spotify scaling')
   install_files Dir.glob('linux/sysctl/*'), destination_directory: "/etc/sysctl.d", prefix: '', sudo: true if want_to_install?('sysctl configs')
 
@@ -187,13 +179,12 @@ def install_ubuntu_packages
   run %(sudo snap install code --classic)
   run %(sudo snap install intellij-idea-ultimate --classic)
   run %(sudo snap install go --classic)
-  run %(flatpak install flathub us.zoom.Zoom)
+  run %(flatpak -y --noninteractive  install flathub us.zoom.Zoom)
   # run %(sudo snap install glimpse-editor)
-  run %(flatpak install flathub org.glimpse_editor.Glimpse)
+  run %(flatpak -y --noninteractive  install flathub org.glimpse_editor.Glimpse)
   run %(sudo snap install circleci)
   run %(sudo snap install yq)
-  run %(flatpak install flathub org.vim.Vim)
-  run %(flatpak install flathub io.neovim.nvim)
+  run %(flatpak -y --noninteractive  install flathub io.neovim.nvim)
 
   # Work
   run %(sudo apt -y install openvpn)
@@ -498,7 +489,7 @@ def install_file(source, destination, sudo: false)
   puts "Target: #{destination}"
 
   destination_directory = File.dirname(destination)
-  if File.exist?(destination_directory)
+  unless File.exist?(destination_directory)
     run %( #{maybe_sudo} mkdir -p "#{destination_directory}" )
   end
 

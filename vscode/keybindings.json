@@ -577,13 +577,6 @@
     "intellij": "Go to implementation(s)"
   },
   {
-    "key": "ctrl+shift+i",
-    "mac": "alt+space",
-    "command": "editor.action.previewDeclaration",
-    "when": "editorHasDefinitionProvider && editorTextFocus && !inReferenceSearchEditor",
-    "intellij": "Open quick definition lookup"
-  },
-  {
     "key": "",
     "mac": "cmd+y",
     "command": "editor.action.previewDeclaration",
@@ -954,7 +947,7 @@
     "intellij": "Open next file in file picker"
   },
   {
-    "key": "ctrl+shift+p",
+    "key": "ctrl+shift+P",
     // "mac": "ctrl+tab",
     "command": "-workbench.action.quickOpenNavigatePreviousInFilePicker",
     "when": "inFilePicker && inQuickOpen",
@@ -963,6 +956,13 @@
   /*---------------------------------------------------------------*\
    * Custom
   \*---------------------------------------------------------------*/
+  {
+    "key": "ctrl+shift+I",
+    "mac": "ctrl+shift+I",
+    "command": "editor.action.insertCursorAtEndOfEachLineSelected",
+    "when": "editorTextFocus",
+    "intellij": "Add cursor to line ends"
+  },
   {
     "key": "f7",
     "mac": "f7",

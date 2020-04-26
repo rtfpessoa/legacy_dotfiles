@@ -1,7 +1,0 @@
-# filename: ~/.xsession
-
-# Config parameters for X client applications
-[ -f ~/.Xresources ] && xrdb -merge ~/.Xresources
-
-# Janitor
-[ -d ~/.local/share/Trash ] && rm -rf ~/.local/share/Trash/*
