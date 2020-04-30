@@ -318,7 +318,7 @@ mode "$mode_power" {
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
-bindsym --release XF86PowerOff mode "$mode_power"
+bindsym --release $mod+XF86PowerOff mode "$mode_power"
 
 ###############################################################################
 # System Management
@@ -582,7 +582,5 @@ exec --no-startup-id $i3-wm.program.2
 set_from_resource $i3-wm.program.3 i3-wm.program.3 :
 exec --no-startup-id $i3-wm.program.3
 
-exec_always --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
-# exec_always --no-startup-id setxkbmap -layout gb
-# exec_always --no-startup-id nm-applet
-# exec_always --no-startup-id blueman-applet
+exec --no-startup-id dbus-launch nm-applet
+exec --no-startup-id dbus-launch blueman-applet

@@ -108,6 +108,7 @@ def install_ubuntu_packages
   run %(sudo apt -y install xclip fontconfig)
   run %(sudo locale-gen en_GB.UTF-8)
   run %(sudo update-locale LANG=en_GB.UTF-8)
+  run %(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep -E "browser_download_url.*git-delta_.*_amd64\.deb" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o git-delta.deb && sudo apt -y install ./git-delta.deb; rm -f git-delta.deb)
 
   # System tools
   run %(sudo apt -y install linux-tools-$\(uname -r\) intel-microcode inteltool intel-gpu-tools lm-sensors smbios-utils)
@@ -148,7 +149,7 @@ def install_ubuntu_packages
   # I3 & tools
   run %(sudo add-apt-repository -y ppa:regolith-linux/release)
   run %(sudo apt -y update)
-  run %(sudo apt -y install regolith-desktop regolith-look-nord i3xrocks-focused-window-name i3xrocks-media-player i3xrocks-wifi i3xrocks-volume i3xrocks-time i3xrocks-temp i3xrocks-keyboard-layout i3xrocks-memory i3xrocks-cpu-usage i3xrocks-battery)
+  run %(sudo apt -y install regolith-desktop regolith-look-nord i3xrocks-focused-window-name i3xrocks-net-traffic i3xrocks-volume i3xrocks-time i3xrocks-temp i3xrocks-memory i3xrocks-cpu-usage i3xrocks-battery)
   install_file File.expand_path("linux/regolith/i3/config"), File.join(ENV['HOME'], ".config/regolith/i3/config") if want_to_install?('regolith i3 configs')
   install_files Dir.glob('linux/regolith/home/*') if want_to_install?('regolith home configs')
 

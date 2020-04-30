@@ -5,7 +5,7 @@
 # core {{{
 [core]
   editor = vim
-  pager = less -x4
+  # pager = less -x4
   quotepath = false
   ignorecase = false
   excludesfile = ~/.gitignore
@@ -190,3 +190,10 @@
     ## List remotes
     rem = "!git config -l | grep remote.*url | tail -n +2"
 # }}}
+
+[core]
+    pager = delta --plus-color="#012800" --minus-color="#340001" --theme='Monokai Extended'
+
+[interactive]
+    diffFilter = delta --color-only
+
