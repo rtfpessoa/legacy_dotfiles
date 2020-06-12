@@ -2,8 +2,18 @@
 
 [Unit]
 Description=undervolt
+After=suspend.target
+After=hibernate.target
+After=hybrid-sleep.target
 
 [Service]
 Type=oneshot
-# If you want to run from source:
-ExecStart=/home/rtfpessoa/.pyenv/shims/undervolt -v --core -150 --gpu -50 --cache -150 --uncore -50 --temp 75
+ExecStart=/home/rtfpessoa/.pyenv/shims/undervolt -v --core -145 --cache -145 --gpu -80 --uncore -100 --analogio -100 --temp 90 --temp-bat 75
+# ExecStart=/home/rtfpessoa/.pyenv/shims/undervolt -v --core -145 --cache -145 --gpu -75 --uncore -50 --temp 90 --temp-bat 75
+# ExecStart=/home/rtfpessoa/.pyenv/shims/undervolt -v --core -130 --cache -130 --gpu -50 --uncore -50 --temp 90 --temp-bat 75
+
+[Install]
+WantedBy=multi-user.target
+WantedBy=suspend.target
+WantedBy=hibernate.target
+WantedBy=hybrid-sleep.target

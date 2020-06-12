@@ -104,6 +104,9 @@ if test -s "$HOME/.jabba/jabba.fish"
 	source "$HOME/.jabba/jabba.fish"
 end
 
+# asdf
+source "$HOME/.asdf/asdf.fish"
+
 # krypt.co
 export_globally GPG_TTY (tty)
 
