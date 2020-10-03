@@ -157,7 +157,6 @@ def install_ubuntu_packages
   run %(sudo apt -y install policykit-1-gnome)
   install_files Dir.glob('linux/polkit-1/*'), destination_directory: "/etc/polkit-1/localauthority/50-local.d", prefix: '', sudo: true if want_to_install?('polkit-1 configs')
   install_files Dir.glob('linux/bin/*'), destination_directory: File.join(ENV['HOME'], ".local/bin"), prefix: '' if want_to_install?('linux binaries')
-  install_files Dir.glob('linux/fonts/*') if want_to_install?('font configs')
   install_files Dir.glob('linux/x11/*'), destination_directory: "/etc/X11/xorg.conf.d", prefix: '', sudo: true if want_to_install?('x11 configs')
   install_files Dir.glob('linux/systemd/*'), destination_directory: "/etc/systemd", prefix: '', sudo: true if want_to_install?('systemd user configs')
   install_files Dir.glob('linux/spotify/*'), destination_directory: "/var/lib/snapd/desktop/applications", prefix: '', sudo: true if want_to_install?('spotify scaling')
