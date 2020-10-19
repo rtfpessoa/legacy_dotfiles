@@ -1,5 +1,7 @@
 {
-    "eslint.validate": [
+  "editor.fontFamily": "'Source Code Pro', 'Meslo LG S DZ for Powerline', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+  "workbench.startupEditor": "newUntitledFile",
+  "eslint.validate": [
         "javascript",
         "javascriptreact",
         "typescript",
@@ -11,8 +13,6 @@
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "workbench.startupEditor": "newUntitledFile",
-    "dotty.trace.machineId": "0040ee4e-7ae8-400e-90f7-04875148e1b4",
     "[json]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     }
