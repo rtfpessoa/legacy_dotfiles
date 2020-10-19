@@ -878,10 +878,16 @@
     "intellij": "Close corresponding tool window (Git)"
   },
   {
-    "key": "ctrl+s",
-    "mac": "cmd+s",
+    "key": "ctrl+shift+s",
+    "mac": "cmd+shift+s",
     "command": "workbench.action.files.saveAll",
     "intellij": "Save all"
+  },
+  {
+    "key": "ctrl+s",
+    "mac": "cmd+s",
+    "command": "workbench.action.files.save",
+    "intellij": "Save"
   },
   {
     "key": "ctrl+alt+y",
