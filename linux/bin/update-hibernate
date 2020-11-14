@@ -25,4 +25,4 @@ if ! grep -q 'resume=UUID' /etc/default/grub; then
 fi
 
 update-initramfs -u -k all
-update-grub2
+update-grub

@@ -51,11 +51,9 @@ fi
 
 add_to_path "$HOME/.local/bin"
 
-# GO
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  export_globally GOROOT "/usr/local/opt/go/libexec"
-fi
-export_globally GOPATH $HOME/.go
+# Go
+add_to_path "/usr/local/go/bin"
+export_globally GOPATH "$HOME/.go"
 add_to_path "$GOPATH/bin"
 
 add_to_path "/usr/local/sbin"

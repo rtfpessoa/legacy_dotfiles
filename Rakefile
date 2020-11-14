@@ -98,7 +98,7 @@ def install_ubuntu_packages
 
   run %(sudo apt -y update)
   run %(sudo apt -y install curl unzip bc vim-gtk3)
-  run %(sudo apt -y install ruby-dev build-essential libssl-dev zlib1g-dev make libbz2-dev libsqlite3-dev llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev libreadline-dev autoconf bison libyaml-dev libreadline6-dev libgdbm5 libgdbm-dev)
+  run %(sudo apt -y install ruby-dev build-essential libssl-dev zlib1g-dev make libbz2-dev libsqlite3-dev llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev libreadline-dev autoconf bison libyaml-dev libreadline6-dev libgdbm-dev)
   run %(sudo add-apt-repository -y ppa:git-core/ppa)
   run %(sudo add-apt-repository -y ppa:fish-shell/release-3)
   run %(sudo apt -y update)
@@ -111,7 +111,7 @@ def install_ubuntu_packages
   run %(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep -E "browser_download_url.*git-delta_.*_amd64\.deb" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o git-delta.deb && sudo apt -y install ./git-delta.deb; rm -f git-delta.deb)
 
   # System tools
-  run %(sudo apt -y install linux-tools-$\(uname -r\) intel-microcode inteltool intel-gpu-tools lm-sensors smbios-utils)
+  run %(sudo apt -y install linux-tools-$\(uname -r\) intel-microcode intel-gpu-tools lm-sensors smbios-utils)
 
   # Setup swap and hibernation
   run %(swapon --show | grep "32G" || \(sudo swapoff /swapfile && sudo fallocate -l 32G /swapfile && sudo mkswap /swapfile && sudo chmod 600 /swapfile && sudo swapon /swapfile && swapon --show && bash ./linux/bin/update-hibernate\))
@@ -125,15 +125,19 @@ def install_ubuntu_packages
   run %(curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo apt-key add -)
   run %(sudo apt -y update)
   run %(sudo apt -y install sbt)
-  run %(echo "#!/usr/bin/env sh" | tee #{ENV['HOME']}/.local/bin/amm && curl -fsSL "https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4" | tee -a #{ENV['HOME']}/.local/bin/amm && chmod +x #{ENV['HOME']}/.local/bin/amm)
+  run %(echo "#!/usr/bin/env sh" | tee #{ENV['HOME']}/.local/bin/amm && curl -fsSL "https://github.com/lihaoyi/Ammonite/releases/download/2.2.0/2.13-2.2.0" | tee -a #{ENV['HOME']}/.local/bin/amm && chmod +x #{ENV['HOME']}/.local/bin/amm)
   run %(curl -fsSL https://git.io/coursier-cli-linux -o #{ENV['HOME']}/.local/bin/coursier && chmod u+x #{ENV['HOME']}/.local/bin/coursier)
 
   # Docker & K8s tools
-  run %(sudo apt -y install apt-transport-https ca-certificates gnupg-agent software-properties-common)
-  # run %(curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -)
-  # run %(sudo add-apt-repository -y "deb [arch=amd64] \"https://download.docker.com/linux/ubuntu\" $(lsb_release -cs) stable")
-  # run %(sudo apt -y install docker-ce docker-ce-cli containerd.io)
+  run %(sudo apt -y install apt-transport-https ca-certificates curl software-properties-common)
+  run %(curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -)
+  run %(sudo add-apt-repository -y "deb [arch=amd64] \"https://download.docker.com/linux/ubuntu\" $(lsb_release -cs) stable")
+  run %(sudo apt -y install docker-ce)
+  run %(sudo usermod -aG docker #{ENV['USER']})
   run %(curl -fsSL https://api.github.com/repos/derailed/k9s/releases/latest | grep -E "browser_download_url.*k9s_Linux_x86_64\.tar\.gz" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o k9s_Linux_x86_64.tar.gz && tar -xzvf k9s_Linux_x86_64.tar.gz -C #{ENV['HOME']}/.local/bin k9s && chmod u+x #{ENV['HOME']}/.local/bin/k9s; rm -f k9s_Linux_x86_64.tar.gz)
+
+  # Go
+  run %(curl -fsSL https://golang.org/dl/go1.15.5.linux-amd64.tar.gz -o go1.15.5.linux-amd64.tar.gz && sudo tar -C /usr/local -xzf go1.15.5.linux-amd64.tar.gz; rm -f go1.15.5.linux-amd64.tar.gz)
 
   # Yubico
   run %(sudo add-apt-repository -y ppa:yubico/stable)
@@ -149,7 +153,7 @@ def install_ubuntu_packages
   # I3 & tools
   run %(sudo add-apt-repository -y ppa:regolith-linux/release)
   run %(sudo apt -y update)
-  run %(sudo apt -y install regolith-desktop regolith-look-nord i3xrocks-focused-window-name i3xrocks-net-traffic i3xrocks-volume i3xrocks-time i3xrocks-temp i3xrocks-memory i3xrocks-cpu-usage i3xrocks-battery)
+  run %(sudo apt -y install regolith-desktop-mobile regolith-look-nord i3xrocks-focused-window-name i3xrocks-net-traffic i3xrocks-volume i3xrocks-time i3xrocks-temp i3xrocks-memory i3xrocks-cpu-usage i3xrocks-battery)
   install_file File.expand_path("linux/regolith/i3/config"), File.join(ENV['HOME'], ".config/regolith/i3/config") if want_to_install?('regolith i3 configs')
   install_files Dir.glob('linux/regolith/home/*') if want_to_install?('regolith home configs')
 
@@ -175,16 +179,12 @@ def install_ubuntu_packages
   run %(sudo snap install spotify)
   run %(sudo snap install vlc)
   run %(sudo snap install kubectl --classic)
-  run %(sudo snap install helm --channel=2.16/stable --classic)
+  run %(sudo snap install helm --classic)
   run %(sudo snap install code --classic)
   run %(sudo snap install intellij-idea-ultimate --classic)
-  run %(sudo snap install go --classic)
   run %(flatpak -y --noninteractive  install flathub us.zoom.Zoom)
-  # run %(sudo snap install glimpse-editor)
-  run %(flatpak -y --noninteractive  install flathub org.glimpse_editor.Glimpse)
   run %(sudo snap install circleci)
   run %(sudo snap install yq)
-  run %(flatpak -y --noninteractive  install flathub io.neovim.nvim)
 
   # Work
   run %(sudo apt -y install openvpn)
@@ -197,7 +197,7 @@ end
 
 def install_pyenv
   python2_version = '2.7.18'
-  python3_version = '3.7.7'
+  python3_version = '3.7.9'
 
   if RUBY_PLATFORM.downcase.include?('darwin')
     run %(brew install python3)
@@ -233,14 +233,15 @@ def install_pyenv
   puts '======================================================'
   puts 'Installing packages...There may be some warnings.'
   puts '======================================================'
+  run %(#{ENV['HOME']}/.pyenv/shims/python -m pip install --ignore-installed --no-cache-dir --upgrade pip)
   run %(#{ENV['HOME']}/.pyenv/shims/python -m pip install --ignore-installed --no-cache-dir --upgrade --requirement requirements.txt)
-  run %(curl -fsSL https://github.com/fdw/rofimoji/releases/download/4.1.0/rofimoji-4.1.0-py3-none-any.whl -o rofimoji-4.1.0-py3-none-any.whl && #{ENV['HOME']}/.pyenv/shims/python -m pip install rofimoji-4.1.0-py3-none-any.whl; rm -f rofimoji-4.1.0-py3-none-any.whl)
+  run %(#{ENV['HOME']}/.pyenv/bin/pyenv rehash)
   puts
   puts
 end
 
 def install_rbenv
-  ruby_version = '2.7.1'
+  ruby_version = '2.7.2'
 
   run %(which rbenv)
   unless $?.success?
@@ -275,6 +276,7 @@ def install_rbenv
   run %(#{ENV['HOME']}/.rbenv/shims/gem install bundler)
   run %(#{ENV['HOME']}/.rbenv/bin/rbenv rehash)
   run %(#{ENV['HOME']}/.rbenv/shims/bundle install)
+  run %(#{ENV['HOME']}/.rbenv/bin/rbenv rehash)
   puts
   puts
 
@@ -283,7 +285,7 @@ def install_rbenv
 end
 
 def install_nodenv
-  node_version = '12.16.2'
+  node_version = '14.15.0'
 
   run %(which nodenv)
   unless $?.success?
@@ -324,7 +326,7 @@ def install_nodenv
 end
 
 def install_jabba
-  java_version = 'amazon-corretto@1.8.242-08.1'
+  java_version = 'amazon-corretto@1.8.272-10.3'
 
   run %(which jabba)
   unless $?.success?
@@ -349,9 +351,8 @@ def install_jabba
   puts 'Installing Java.'
   puts '======================================================'
   run %(. #{ENV['HOME']}/.jabba/jabba.sh &&
-    jabba install adopt@1.8.0-242 &&
-    jabba install adopt-openj9@1.8.0-242 &&
-    jabba install graalvm@20.0.0 &&
+    jabba install adopt@1.8.0-272 &&
+    jabba install graalvm-ce-java11@20.2.0 &&
     jabba install #{java_version} &&
     jabba alias default #{java_version}
   )

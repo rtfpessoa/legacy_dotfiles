@@ -57,10 +57,8 @@ end
 
 add_to_path "$HOME/.local/bin"
 
-# GO
-if test "$OPERATING_SYSTEM" = "Darwin"
-	export_globally GOROOT "/usr/local/opt/go/libexec"
-end
+# Go
+add_to_path "/usr/local/go/bin"
 export_globally GOPATH "$HOME/.go"
 add_to_path "$GOPATH/bin"
 
@@ -103,9 +101,6 @@ end
 if test -s "$HOME/.jabba/jabba.fish"
 	source "$HOME/.jabba/jabba.fish"
 end
-
-# asdf
-source "$HOME/.asdf/asdf.fish"
 
 # krypt.co
 export_globally GPG_TTY (tty)
