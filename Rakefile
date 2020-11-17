@@ -116,9 +116,8 @@ def install_ubuntu_packages
   # Setup swap and hibernation
   run %(swapon --show | grep "32G" || \(sudo swapoff /swapfile && sudo fallocate -l 32G /swapfile && sudo mkswap /swapfile && sudo chmod 600 /swapfile && sudo swapon /swapfile && swapon --show && bash ./linux/bin/update-hibernate\))
 
-  # Gnome software plugins & Flatpak
+  # Gnome software plugins
   run %(sudo apt -y install gnome-software-plugin-snap)
-  run %(sudo apt -y install flatpak && sudo apt install gnome-software-plugin-flatpak && flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo)
 
   # SBT & Coursier (Scala)
   run %(grep -q 'https://dl.bintray.com/sbt/debian' /etc/apt/sources.list.d/sbt.list || echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list)
@@ -176,13 +175,13 @@ def install_ubuntu_packages
     run %(sudo systemctl enable #{File.basename(service)})
   }
 
+  run %(curl -fsSL https://zoom.us/client/latest/zoom_amd64.deb -o zoom_amd64.deb && sudo apt -y install ./zoom_amd64.deb; rm -f zoom_amd64.deb)
   run %(sudo snap install spotify)
   run %(sudo snap install vlc)
   run %(sudo snap install kubectl --classic)
   run %(sudo snap install helm --classic)
   run %(sudo snap install code --classic)
   run %(sudo snap install intellij-idea-ultimate --classic)
-  run %(flatpak -y --noninteractive  install flathub us.zoom.Zoom)
   run %(sudo snap install circleci)
   run %(sudo snap install yq)
 

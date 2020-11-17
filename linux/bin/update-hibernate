@@ -7,7 +7,8 @@ if [ $EUID != 0 ]; then
     exit $?
 fi
 
-DRIVE_UUID=$(cat /etc/fstab | grep -E 'UUID.+\s+\/\s+' | awk '{print $1}' | awk -F'=' '{print $2}')
+DRIVE_NAME="$(mount | grep " / " | awk '{print $1}')"
+DRIVE_UUID="$(sudo blkid | grep ${DRIVE_NAME} | awk '{print $2}' | awk -F'=' '{print $2}' | tr -d '"')"
 DRIVE="$(blkid | grep "${DRIVE_UUID}")"
 NR_OF_DRIVES="$(blkid | grep "${DRIVE_UUID}" | wc -l)"
 
