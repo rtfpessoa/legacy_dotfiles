@@ -81,17 +81,17 @@ bindsym $mod+Shift+Return exec gtk-launch $(xdg-settings get default-web-browser
 set_from_resource $rofiTheme rofi.theme /etc/regolith/styles/cahuella/rofi.rasi
 
 ## Launch // Application // <> Space ##
-set_from_resource $i3-wm.program.launcher.app i3-wm.program.launcher.app rofi -show drun -theme $rofiTheme
+set_from_resource $i3-wm.program.launcher.app i3-wm.program.launcher.app rofi -show drun -font "Source Code Pro Medium 18" -theme $rofiTheme
 # bindsym $mod+space exec $i3-wm.program.launcher.app
 bindsym $mod+Shift+d exec $i3-wm.program.launcher.app
 
 ## Launch // Command // <><Shift> Space ##
-set_from_resource $i3-wm.program.launcher.cmd i3-wm.program.launcher.cmd rofi -show run -theme $rofiTheme
+set_from_resource $i3-wm.program.launcher.cmd i3-wm.program.launcher.cmd rofi -show run -font "Source Code Pro Medium 18" -theme $rofiTheme
 # bindsym $mod+Shift+space exec $i3-wm.program.launcher.cmd
 bindsym $mod+d exec $i3-wm.program.launcher.cmd
 
 ## Navigate // Window by Name // <><Ctrl> Space ##
-set_from_resource $i3-wm.program.launcher.window i3-wm.program.launcher.window rofi -show window -theme $rofiTheme
+set_from_resource $i3-wm.program.launcher.window i3-wm.program.launcher.window rofi -show window -font "Source Code Pro Medium 18" -theme $rofiTheme
 # bindsym $mod+Ctrl+space exec $i3-wm.program.launcher.window
 bindsym $mod+Ctrl+d exec $i3-wm.program.launcher.window
 
