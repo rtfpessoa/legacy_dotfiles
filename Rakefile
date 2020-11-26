@@ -152,7 +152,7 @@ def install_ubuntu_packages
   # I3 & tools
   run %(sudo add-apt-repository -y ppa:regolith-linux/release)
   run %(sudo apt -y update)
-  run %(sudo apt -y install regolith-desktop-mobile regolith-look-nord i3xrocks-focused-window-name i3xrocks-net-traffic i3xrocks-volume i3xrocks-time i3xrocks-temp i3xrocks-memory i3xrocks-cpu-usage i3xrocks-battery)
+  run %(sudo apt -y install regolith-desktop-mobile regolith-gnome-flashback regolith-rofication- regolith-look-nord i3xrocks-focused-window-name i3xrocks-net-traffic i3xrocks-volume i3xrocks-time i3xrocks-temp i3xrocks-memory i3xrocks-cpu-usage i3xrocks-battery)
   install_file File.expand_path("linux/regolith/i3/config"), File.join(ENV['HOME'], ".config/regolith/i3/config") if want_to_install?('regolith i3 configs')
   install_files Dir.glob('linux/regolith/home/*') if want_to_install?('regolith home configs')
 
