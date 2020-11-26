@@ -156,6 +156,10 @@ def install_ubuntu_packages
   install_file File.expand_path("linux/regolith/i3/config"), File.join(ENV['HOME'], ".config/regolith/i3/config") if want_to_install?('regolith i3 configs')
   install_files Dir.glob('linux/regolith/home/*') if want_to_install?('regolith home configs')
 
+  # Input Sources
+  languages = "[('xkb', 'gb'), ('xkb', 'pt')]"
+  run %(gsettings set org.gnome.desktop.input-sources sources "#{languages}")
+
   # Others
   run %(sudo apt -y install policykit-1-gnome)
   install_files Dir.glob('linux/polkit-1/*'), destination_directory: "/etc/polkit-1/localauthority/50-local.d", prefix: '', sudo: true if want_to_install?('polkit-1 configs')
