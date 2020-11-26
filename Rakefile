@@ -237,6 +237,15 @@ def install_pyenv
   run %(#{ENV['HOME']}/.pyenv/bin/pyenv rehash)
   puts
   puts
+
+  if RUBY_PLATFORM.downcase.include?('linux')
+    # Rofimoji
+    # Python 3 is installed above and Rofi is installed by Regolith 
+    run %(sudo apt -y install fonts-emojione xdotool xsel)
+    run %(curl -fsSL https://api.github.com/repos/fdw/rofimoji/releases/latest | grep -E "browser_download_url.*rofimoji-.*-py3-none-any\.whl" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o rofimoji-1.0.0-py3-none-any.whl && #{ENV['HOME']}/.pyenv/shims/python -m pip install --ignore-installed --no-cache-dir --upgrade ./rofimoji-1.0.0-py3-none-any.whl; rm -f rofimoji-1.0.0-py3-none-any.whl)
+    run %(#{ENV['HOME']}/.pyenv/bin/pyenv rehash)
+  end
+
 end
 
 def install_rbenv

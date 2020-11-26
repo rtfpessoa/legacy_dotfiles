@@ -1,6 +1,6 @@
+wheel
 awscli
 ytool
 mkdocs
 aws-google-auth
 undervolt
-rofimoji
