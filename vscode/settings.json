@@ -1,6 +1,7 @@
 {
   "editor.fontFamily": "'Meslo LG S DZ for Powerline', 'Source Code Pro', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
   "workbench.startupEditor": "newUntitledFile",
+  "editor.renderWhitespace": "trailing",
   "eslint.validate": [
         "javascript",
         "javascriptreact",
