@@ -193,7 +193,7 @@ def install_ubuntu_packages
   run %(sudo apt -y install openvpn)
   run %(curl -fsSL https://api.github.com/repos/Versent/saml2aws/releases/latest | grep -E "browser_download_url.*saml2aws_.*_linux_amd64\.tar\.gz" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o saml2aws.tar.gz && tar -xzvf saml2aws.tar.gz -C #{ENV['HOME']}/.local/bin saml2aws && chmod u+x #{ENV['HOME']}/.local/bin/saml2aws; rm -f saml2aws.tar.gz)
   run %(curl -fsSL https://api.github.com/repos/digitalocean/doctl/releases/latest | grep -E "browser_download_url.*doctl-.*-linux-amd64\.tar\.gz" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o doctl.tar.gz && tar -xzvf doctl.tar.gz -C #{ENV['HOME']}/.local/bin doctl && chmod u+x #{ENV['HOME']}/.local/bin/doctl; rm -f doctl.tar.gz)
-  run %(curl -fsSL https://releases.hashicorp.com/terraform/0.13.5/terraform_0.13.5_linux_amd64.zip -o terraform.zip && unzip terraform.zip -d #{ENV['HOME']}/.local/bin/ && chmod u+x #{ENV['HOME']}/.local/bin/terraform; rm -f terraform.zip)
+  run %(curl -fsSL https://releases.hashicorp.com/terraform/0.14.0/terraform_0.14.0_linux_amd64.zip -o terraform.zip && unzip terraform.zip -d #{ENV['HOME']}/.local/bin/ && chmod u+x #{ENV['HOME']}/.local/bin/terraform; rm -f terraform.zip)
 
   puts
   puts
@@ -245,7 +245,7 @@ def install_pyenv
 
   if RUBY_PLATFORM.downcase.include?('linux')
     # Rofimoji
-    # Python 3 is installed above and Rofi is installed by Regolith 
+    # Python 3 is installed above and Rofi is installed by Regolith
     run %(sudo apt -y install fonts-emojione xdotool xsel)
     run %(curl -fsSL https://api.github.com/repos/fdw/rofimoji/releases/latest | grep -E "browser_download_url.*rofimoji-.*-py3-none-any\.whl" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o rofimoji-1.0.0-py3-none-any.whl && #{ENV['HOME']}/.pyenv/shims/python -m pip install --ignore-installed --no-cache-dir --upgrade ./rofimoji-1.0.0-py3-none-any.whl; rm -f rofimoji-1.0.0-py3-none-any.whl)
     run %(#{ENV['HOME']}/.pyenv/bin/pyenv rehash)

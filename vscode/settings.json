@@ -34,5 +34,14 @@
   "go.useLanguageServer": true,
   "go.formatTool": "goimports",
   "go.autocompleteUnimportedPackages": true,
-  "editor.codeActionsOnSave": {}
+  "editor.codeActionsOnSave": {},
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "cSpell.userWords": [
+    "deserialization",
+    "openapi",
+    "openid"
+  ],
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
