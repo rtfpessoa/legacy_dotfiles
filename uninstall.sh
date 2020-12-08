@@ -38,28 +38,18 @@ fi
 echo "Cleaning fish shell..."
 tryRemove $HOME/.local/share/fish $HOME/.config/fish $HOME/.local/share/omf $HOME/.cache/omf $HOME/.config/omf
 
-echo "Cleaning rbenv..."
-tryRemove $HOME/.rbenv
+echo "Cleaning Regolith..."
+tryRemove $HOME/.config/regolith $HOME/.Xresources-regolith
 
-echo "Cleaning nodenv..."
-tryRemove $HOME/.nodenv
-tryRemove $HOME/.config/yarn
-
-echo "Cleaning pyenv..."
-tryRemove $HOME/.pyenv
-
-echo "Cleaning jabba..."
-tryRemove $HOME/.jabba
-
-echo "Cleaning i3..."
-tryRemove $HOME/.config/i3 $HOME/.xsession $HOME/.Xresources $HOME/.config/polybar $HOME/.config/rofi $HOME/.config/compton
-
-echo "Cleaning i3 system..."
+echo "Cleaning Regolith system..."
 sudo systemctl stop undervolt.timer
 sudo systemctl disable undervolt.timer
 sudo systemctl stop undervolt.service
 sudo systemctl disable undervolt.service
-tryRemove /usr/share/xsessions/i3*.desktop /etc/X11/xorg.conf.d/40-libinput.conf /etc/systemd/system/undervolt.service /etc/systemd/system/undervolt.timer
+tryRemove /etc/X11/xorg.conf.d/40-libinput.conf /etc/systemd/system/undervolt.service /etc/systemd/system/undervolt.timer
+
+echo "Binaries..."
+tryRemove $HOME/.local/bin
 
 echo "Cleaning extra fonts..."
 if [[ "$OSTYPE" == "linux-gnu" ]]; then

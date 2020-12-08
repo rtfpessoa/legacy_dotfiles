@@ -12,26 +12,29 @@ task install: [:update] do
 
   install_ubuntu_packages if RUBY_PLATFORM.downcase.include?('linux') && want_to_install?('ubuntu packages')
 
-  install_homebrew_and_packages if RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('homebrew and packages')
-
-  install_pyenv if want_to_install?('pyenv')
-  install_rbenv if want_to_install?('rbenv')
-  install_nodenv if want_to_install?('nodenv')
-  install_jabba if want_to_install?('jabba')
+  if RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('homebrew and packages')
+    install_homebrew_and_packages
+  end
 
   install_files Dir.glob('git/*') if want_to_install?('git configs (color, aliases)')
   install_files Dir.glob('tmux/*') if want_to_install?('tmux config')
   install_file File.expand_path('vim'), "#{ENV['HOME']}/.vim" if want_to_install?('vim configuration')
 
-  install_files Dir.glob('vscode/*'), destination_directory: File.join(ENV['HOME'], ".config/Code/User"), prefix: '' if want_to_install?('VSCode settings and keybindings')
+  if want_to_install?('VSCode settings and keybindings')
+    install_files Dir.glob('vscode/*'), destination_directory: File.join(ENV['HOME'], '.config/Code/User'), prefix: ''
+  end
 
   install_files Dir.glob('shells/bash/runcoms/*') if want_to_install?('bash configs')
   setup_fish if want_to_install?('setup fish')
 
   install_fonts if want_to_install?('powerline fonts')
 
-  install_term_theme if RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('Apply custom ITerm2.app settings (ex: solarized theme)')
-  install_terminal_app_theme if RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('Apply custom Terminal.app settings (ex: solarized theme)')
+  if RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('Apply custom ITerm2.app settings (ex: solarized theme)')
+    install_term_theme
+  end
+  if RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('Apply custom Terminal.app settings (ex: solarized theme)')
+    install_terminal_app_theme
+  end
 
   copy_files('macos/keyboard/layouts', "#{ENV['HOME']}/Library/Keyboard\ Layouts") if
     RUBY_PLATFORM.downcase.include?('darwin') && want_to_install?('Fixed UK keyboard layout')
@@ -53,9 +56,10 @@ end
 task default: 'install'
 
 private
+
 def run(cmd)
   puts "[Running] #{cmd}"
-  `#{cmd}` unless ENV['DEBUG']
+  `#{cmd}` unless ENV['DRY-RUN']
 end
 
 def install_homebrew_and_packages
@@ -67,7 +71,7 @@ def install_homebrew_and_packages
     puts "Installing Homebrew, the OSX package manager...If it's"
     puts 'already installed, this will do nothing.'
     puts '======================================================'
-    run %{curl -fsSL "https://raw.githubusercontent.com/Homebrew/install/master/install" | ruby}
+    run %(curl -fsSL "https://raw.githubusercontent.com/Homebrew/install/master/install" | ruby)
   end
 
   puts
@@ -97,7 +101,7 @@ def install_ubuntu_packages
   run %(mkdir -p #{ENV['HOME']}/.local/bin)
 
   run %(sudo apt -y update)
-  run %(sudo apt -y install curl unzip bc vim-gtk3)
+  run %(sudo apt -y install curl unzip bc)
   run %(sudo apt -y install ruby-dev build-essential libssl-dev zlib1g-dev make libbz2-dev libsqlite3-dev llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev libreadline-dev autoconf bison libyaml-dev libreadline6-dev libgdbm-dev)
   run %(sudo add-apt-repository -y ppa:git-core/ppa)
   run %(sudo add-apt-repository -y ppa:fish-shell/release-3)
@@ -119,11 +123,7 @@ def install_ubuntu_packages
   # Gnome software plugins
   run %(sudo apt -y install gnome-software-plugin-snap)
 
-  # SBT & Coursier (Scala)
-  run %(grep -q 'https://dl.bintray.com/sbt/debian' /etc/apt/sources.list.d/sbt.list || echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list)
-  run %(curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo apt-key add -)
-  run %(sudo apt -y update)
-  run %(sudo apt -y install sbt)
+  # Ammonite & Coursier (Scala)
   run %(echo "#!/usr/bin/env sh" | tee #{ENV['HOME']}/.local/bin/amm && curl -fsSL "https://github.com/lihaoyi/Ammonite/releases/download/2.2.0/2.13-2.2.0" | tee -a #{ENV['HOME']}/.local/bin/amm && chmod +x #{ENV['HOME']}/.local/bin/amm)
   run %(curl -fsSL https://git.io/coursier-cli-linux -o #{ENV['HOME']}/.local/bin/coursier && chmod u+x #{ENV['HOME']}/.local/bin/coursier)
 
@@ -133,10 +133,6 @@ def install_ubuntu_packages
   run %(sudo add-apt-repository -y "deb [arch=amd64] \"https://download.docker.com/linux/ubuntu\" $(lsb_release -cs) stable")
   run %(sudo apt -y install docker-ce)
   run %(sudo usermod -aG docker #{ENV['USER']})
-  run %(curl -fsSL https://api.github.com/repos/derailed/k9s/releases/latest | grep -E "browser_download_url.*k9s_Linux_x86_64\.tar\.gz" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o k9s_Linux_x86_64.tar.gz && tar -xzvf k9s_Linux_x86_64.tar.gz -C #{ENV['HOME']}/.local/bin k9s && chmod u+x #{ENV['HOME']}/.local/bin/k9s; rm -f k9s_Linux_x86_64.tar.gz)
-
-  # Go
-  run %(curl -fsSL https://golang.org/dl/go1.15.5.linux-amd64.tar.gz -o go1.15.5.linux-amd64.tar.gz && sudo tar -C /usr/local -xzf go1.15.5.linux-amd64.tar.gz; rm -f go1.15.5.linux-amd64.tar.gz)
 
   # Yubico
   run %(sudo add-apt-repository -y ppa:yubico/stable)
@@ -147,13 +143,15 @@ def install_ubuntu_packages
 
   # Kitty terminal
   run %(curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n)
-  install_file File.expand_path("kitty"), File.join(ENV['HOME'], ".config/kitty") if want_to_install?('kitty configs')
+  install_file File.expand_path('kitty'), File.join(ENV['HOME'], '.config/kitty') if want_to_install?('kitty configs')
 
   # I3 & tools
   run %(sudo add-apt-repository -y ppa:regolith-linux/release)
   run %(sudo apt -y update)
   run %(sudo apt -y install regolith-desktop-mobile regolith-gnome-flashback regolith-rofication- regolith-look-nord i3xrocks-focused-window-name i3xrocks-net-traffic i3xrocks-volume i3xrocks-time i3xrocks-temp i3xrocks-memory i3xrocks-cpu-usage i3xrocks-battery)
-  install_file File.expand_path("linux/regolith/i3/config"), File.join(ENV['HOME'], ".config/regolith/i3/config") if want_to_install?('regolith i3 configs')
+  if want_to_install?('regolith i3 configs')
+    install_file File.expand_path('linux/regolith/i3/config'), File.join(ENV['HOME'], '.config/regolith/i3/config')
+  end
   install_files Dir.glob('linux/regolith/home/*') if want_to_install?('regolith home configs')
 
   # Input Sources
@@ -162,213 +160,133 @@ def install_ubuntu_packages
 
   # Others
   run %(sudo apt -y install policykit-1-gnome)
-  install_files Dir.glob('linux/polkit-1/*'), destination_directory: "/etc/polkit-1/localauthority/50-local.d", prefix: '', sudo: true if want_to_install?('polkit-1 configs')
-  install_files Dir.glob('linux/bin/*'), destination_directory: File.join(ENV['HOME'], ".local/bin"), prefix: '' if want_to_install?('linux binaries')
-  install_files Dir.glob('linux/x11/*'), destination_directory: "/etc/X11/xorg.conf.d", prefix: '', sudo: true if want_to_install?('x11 configs')
-  install_files Dir.glob('linux/systemd/*'), destination_directory: "/etc/systemd", prefix: '', sudo: true if want_to_install?('systemd user configs')
-  install_files Dir.glob('linux/spotify/*'), destination_directory: "/var/lib/snapd/desktop/applications", prefix: '', sudo: true if want_to_install?('spotify scaling')
-  install_files Dir.glob('linux/sysctl/*'), destination_directory: "/etc/sysctl.d", prefix: '', sudo: true if want_to_install?('sysctl configs')
+  if want_to_install?('polkit-1 configs')
+    install_files Dir.glob('linux/polkit-1/*'), destination_directory: '/etc/polkit-1/localauthority/50-local.d', prefix: '', sudo: true
+  end
+  if want_to_install?('linux binaries')
+    install_files Dir.glob('linux/bin/*'), destination_directory: File.join(ENV['HOME'], '.local/bin'), prefix: ''
+  end
+  if want_to_install?('x11 configs')
+    install_files Dir.glob('linux/x11/*'), destination_directory: '/etc/X11/xorg.conf.d', prefix: '', sudo: true
+  end
+  if want_to_install?('systemd user configs')
+    install_files Dir.glob('linux/systemd/*'), destination_directory: '/etc/systemd', prefix: '', sudo: true
+  end
+  if want_to_install?('spotify scaling')
+    install_files Dir.glob('linux/spotify/*'), destination_directory: '/var/lib/snapd/desktop/applications', prefix: '', sudo: true
+  end
+  if want_to_install?('sysctl configs')
+    install_files Dir.glob('linux/sysctl/*'), destination_directory: '/etc/sysctl.d', prefix: '', sudo: true
+  end
 
-  install_files Dir.glob('linux/udev/*'), destination_directory: "/etc/udev/rules.d", prefix: '', sudo: true if want_to_install?('udev configs')
+  if want_to_install?('udev configs')
+    install_files Dir.glob('linux/udev/*'), destination_directory: '/etc/udev/rules.d', prefix: '', sudo: true
+  end
   run %(sudo usermod -aG video #{ENV['USER']})
 
-  install_files Dir.glob('linux/systemctl/*'), destination_directory: "/etc/systemd/system", prefix: '', sudo: true if want_to_install?('systemd services')
+  if want_to_install?('systemd services')
+    install_files Dir.glob('linux/systemctl/*'), destination_directory: '/etc/systemd/system', prefix: '', sudo: true
+  end
   run %(sudo systemctl daemon-reload)
-  Dir.glob('linux/systemctl/*').map { |service|
+  Dir.glob('linux/systemctl/*').map do |service|
     run %(sudo systemctl start #{File.basename(service)})
     run %(sudo systemctl enable #{File.basename(service)})
-  }
+  end
 
   run %(curl -fsSL https://zoom.us/client/latest/zoom_amd64.deb -o zoom_amd64.deb && sudo apt -y install ./zoom_amd64.deb; rm -f zoom_amd64.deb)
   run %(sudo snap install spotify)
   run %(sudo snap install vlc)
-  run %(sudo snap install kubectl --classic)
-  run %(sudo snap install helm --classic)
   run %(sudo snap install code --classic)
   run %(sudo snap install intellij-idea-ultimate --classic)
   run %(sudo snap install circleci)
-  run %(sudo snap install yq)
 
   # Work
   run %(sudo apt -y install openvpn)
-  run %(curl -fsSL https://api.github.com/repos/Versent/saml2aws/releases/latest | grep -E "browser_download_url.*saml2aws_.*_linux_amd64\.tar\.gz" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o saml2aws.tar.gz && tar -xzvf saml2aws.tar.gz -C #{ENV['HOME']}/.local/bin saml2aws && chmod u+x #{ENV['HOME']}/.local/bin/saml2aws; rm -f saml2aws.tar.gz)
-  run %(curl -fsSL https://api.github.com/repos/digitalocean/doctl/releases/latest | grep -E "browser_download_url.*doctl-.*-linux-amd64\.tar\.gz" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o doctl.tar.gz && tar -xzvf doctl.tar.gz -C #{ENV['HOME']}/.local/bin doctl && chmod u+x #{ENV['HOME']}/.local/bin/doctl; rm -f doctl.tar.gz)
-  run %(curl -fsSL https://releases.hashicorp.com/terraform/0.14.0/terraform_0.14.0_linux_amd64.zip -o terraform.zip && unzip terraform.zip -d #{ENV['HOME']}/.local/bin/ && chmod u+x #{ENV['HOME']}/.local/bin/terraform; rm -f terraform.zip)
+
+  install_asdf if want_to_install?('asdf')
 
   puts
   puts
 end
 
-def install_pyenv
-  python2_version = '2.7.18'
-  python3_version = '3.7.9'
-
-  if RUBY_PLATFORM.downcase.include?('darwin')
-    run %(brew install python3)
+def install_asdf_package(package_name, global: true, version: nil, plugin_url: nil)
+  if version.nil?
+    version = run %(#{ENV['HOME']}/.asdf/bin/asdf latest #{package_name})
+  end
+  if plugin_url.nil?
+    run %(#{ENV['HOME']}/.asdf/bin/asdf plugin add #{package_name})
   else
-    run %(sudo apt -y install python3 python3-dev python3-pip)
+    run %(#{ENV['HOME']}/.asdf/bin/asdf plugin add #{package_name} #{plugin_url})
   end
+  run %(#{ENV['HOME']}/.asdf/bin/asdf install #{package_name} #{version})
+  if global == true
+    run %(#{ENV['HOME']}/.asdf/bin/asdf global #{package_name} #{version})
+  end
+end
 
-  run %(which pyenv)
+def install_asdf
+  asdf_bin = 'asdf'
+
+  run %(which #{asdf_bin})
   unless $?.success?
-
     puts '======================================================'
-    puts 'Installing pyenv'
-    puts 'already installed, this will do nothing.'
+    puts 'Installing asdf'
     puts '======================================================'
-
-    run %(git clone https://github.com/pyenv/pyenv.git #{ENV['HOME']}/.pyenv)
+    run %(git clone https://github.com/asdf-vm/asdf.git #{ENV['HOME']}/.asdf)
+    run %(cd #{ENV['HOME']}/.asdf && git checkout "$(git describe --abbrev=0 --tags)")
   end
 
   puts
   puts
   puts '======================================================'
-  puts 'Updating pyenv.'
+  puts 'Updating asdf.'
   puts '======================================================'
-
-  run %(cd #{ENV['HOME']}/.pyenv && git pull)
-  run %(#{ENV['HOME']}/.pyenv/bin/pyenv install -s #{python2_version})
-  run %(#{ENV['HOME']}/.pyenv/bin/pyenv install -s #{python3_version})
-  run %(#{ENV['HOME']}/.pyenv/bin/pyenv global #{python3_version})
-  run %(#{ENV['HOME']}/.pyenv/bin/pyenv rehash)
-
+  run %(cd #{ENV['HOME']}/.asdf && git fetch --prune --tags --all --force && git checkout "$(git describe --abbrev=0 --tags)")
   puts
   puts
   puts '======================================================'
-  puts 'Installing packages...There may be some warnings.'
+  puts 'Installing asdf packages.'
   puts '======================================================'
-  run %(#{ENV['HOME']}/.pyenv/shims/python -m pip install --ignore-installed --no-cache-dir --upgrade pip)
-  run %(#{ENV['HOME']}/.pyenv/shims/python -m pip install --ignore-installed --no-cache-dir --upgrade --requirement requirements.txt)
-  run %(#{ENV['HOME']}/.pyenv/bin/pyenv rehash)
-  puts
-  puts
 
+  run %(#{ENV['HOME']}/.asdf/bin/asdf update)
+
+  ["bat", "doctl", "gcloud", "github-cli", "golang", "graalvm", "helm", "k9s", "kubectl", "minikube", "ripgrep", "rust", "saml2aws", "sbt", "scala", "terraform", "terraform-lsp", "vim", "yq"].map do |package_name|
+    install_asdf_package package_name
+  end
+
+  install_asdf_package "jq", plugin_url:"https://github.com/AZMCode/asdf-jq.git"
+
+  # Java
+  install_asdf_package "java", global:false, version:"adoptopenjdk-8.0.275+1"
+  install_asdf_package "java", global:false, version:"adoptopenjdk-11.0.9+101"
+  install_asdf_package "java", version:"corretto-11.0.9.12.1"
+
+  # Node.JS
+  run %(#{ENV['HOME']}/.asdf/bin/asdf plugin add nodejs)
+  run %(bash -c '${ASDF_DATA_DIR:=$HOME/.asdf}/plugins/nodejs/bin/import-release-team-keyring')
+  install_asdf_package "nodejs", version:"14.15.0"
+  install_asdf_package "yarn"
+  run %(#{ENV['HOME']}/.asdf/shims/yarn global add diff2html-cli)
+  run %(#{ENV['HOME']}/.asdf/bin/asdf reshim nodejs)
+
+  # Python
+  install_asdf_package "python", global:false, version:"2.7.18"
+  install_asdf_package "python", global:false, version:"3.7.9"
+  run %(#{ENV['HOME']}/.asdf/bin/asdf global python 3.7.9 2.7.18)
+  run %(#{ENV['HOME']}/.asdf/shims/pip3 install --ignore-installed --no-cache-dir --upgrade --requirement requirements.txt)
+  run %(#{ENV['HOME']}/.asdf/bin/asdf reshim python)
   if RUBY_PLATFORM.downcase.include?('linux')
     # Rofimoji
     # Python 3 is installed above and Rofi is installed by Regolith
     run %(sudo apt -y install fonts-emojione xdotool xsel)
-    run %(curl -fsSL https://api.github.com/repos/fdw/rofimoji/releases/latest | grep -E "browser_download_url.*rofimoji-.*-py3-none-any\.whl" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o rofimoji-1.0.0-py3-none-any.whl && #{ENV['HOME']}/.pyenv/shims/python -m pip install --ignore-installed --no-cache-dir --upgrade ./rofimoji-1.0.0-py3-none-any.whl; rm -f rofimoji-1.0.0-py3-none-any.whl)
-    run %(#{ENV['HOME']}/.pyenv/bin/pyenv rehash)
+    run %(curl -fsSL https://api.github.com/repos/fdw/rofimoji/releases/latest | grep -E "browser_download_url.*rofimoji-.*-py3-none-any\.whl" | cut -d : -f 2,3 | tr -d '"' | xargs -L 1 curl -fsSL -o rofimoji-1.0.0-py3-none-any.whl && #{ENV['HOME']}/.asdf/shims/pip3 install --ignore-installed --no-cache-dir --upgrade ./rofimoji-1.0.0-py3-none-any.whl; rm -f rofimoji-1.0.0-py3-none-any.whl)
+    run %(#{ENV['HOME']}/.asdf/bin/asdf reshim python)
   end
 
-end
-
-def install_rbenv
-  ruby_version = '2.7.2'
-
-  run %(which rbenv)
-  unless $?.success?
-
-    puts '======================================================'
-    puts 'Installing rbenv'
-    puts 'already installed, this will do nothing.'
-    puts '======================================================'
-
-    run %(git clone https://github.com/rbenv/rbenv.git #{ENV['HOME']}/.rbenv)
-    run %(cd #{ENV['HOME']}/.rbenv && src/configure && make -C src)
-    run %(git clone https://github.com/rbenv/ruby-build.git #{ENV['HOME']}/.rbenv/plugins/ruby-build)
-  end
-
-  puts
-  puts
-  puts '======================================================'
-  puts 'Updating rbenv.'
-  puts '======================================================'
-
-  run %(cd #{ENV['HOME']}/.rbenv && git pull)
-  run %(cd #{ENV['HOME']}/.rbenv/plugins/ruby-build && git pull)
-  run %(#{ENV['HOME']}/.rbenv/bin/rbenv install -s #{ruby_version})
-  run %(#{ENV['HOME']}/.rbenv/bin/rbenv global #{ruby_version})
-  run %(#{ENV['HOME']}/.rbenv/bin/rbenv rehash)
-
-  puts
-  puts
-  puts '======================================================'
-  puts 'Installing Gems...There may be some warnings.'
-  puts '======================================================'
-  run %(#{ENV['HOME']}/.rbenv/shims/gem install bundler)
-  run %(#{ENV['HOME']}/.rbenv/bin/rbenv rehash)
-  run %(#{ENV['HOME']}/.rbenv/shims/bundle install)
-  run %(#{ENV['HOME']}/.rbenv/bin/rbenv rehash)
-  puts
-  puts
-
-  puts
-  puts
-end
-
-def install_nodenv
-  node_version = '14.15.0'
-
-  run %(which nodenv)
-  unless $?.success?
-    puts '======================================================'
-    puts 'Installing nodenv'
-    puts 'already installed, this will do nothing.'
-    puts '======================================================'
-    run %(git clone https://github.com/nodenv/nodenv.git #{ENV['HOME']}/.nodenv)
-    run %(cd #{ENV['HOME']}/.nodenv && src/configure && make -C src)
-    run %(git clone https://github.com/nodenv/node-build.git #{ENV['HOME']}/.nodenv/plugins/node-build)
-  end
-
-  puts
-  puts
-  puts '======================================================'
-  puts 'Updating nodenv.'
-  puts '======================================================'
-
-  run %(cd #{ENV['HOME']}/.nodenv && git pull)
-  run %(cd #{ENV['HOME']}/.nodenv/plugins/node-build && git pull)
-  run %(#{ENV['HOME']}/.nodenv/bin/nodenv install -s #{node_version})
-  run %(#{ENV['HOME']}/.nodenv/bin/nodenv global #{node_version})
-
-  puts
-  puts
-  puts '======================================================'
-  puts 'Installing node packages with yarn.'
-  puts '======================================================'
-
-  run %(#{ENV['HOME']}/.nodenv/shims/npm install -g yarn)
-  run %(#{ENV['HOME']}/.nodenv/bin/nodenv rehash)
-
-  run %(#{ENV['HOME']}/.nodenv/shims/yarn global add diff2html-cli)
-  run %(#{ENV['HOME']}/.nodenv/bin/nodenv rehash)
-
-  puts
-  puts
-end
-
-def install_jabba
-  java_version = 'amazon-corretto@1.8.272-10.3'
-
-  run %(which jabba)
-  unless $?.success?
-    puts '======================================================'
-    puts 'Installing jabba'
-    puts 'already installed, this will do nothing.'
-    puts '======================================================'
-    run %(curl -fsSL https://github.com/shyiko/jabba/raw/master/install.sh | bash)
-    # Remove source of jabba config injected during install since we already have our own
-    # https://unix.stackexchange.com/a/29928
-    bash_profile="shells/bash/runcoms/bash_profile"
-    run %(grep '.jabba/jabba.' #{bash_profile} && cat #{bash_profile} | tac | sed '/\\.jabba\\/jabba\\./I,+1 d' | tac | tee #{bash_profile})
-    bashrc="shells/bash/runcoms/bashrc"
-    run %(grep '.jabba/jabba.' #{bashrc} && cat #{bashrc} | tac | sed '/\\.jabba\\/jabba\\./I,+1 d' | tac | tee #{bashrc})
-    config_fish="shells/fish/config.fish"
-    run %(grep '.jabba/jabba.' #{config_fish} && cat #{config_fish} | tac | sed '/\\.jabba\\/jabba\\./I,+1 d' | tac | tee #{config_fish})
-  end
-
-  puts
-  puts
-  puts '======================================================'
-  puts 'Installing Java.'
-  puts '======================================================'
-  run %(. #{ENV['HOME']}/.jabba/jabba.sh &&
-    jabba install adopt@1.8.0-272 &&
-    jabba install graalvm-ce-java11@20.2.0 &&
-    jabba install #{java_version} &&
-    jabba alias default #{java_version}
-  )
+  # Ruby
+  install_asdf_package "ruby", version:"2.7.2"
+  run %(#{ENV['HOME']}/.asdf/shims/bundler install)
+  run %(#{ENV['HOME']}/.asdf/bin/asdf reshim ruby)
 
   puts
   puts
@@ -380,7 +298,9 @@ def install_fonts
   puts 'Source: https://github.com/powerline/fonts'
   puts '======================================================'
   run %( cp -f $DOTFILES/fonts/* #{ENV['HOME']}/Library/Fonts ) if RUBY_PLATFORM.downcase.include?('darwin')
-  run %( mkdir -p #{ENV['HOME']}/.fonts && cp $DOTFILES/fonts/* #{ENV['HOME']}/.fonts && fc-cache -vf #{ENV['HOME']}/.fonts ) if RUBY_PLATFORM.downcase.include?('linux')
+  if RUBY_PLATFORM.downcase.include?('linux')
+    run %( mkdir -p #{ENV['HOME']}/.fonts && cp $DOTFILES/fonts/* #{ENV['HOME']}/.fonts && fc-cache -vf #{ENV['HOME']}/.fonts )
+  end
   puts
 end
 
@@ -429,8 +349,12 @@ def setup_fish
   # run %{ omf theme ocean }
   # run %{ omf theme budspencer }
 
-  install_file File.expand_path('shells/fish/config.fish'), "#{ENV['HOME']}/.config/fish/config.fish" if want_to_install?('Fish configs')
-  install_files Dir.glob('shells/fish/conf.d/*'), destination_directory: "#{ENV['HOME']}/.config/fish/conf.d", prefix: '' if want_to_install?('Fish extras')
+  if want_to_install?('Fish configs')
+    install_file File.expand_path('shells/fish/config.fish'), "#{ENV['HOME']}/.config/fish/config.fish"
+  end
+  if want_to_install?('Fish extras')
+    install_files Dir.glob('shells/fish/conf.d/*'), destination_directory: "#{ENV['HOME']}/.config/fish/conf.d", prefix: ''
+  end
 
   set_default_shell('fish')
 end
@@ -457,7 +381,7 @@ def set_default_shell(shell_name)
       end
       run %( chsh -s #{binary_path}/#{shell_name} )
     else
-      puts "Could not find #{shell_name} localtion in #{paths_to_search.join(", ")}"
+      puts "Could not find #{shell_name} localtion in #{paths_to_search.join(', ')}"
     end
   end
 end
@@ -493,19 +417,17 @@ end
 
 def install_file(source, destination, sudo: false)
   maybe_sudo = if sudo
-    'sudo'
-  else
-    ''
-  end
+                 'sudo'
+               else
+                 ''
+               end
 
-  puts "=========================================================="
+  puts '=========================================================='
   puts "Source: #{source}"
   puts "Target: #{destination}"
 
   destination_directory = File.dirname(destination)
-  unless File.exist?(destination_directory)
-    run %( #{maybe_sudo} mkdir -p "#{destination_directory}" )
-  end
+  run %( #{maybe_sudo} mkdir -p "#{destination_directory}" ) unless File.exist?(destination_directory)
 
   run %( #{maybe_sudo} ln -nfs "#{source}" "#{destination}" )
 
@@ -566,9 +488,10 @@ end
 
 def iTerm_profile_list
   profiles = []
-  begin
+  loop do
     profiles << `/usr/libexec/PlistBuddy -c "Print :'New Bookmarks':#{profiles.size}:Name" #{ENV['HOME']}/Library/Preferences/com.googlecode.iterm2.plist 2>/dev/null`
-  end while $CHILD_STATUS.exitstatus == 0
+    break unless $CHILD_STATUS.exitstatus == 0
+  end
   profiles.pop
   profiles
 end

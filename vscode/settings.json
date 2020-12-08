@@ -38,8 +38,12 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "cSpell.userWords": [
     "deserialization",
+    "oapi",
     "openapi",
-    "openid"
+    "openid",
+    "rtfpessoa",
+    "structs",
+    "unmarshall"
   ],
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

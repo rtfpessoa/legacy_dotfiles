@@ -69,19 +69,18 @@
 # alias {{{
 [alias]
   # Top Commands
-  ad = add -A .
+  ad = add -p
+  ada = add -A .
   st = status -sb
-  cl = clone
   ps = push -u origin HEAD
   psf = push --force-with-lease -u origin HEAD
   pl = pull --rebase --autostash
   uc = reset --soft HEAD^
   co = checkout
   br = branch
-  rh = reset --hard
   rhh = reset --hard HEAD
   gr = grep -Ii
-  upsm = "!f() { git pull --rebase --autostash --recurse-submodules && git submodule update --init --recursive --remote --force --jobs 8 && git submodule status --recursive; }; f"
+  fe = fetch --force --prune --prune-tags --tags --recurse-submodules=yes --jobs=8 --verbose --progress
   clean-pack = "!f() { git fetch -p --all --progress && git gc --aggressive --prune=all --force; }; f"
 
   # Commit
@@ -196,4 +195,7 @@
 
 [interactive]
     diffFilter = delta --color-only
+
+[url "ssh://git@github.com/"]
+  insteadOf = https://github.com/
 

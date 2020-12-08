@@ -28,7 +28,7 @@ export_globally VISUAL "vim"
 export_globally GREP_COLOR '1;33'
 
 # Check https://wiki.archlinux.org/index.php/HiDPI
-export_globally QT_SCALE_FACTOR 1.5
+export_globally QT_SCALE_FACTOR 2
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
   # Linux
@@ -51,11 +51,6 @@ fi
 
 add_to_path "$HOME/.local/bin"
 
-# Go
-add_to_path "/usr/local/go/bin"
-export_globally GOPATH "$HOME/.go"
-add_to_path "$GOPATH/bin"
-
 add_to_path "/usr/local/sbin"
 add_to_path "/usr/local/bin"
 
@@ -64,39 +59,13 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   export_globally MANPATH "/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
 fi
 
-# Node
-if test -s "$HOME/.nodenv"; then
-	add_to_path "$HOME/.nodenv/bin"
-	add_to_path "$HOME/.nodenv/shims"
-	eval "$($HOME/.nodenv/bin/nodenv init - --no-rehash $SHELL)"
-fi
-
-if which yarn 2>&1 >/dev/null; then
-	add_to_path "$HOME/.config/yarn/global/node_modules/.bin"
-fi
-
-# Ruby
-if test -s "$HOME/.rbenv"; then
-	add_to_path "$HOME/.rbenv/bin"
-	add_to_path "$HOME/.rbenv/shims"
-	eval "$($HOME/.rbenv/bin/rbenv init - --no-rehash $SHELL)"
-fi
-
-# Python
-add_to_path "/usr/local/opt/python@2/bin"
-if test -s "$HOME/.pyenv/bin/pyenv"; then
-	export_globally PYENV_ROOT "$HOME/.pyenv"
-	add_to_path "$PYENV_ROOT/bin"
-	eval "$($HOME/.pyenv/bin/pyenv init - --no-rehash $SHELL)"
-fi
-
-# Java
-if test -s "$HOME/.jabba/jabba.sh"; then
-	source "$HOME/.jabba/jabba.sh"
-fi
-
 # krypt.co
 export_globally GPG_TTY $(tty)
 
 # Rust
 add_to_path "$HOME/.cargo/bin"
+
+# asdf
+source $HOME/.asdf/asdf.sh
+source $HOME/.asdf/completions/asdf.bash
+source $HOME/.asdf/plugins/java/set-java-home.bash
