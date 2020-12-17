@@ -80,7 +80,7 @@
   br = branch
   rhh = reset --hard HEAD
   gr = grep -Ii
-  fe = fetch --force --prune --prune-tags --tags --recurse-submodules=yes --jobs=8 --verbose --progress
+  fe = fetch --force --prune --prune-tags --tags --recurse-submodules=yes --jobs=8 --progress
   clean-pack = "!f() { git fetch -p --all --progress && git gc --aggressive --prune=all --force; }; f"
 
   # Commit
