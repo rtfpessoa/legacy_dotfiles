@@ -105,7 +105,7 @@ set_from_resource $i3-wm.program.file_search i3-wm.program.file_search rofi -sho
 bindsym $mod+$alt+d exec $i3-wm.program.file_search
 
 ## Launch // Emoji search
-bindsym $mod+e exec $HOME/.pyenv/shims/rofimoji --rofi-args="\"'-theme $rofiTheme'\""
+bindsym $mod+e exec $HOME/.asdf/shims/rofimoji --rofi-args="\"'-theme $rofiTheme'\""
 
 ###############################################################################
 # Window and Workspace Navigation
