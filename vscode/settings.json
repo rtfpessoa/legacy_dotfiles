@@ -1,8 +1,29 @@
 {
   "editor.fontFamily": "'Meslo LG S DZ for Powerline', 'Source Code Pro', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
   "editor.fontLigatures": true,
+  "editor.formatOnSave": true,
+  "editor.minimap.enabled": false,
   "editor.suggestSelection": "first",
-  "workbench.startupEditor": "newUntitledFile",
+  "editor.tabSize": 2,
+  "explorer.confirmDelete": false,
+  "files.associations": {
+    "*.env.development": "env",
+    "*.env.production": "env"
+  },
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.factorypath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/_build": true,
+    "**/.elixir_ls": true
+  },
+  "files.insertFinalNewline": true,
+  "files.watcherExclude": {
+    "**/.ammonite": true,
+    "**/.bloop": true,
+    "**/.metals": true
+  },
   "editor.renderWhitespace": "trailing",
   "eslint.validate": [
     "javascript",
@@ -28,10 +49,13 @@
   "[hocon]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[terraform]": {
+    "editor.formatOnSave": true
+  },
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "go.useLanguageServer": true,
+  "go.useLanguageServer": false,
   "go.formatTool": "goimports",
   "go.autocompleteUnimportedPackages": true,
   "editor.codeActionsOnSave": {},
@@ -41,11 +65,22 @@
     "oapi",
     "openapi",
     "openid",
+    "roadmaps",
     "rtfpessoa",
     "structs",
     "unmarshall"
   ],
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "window.zoomLevel": 0,
+  "terminal.integrated.fontFamily": "'Meslo LG S DZ for Powerline', 'Source Code Pro', 'Droid Sans Mono', monospace, 'Droid Sans Fallback'",
+  "terminal.integrated.shell.linux": "/usr/bin/fish",
+  "window.autoDetectColorScheme": true,
+  "workbench.colorCustomizations": {},
+  "workbench.startupEditor": "newUntitledFile",
+  "workbench.preferredLightColorTheme": "GitHub Light",
+  "workbench.preferredDarkColorTheme": "GitHub Dark",
+  "workbench.sideBar.location": "left",
+  "workbench.colorTheme": "Default Dark+"
 }
