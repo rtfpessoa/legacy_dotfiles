@@ -1,11 +1,11 @@
 {
   "editor.fontFamily": "'Meslo LG S DZ for Powerline', 'Source Code Pro', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
   "editor.fontLigatures": true,
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.minimap.enabled": false,
   "editor.suggestSelection": "first",
   "editor.tabSize": 2,
-  "explorer.confirmDelete": false,
+  "explorer.confirmDelete": true,
   "files.associations": {
     "*.env.development": "env",
     "*.env.production": "env"
@@ -82,5 +82,6 @@
   "workbench.preferredLightColorTheme": "GitHub Light",
   "workbench.preferredDarkColorTheme": "GitHub Dark",
   "workbench.sideBar.location": "left",
-  "workbench.colorTheme": "Default Dark+"
+  "workbench.colorTheme": "Default Dark+",
+  "java.home": "/home/rtfpessoa/.asdf/installs/java/corretto-11.0.9.12.1"
 }
